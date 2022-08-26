@@ -33,13 +33,13 @@ function depay_activated() {
 register_activation_hook( __FILE__, 'depay_activated' );
 
 function depay_deactivated() {
-	require_once DEPAY_WC_ABSPATH . '/includes/class-depay-payments.php';
+	require_once DEPAY_WC_ABSPATH . '/includes/class-depay-wc-payments.php';
 	// DePay_Payments::remove_woo_admin_notes();
 }
 register_deactivation_hook( __FILE__, 'depay_deactivated' );
 
 function depay_init() {
-	require_once DEPAY_WC_ABSPATH . '/includes/class-depay-payments.php';
+	require_once DEPAY_WC_ABSPATH . '/includes/class-depay-wc-payments.php';
 	DePay_Payments::init();
 }
 add_action( 'plugins_loaded', 'depay_init', 11 );

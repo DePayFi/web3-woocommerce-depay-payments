@@ -39,6 +39,9 @@
     display:flex;
     flex-direction:column
 }
+.woocommerce-setting__input input {
+    width:  100%;
+}
 @media(min-width:1281px){
     .woocommerce-setting__input{
         width:35%
@@ -308,4 +311,10 @@ body.admin-color-sunrise{
 .woocommerce-settings-historical-data__actions{
     align-items:center;
     display:flex
+}
+.woocommerce-setting__input__addition {
+    padding-top: 8px;
+}
+.woocommerce-setting__input__addition button {
+    margin-bottom:  6px !important;
 }
