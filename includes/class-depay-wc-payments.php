@@ -12,6 +12,7 @@ class DePay_Payments {
 		include_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-settings.php';
 		include_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-admin.php';
 
+		self::setup_install();
 		self::setup_settings();
 		self::setup_admin();
 		self::setup_gateway();
@@ -31,6 +32,42 @@ class DePay_Payments {
 			);
 		}
 		return self::$plugin_headers;
+	}
+
+	public static function setup_install() {
+		register_activation_hook( DEPAY_WC_ABSPATH, [ 'DePay_Payments', 'install' ] );
+	}
+
+	public static function install() {
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+		dbDelta("
+			CREATE TABLE wp_wc_depay_checkouts (
+			  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+			  order_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
+			  accept LONGTEXT NOT NULL,
+			  created_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			  PRIMARY KEY (id)
+			);
+			CREATE TABLE wp_wc_depay_transactions (
+			  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+			  order_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
+			  checkout_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
+			  tracking_uuid TINYTEXT NOT NULL,
+			  blockchain TINYTEXT NOT NULL,
+			  transaction_id TINYTEXT NOT NULL,
+			  sender_id TINYTEXT NOT NULL,
+			  receiver_id TINYTEXT NOT NULL,
+			  token_id TINYTEXT NOT NULL,
+			  amount TINYTEXT NOT NULL,
+			  status TINYTEXT NOT NULL,
+			  failed_reason TINYTEXT NOT NULL,
+			  confirmed_by TINYTEXT NOT NULL,
+			  confirmed_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			  created_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			  PRIMARY KEY (id)
+			);
+			ALTER TABLE wp_wc_depay_transactions ADD INDEX tracking_uuid_index (tracking_uuid);
+		");
 	}
 
 	public static function setup_settings() {
