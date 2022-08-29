@@ -9,6 +9,7 @@ import { terser } from "rollup-plugin-terser"
 
 const files = [
   'src/admin.js',
+  'src/checkout.js',
   // 'src/widgets.bundle.js', // only build if necessary
 ]
 

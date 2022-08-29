@@ -1,7 +1,7 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
-class DePay_Payments {
+class DePay_WC_Payments {
 
 	private static $settings;
 	
@@ -11,12 +11,14 @@ class DePay_Payments {
 		include_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-gateway.php';
 		include_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-settings.php';
 		include_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-admin.php';
+		include_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-rest.php';
 
-		self::setup_install();
 		self::setup_settings();
 		self::setup_admin();
 		self::setup_gateway();
 		self::setup_task();
+		self::setup_checkout();
+		self::setup_rest_api();
 	}
 
 	private static $plugin_headers = null;
@@ -34,42 +36,6 @@ class DePay_Payments {
 		return self::$plugin_headers;
 	}
 
-	public static function setup_install() {
-		register_activation_hook( DEPAY_WC_ABSPATH, [ 'DePay_Payments', 'install' ] );
-	}
-
-	public static function install() {
-		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-		dbDelta("
-			CREATE TABLE wp_wc_depay_checkouts (
-			  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-			  order_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
-			  accept LONGTEXT NOT NULL,
-			  created_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-			  PRIMARY KEY (id)
-			);
-			CREATE TABLE wp_wc_depay_transactions (
-			  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-			  order_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
-			  checkout_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
-			  tracking_uuid TINYTEXT NOT NULL,
-			  blockchain TINYTEXT NOT NULL,
-			  transaction_id TINYTEXT NOT NULL,
-			  sender_id TINYTEXT NOT NULL,
-			  receiver_id TINYTEXT NOT NULL,
-			  token_id TINYTEXT NOT NULL,
-			  amount TINYTEXT NOT NULL,
-			  status TINYTEXT NOT NULL,
-			  failed_reason TINYTEXT NOT NULL,
-			  confirmed_by TINYTEXT NOT NULL,
-			  confirmed_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-			  created_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-			  PRIMARY KEY (id)
-			);
-			ALTER TABLE wp_wc_depay_transactions ADD INDEX tracking_uuid_index (tracking_uuid);
-		");
-	}
-
 	public static function setup_settings() {
 		self::$settings = new DePay_WC_Payments_Settings();
 	}
@@ -85,7 +51,7 @@ class DePay_Payments {
    		!empty(get_option('depay_wc_accepted_payments')) &&
    		!empty(get_option('depay_wc_tokens'))
     ) {
-			add_filter('woocommerce_payment_gateways', [ 'DePay_Payments', 'add_gateway' ] );
+			add_filter('woocommerce_payment_gateways', [ 'DePay_WC_Payments', 'add_gateway' ] );
 		}
 	}
 
@@ -100,7 +66,7 @@ class DePay_Payments {
    		empty(get_option('depay_wc_accepted_payments')) &&
    		empty(get_option('depay_wc_tokens'))
     ) {
-    	add_filter( 'woocommerce_get_registered_extended_tasks', [ 'DePay_Payments', 'add_extended_task' ], 10, 1 );
+    	add_filter( 'woocommerce_get_registered_extended_tasks', [ 'DePay_WC_Payments', 'add_extended_task' ], 10, 1 );
 		}
 	}
 
@@ -111,4 +77,24 @@ class DePay_Payments {
     }
     return $registered_tasks_list_items;
 	}
+  
+  public static function setup_checkout() {
+  	add_action( 'wp_enqueue_scripts', [ 'DePay_WC_Payments', 'setup_checkout_scripts' ] );
+  }
+  
+  public static function setup_checkout_scripts() {
+  	wp_register_script('DEPAY_WC_WIDGETS', plugins_url( 'dist/widgets.bundle.js', DEPAY_WC_PLUGIN_FILE ), array(), '0.0.9', true);
+  	wp_enqueue_script('DEPAY_WC_WIDGETS');
+  	wp_register_script('DEPAY_WC_CHECKOUT', plugins_url( 'dist/checkout.js', DEPAY_WC_PLUGIN_FILE ), array('wp-api-request', 'jquery'), '0.0.9', true);
+  	wp_enqueue_script('DEPAY_WC_CHECKOUT');
+  }
+
+  public static function setup_rest_api() {
+  	add_action( 'rest_api_init', [ 'DePay_WC_Payments', 'init_rest_api' ] );
+  }
+
+  public static function init_rest_api() {
+		$controller = new DePay_WC_Payments_Rest();
+		$controller->register_routes();
+  }
 }

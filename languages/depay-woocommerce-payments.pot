@@ -9,6 +9,6 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid ""
-msgstr ""
+msgid "Starting DePay Payment"
+msgstr "Starting DePay Payment"
 
