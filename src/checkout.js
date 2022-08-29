@@ -4,7 +4,17 @@ window.addEventListener( 'hashchange', async()=> {
     let accept = JSON.parse(await wp.apiRequest({ path: `/depay/wc/checkouts/${checkoutId}` }))
     DePayWidgets.Payment({ 
       accept,
-      closed: ()=>{ window.jQuery('form.woocommerce-checkout').removeClass( 'processing' ).unblock() }
+      fee: { amount: '1.5%', receiver: '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb' },
+      closed: ()=>{ window.jQuery('form.woocommerce-checkout').removeClass( 'processing' ).unblock() },
+      track: {
+        method: (payment)=>{
+          return wp.apiRequest({
+            path: `/depay/wc/checkouts/${checkoutId}/track`,
+            method: 'POST',
+            data: payment
+          }).then((result)=>{ status: result ? 200 : 0 })
+        }
+      }
     })
   }
 } );

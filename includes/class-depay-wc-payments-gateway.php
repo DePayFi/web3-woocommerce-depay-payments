@@ -61,14 +61,18 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
       $rate = $get['body'];
       $get = wp_remote_get( sprintf('https://public.depay.com/tokens/decimals/%s/%s', $accepted_payment->blockchain, $accepted_payment->token ));
       $decimals = intval($get['body']);
-      array_push($accept, [
-        'blockchain' => $accepted_payment->blockchain,
-        'token' => $accepted_payment->token,
-        'amount' => bcmul($total_in_usd, $rate, $decimals),
-        'receiver' => $accepted_payment->receiver
-      ]);      
+      if(!empty($rate) && !empty($decimals)){
+        array_push($accept, [
+          'blockchain' => $accepted_payment->blockchain,
+          'token' => $accepted_payment->token,
+          'amount' => bcmul($total_in_usd, $rate, $decimals),
+          'receiver' => $accepted_payment->receiver
+        ]);      
+      }
     } 
     
+    if(empty($accept)) { throw new Exception( 'No valid payment route found!' ); }
+
     return $accept;
   }
 
