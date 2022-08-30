@@ -4,7 +4,7 @@ Tags: woocommerce,  payment, web3, depay, cryptocurrency
 Requires at least: 5.8
 Tested up to: 6.0
 Requires PHP: 7.0
-Stable tag: 0.0.9
+Stable tag: 0.0.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -94,5 +94,5 @@ Building on the idea that "Web3" is the next generation of a blockchain-based an
 
 == Changelog ==
 
-= 0.0.9 =
+= 0.0.10 =
 * Still testing

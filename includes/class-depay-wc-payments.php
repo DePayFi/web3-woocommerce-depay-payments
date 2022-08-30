@@ -83,9 +83,9 @@ class DePay_WC_Payments {
   }
   
   public static function setup_checkout_scripts() {
-  	wp_register_script('DEPAY_WC_WIDGETS', plugins_url( 'dist/widgets.bundle.js', DEPAY_WC_PLUGIN_FILE ), array(), '0.0.9', true);
+  	wp_register_script('DEPAY_WC_WIDGETS', plugins_url( 'dist/widgets.bundle.js', DEPAY_WC_PLUGIN_FILE ), array(), '0.0.10', true);
   	wp_enqueue_script('DEPAY_WC_WIDGETS');
-  	wp_register_script('DEPAY_WC_CHECKOUT', plugins_url( 'dist/checkout.js', DEPAY_WC_PLUGIN_FILE ), array('wp-api-request', 'jquery'), '0.0.9', true);
+  	wp_register_script('DEPAY_WC_CHECKOUT', plugins_url( 'dist/checkout.js', DEPAY_WC_PLUGIN_FILE ), array('wp-api-request', 'jquery'), '0.0.10', true);
   	wp_enqueue_script('DEPAY_WC_CHECKOUT');
   }
 

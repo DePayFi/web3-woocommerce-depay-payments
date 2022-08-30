@@ -9,17 +9,17 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
     $this->icon               = '';
     $this->method_title       = 'DePay';
     $this->method_description = 'Web3 Payments directly into your wallet. Accept any token with on-the-fly conversion.';
-    $this->title              = $this->get_title();
+    $this->title              = 'DePay';
   }
 
-  public function get_title() {
-    $title = "DePay ";
-    if(empty(get_option('depay_wc_blockchains'))) { return $title; }
+  public function get_icon() {
+    $icon = "";
+    if(empty(get_option('depay_wc_blockchains'))) { return $icon; }
     $blockchains = json_decode(get_option('depay_wc_blockchains'));
     foreach (array_reverse($blockchains) as $blockchain) {
-      $title = $title."<img style='width: 28px; height: 28px;' src='".plugin_dir_url( __FILE__ )."images/blockchains/".$blockchain.".svg'/>";
+      $icon = $icon."<img style='width: 28px; height: 28px;' src='".plugin_dir_url( __FILE__ )."images/blockchains/".$blockchain.".svg'/>";
     }
-    return $title;
+    return $icon;    
   }
 
   public function process_payment( $order_id ) {

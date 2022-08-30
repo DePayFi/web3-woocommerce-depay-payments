@@ -11,7 +11,7 @@
  * WC tested up to: 6.8.0
  * Requires at least: 5.8
  * Requires PHP: 7.0
- * Version: 0.0.9
+ * Version: 0.0.10
  *
  * @package DePay\Payments
  */

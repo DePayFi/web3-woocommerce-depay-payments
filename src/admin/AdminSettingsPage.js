@@ -38,6 +38,7 @@ export default function(props) {
     const settings = new window.wp.api.models.Settings({
       depay_wc_receiving_wallet_address: receivingWalletAddress,
       depay_wc_tokens: JSON.stringify(tokens),
+      depay_wc_blockchains: JSON.stringify([...new Set(tokens.map((token)=>token.blockchain))]),
       depay_wc_accepted_payments: JSON.stringify(tokens.map((token)=>{
         return({
           blockchain: token.blockchain,
