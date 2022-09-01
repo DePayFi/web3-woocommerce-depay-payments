@@ -173,6 +173,7 @@ export default function(props) {
         ) {
           window.location.search = '?page=wc-admin&path=%2Fdepay%2Fsettings'
         }
+        setAnyTransactions(transactionsData.total > 0)
         setSummary([{ value: transactionsData.total, label: "Transactions" }])
         setTotalRows(transactionsData.total)
         setRows(transactionsToRows(transactionsData))

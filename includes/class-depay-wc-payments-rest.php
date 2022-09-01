@@ -76,32 +76,39 @@ class DePay_WC_Payments_Rest {
       ));
     }
 
-    $post = wp_remote_post("https://public.depay.com/payments", [
-      "blockchain" => $accepted_payment->blockchain,
-      "receiver" => $accepted_payment->receiver,
-      "token" => $accepted_payment->token,
-      "amount" => $amount,
-      "confirmations" => $required_confirmations,
-      "transaction" => $transaction_id,
-      "sender" => $request->get_param('sender'),
-      "nonce" => $request->get_param('nonce'),
-      "after_block" => $request->get_param('after_block'),
-      "uuid" => $tracking_uuid,
-      "callback" => get_site_url(null, 'index.php?rest_route=/depay/wc/validate'),
-      "forward_to" => $order->get_checkout_order_received_url(),
-      "forward_on_failure" => false,
-      "fee_amount" => $fee_amount,
-      "fee_receiver" => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb'
-    ]);
+    $post = wp_remote_post("https://public.depay.com/payments",
+      array(
+        'headers' => array('Content-Type' => 'application/json; charset=utf-8'),
+        'body' => json_encode([
+          'blockchain' => $accepted_payment->blockchain,
+          'receiver' => $accepted_payment->receiver,
+          'token' => $accepted_payment->token,
+          'amount' => $amount,
+          'confirmations' => $required_confirmations,
+          'transaction' => $transaction_id,
+          'sender' => $request->get_param('sender'),
+          'nonce' => $request->get_param('nonce'),
+          'after_block' => $request->get_param('after_block'),
+          'uuid' => $tracking_uuid,
+          'callback' => get_site_url(null, 'index.php?rest_route=/depay/wc/validate'),
+          'forward_to' => $order->get_checkout_order_received_url(),
+          'forward_on_failure' => false,
+          'fee_amount' => $fee_amount,
+          'fee_receiver' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb'
+        ]),
+        'method' => 'POST',
+        'data_format' => 'body'
+      )
+    );
 
-    $response = new WP_REST_Response();
+    $response = rest_ensure_response("{}");
     if(!is_wp_error($post) && (wp_remote_retrieve_response_code($post) == 200 || wp_remote_retrieve_response_code($post) == 201)) {
       $response->set_status(200);
     } else {
       $response->set_status(500);
     }
     
-    return rest_ensure_response($response);
+    return $response;
   }
 
   public function validate_payment($request) {

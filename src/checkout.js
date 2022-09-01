@@ -8,11 +8,15 @@ window.addEventListener( 'hashchange', async()=> {
       closed: ()=>{ window.jQuery('form.woocommerce-checkout').removeClass( 'processing' ).unblock() },
       track: {
         method: (payment)=>{
-          return wp.apiRequest({
-            path: `/depay/wc/checkouts/${checkoutId}/track`,
-            method: 'POST',
-            data: payment
-          }).then((result)=>{ status: result ? 200 : 0 })
+          return new Promise((resolve, reject)=>{
+            wp.apiRequest({
+              path: `/depay/wc/checkouts/${checkoutId}/track`,
+              method: 'POST',
+              data: payment
+            })
+            .done((result)=>resolve({ status: 200 }))
+            .fail((request, status)=>reject(status))
+          })
         }
       }
     })
