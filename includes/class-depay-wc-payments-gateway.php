@@ -6,7 +6,6 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
   public function __construct() {
     $title = "DePay";
     $this->id                 = 'depay_wc_payments';
-    $this->icon               = '';
     $this->method_title       = 'DePay';
     $this->method_description = 'Web3 Payments directly into your wallet. Accept any token with on-the-fly conversion.';
     $this->title              = 'DePay';

@@ -17,10 +17,6 @@ export default files.map((file)=>{
   return({
     input: file,
     output: [ { format: 'umd', globals: globals, dir: 'dist' } ],
-    external: [
-      ...Object.keys(pkg.dependencies || {}),
-      ...Object.keys(pkg.peerDependencies || {}),
-    ],
     plugins: [
       sucrase({
         exclude: ['node_modules/**'],
@@ -37,7 +33,7 @@ export default files.map((file)=>{
         'process.env.NODE_ENV': JSON.stringify( 'production' ),
         preventAssignment: true
       }),
-      terser()
+      // terser()
     ]
   })
 })

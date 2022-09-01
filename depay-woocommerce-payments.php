@@ -46,6 +46,7 @@ function depay_activated() {
       amount TINYTEXT NOT NULL,
       status TINYTEXT NOT NULL,
       failed_reason TINYTEXT NOT NULL,
+      confirmations_required BIGINT UNSIGNED NOT NULL DEFAULT 0,
       confirmed_by TINYTEXT NOT NULL,
       confirmed_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
       created_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
