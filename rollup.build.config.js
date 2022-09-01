@@ -33,7 +33,7 @@ export default files.map((file)=>{
         'process.env.NODE_ENV': JSON.stringify( 'production' ),
         preventAssignment: true
       }),
-      // terser()
+      terser()
     ]
   })
 })
