@@ -94,5 +94,8 @@ Building on the idea that "Web3" is the next generation of a blockchain-based an
 
 == Changelog ==
 
+= 1.0.1 =
+* Security patches: Safe SQL
+
 = 1.0.0 =
 * First Version
