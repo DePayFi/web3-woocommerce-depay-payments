@@ -16,11 +16,6 @@ yarn update:version
 
 ### Release
 
-In order to release this plugin simply push a git tag:
-
 ```
-PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | sed 's/^ *//g')
-echo v$PACKAGE_VERSION
-git tag v$PACKAGE_VERSION
-git push origin v$PACKAGE_VERSION
+yarn release
 ```
