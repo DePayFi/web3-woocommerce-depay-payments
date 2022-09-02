@@ -17,6 +17,15 @@ window.addEventListener( 'hashchange', async()=> {
             .done((result)=>resolve({ status: 200 }))
             .fail((request, status)=>reject(status))
           })
+        },
+        poll: {
+          method: ()=>{
+            return fetch('/index.php?rest_route=/depay/wc/release', {
+              method: 'POST',
+              body: JSON.stringify({ checkout_id: checkoutId }),
+              headers: { "Content-Type": "application/json" }
+            })
+          }
         }
       }
     })

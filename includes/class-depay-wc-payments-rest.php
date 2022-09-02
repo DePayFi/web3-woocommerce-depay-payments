@@ -12,6 +12,7 @@ class DePay_WC_Payments_Rest {
     register_rest_route( 'depay/wc', '/checkouts/(?P<id>\d+)', [ 'methods' => 'GET', 'callback' => [ $this, 'get_checkout_accept' ] ]);
     register_rest_route( 'depay/wc', '/checkouts/(?P<id>\d+)/track', [ 'methods' => 'POST', 'callback' => [ $this, 'track_payment' ] ]);
     register_rest_route( 'depay/wc', '/validate', [ 'methods' => 'POST', 'callback' => [ $this, 'validate_payment' ] ]);
+    register_rest_route( 'depay/wc', '/release', [ 'methods' => 'POST', 'callback' => [ $this, 'check_release' ] ]);
     register_rest_route( 'depay/wc', '/transactions', [ 'methods' => 'GET', 'callback' => [ $this, 'fetch_transactions' ], 'permission_callback' => array( $this, 'get_transactions_permission' ) ]);
   }
 
@@ -135,6 +136,52 @@ class DePay_WC_Payments_Rest {
     }
     
     return $response;
+  }
+
+  public function check_release($request) {
+    global $wpdb;
+
+    $checkout_id = $request->get_param('checkout_id');
+    $existing_transaction_status = $wpdb->get_var(
+      $wpdb->prepare(
+        "SELECT status FROM wp_wc_depay_transactions WHERE checkout_id = %d ORDER BY id DESC LIMIT 1",
+        $checkout_id
+      )
+    );
+
+    if(empty($existing_transaction_status) || $existing_transaction_status == 'VALIDATING') {
+      $response = new WP_REST_Response();
+      $response->set_status(404);
+      return $response;
+    }
+
+    $order_id = $wpdb->get_var(
+      $wpdb->prepare(
+        "SELECT order_id FROM wp_wc_depay_transactions WHERE checkout_id = %d ORDER BY id DESC LIMIT 1",
+        $checkout_id
+      )
+    );
+    $order = wc_get_order($order_id);
+
+    if($existing_transaction_status == 'SUCCESS') {
+      $response = rest_ensure_response([
+        "forward_to" => $order->get_checkout_order_received_url()
+      ]);
+      $response->set_status(200);
+      return $response;
+    } else {
+      $failed_reason = $wpdb->get_var(
+        $wpdb->prepare(
+          "SELECT failed_reason FROM wp_wc_depay_transactions WHERE checkout_id = %d ORDER BY id DESC LIMIT 1",
+          $checkout_id
+        )
+      );
+      $response = rest_ensure_response([
+        "failed_reason" => $failed_reason
+      ]);
+      $response->set_status(409);
+      return $response;
+    }
   }
 
   public function validate_payment($request) {
