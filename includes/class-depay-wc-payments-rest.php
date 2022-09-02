@@ -18,15 +18,30 @@ class DePay_WC_Payments_Rest {
   public function get_checkout_accept($request) {
     global $wpdb;
     $id = $request->get_param('id');
-    $accept = $wpdb->get_var("SELECT accept FROM wp_wc_depay_checkouts WHERE id = $id LIMIT 1");
+    $accept = $wpdb->get_var(
+      $wpdb->prepare(
+        "SELECT accept FROM wp_wc_depay_checkouts WHERE id = %d LIMIT 1",
+        $id
+      )
+    );
     return rest_ensure_response($accept);
   }
 
   public function track_payment($request) {
     global $wpdb;
     $id = $request->get_param('id');
-    $accept = $wpdb->get_var("SELECT accept FROM wp_wc_depay_checkouts WHERE id = $id LIMIT 1");
-    $order_id = $wpdb->get_var("SELECT order_id FROM wp_wc_depay_checkouts WHERE id = $id LIMIT 1");
+    $accept = $wpdb->get_var(
+      $wpdb->prepare(
+        "SELECT accept FROM wp_wc_depay_checkouts WHERE id = %d LIMIT 1",
+        $id
+      )
+    );
+    $order_id = $wpdb->get_var(
+      $wpdb->prepare(
+        "SELECT order_id FROM wp_wc_depay_checkouts WHERE id = %d LIMIT 1",
+        $id
+      )
+    );
     $order = wc_get_order($order_id);
     $accepted_payment = NULL;
     foreach(json_decode($accept) as $accepted) {
@@ -62,7 +77,13 @@ class DePay_WC_Payments_Rest {
     }
 
     $transaction_id = $request->get_param('transaction');
-    $existing_transaction_id = $wpdb->get_var("SELECT id FROM wp_wc_depay_transactions WHERE transaction_id = '$transaction_id' AND blockchain = '$accepted_payment->blockchain' ORDER BY id DESC LIMIT 1");
+    $existing_transaction_id = $wpdb->get_var(
+      $wpdb->prepare(
+        "SELECT id FROM wp_wc_depay_transactions WHERE transaction_id = %s AND blockchain = %s ORDER BY id DESC LIMIT 1",
+        $transaction_id,
+        $accepted_payment->blockchain
+      )
+    );
 
     if(empty($existing_transaction_id)) {
       $wpdb->insert('wp_wc_depay_transactions', array(
@@ -130,18 +151,48 @@ class DePay_WC_Payments_Rest {
     }
 
     $tracking_uuid = $request->get_param('uuid');
-    $existing_transaction_id = $wpdb->get_var("SELECT id FROM wp_wc_depay_transactions WHERE tracking_uuid = '$tracking_uuid' ORDER BY id DESC LIMIT 1");
+    $existing_transaction_id = $wpdb->get_var(
+      $wpdb->prepare(
+        "SELECT id FROM wp_wc_depay_transactions WHERE tracking_uuid = %s ORDER BY id DESC LIMIT 1",
+        $tracking_uuid
+      )
+    );
 
     if(empty($existing_transaction_id)){
       $response->set_status(404);
       return $response;
     }
 
-    $order_id = $wpdb->get_var("SELECT order_id FROM wp_wc_depay_transactions WHERE tracking_uuid = '$tracking_uuid' ORDER BY id DESC LIMIT 1");
-    $expected_receiver_id = $wpdb->get_var("SELECT receiver_id FROM wp_wc_depay_transactions WHERE tracking_uuid = '$tracking_uuid' ORDER BY id DESC LIMIT 1");
-    $expected_amount = $wpdb->get_var("SELECT amount FROM wp_wc_depay_transactions WHERE tracking_uuid = '$tracking_uuid' ORDER BY id DESC LIMIT 1");
-    $expected_blockchain = $wpdb->get_var("SELECT blockchain FROM wp_wc_depay_transactions WHERE tracking_uuid = '$tracking_uuid' ORDER BY id DESC LIMIT 1");
-    $expected_transaction = $wpdb->get_var("SELECT transaction_id FROM wp_wc_depay_transactions WHERE tracking_uuid = '$tracking_uuid' ORDER BY id DESC LIMIT 1");
+    $order_id = $wpdb->get_var(
+      $wpdb->prepare(
+        "SELECT order_id FROM wp_wc_depay_transactions WHERE tracking_uuid = %s ORDER BY id DESC LIMIT 1",
+        $tracking_uuid
+      )
+    );
+    $expected_receiver_id = $wpdb->get_var(
+      $wpdb->prepare(
+        "SELECT receiver_id FROM wp_wc_depay_transactions WHERE tracking_uuid = %s ORDER BY id DESC LIMIT 1",
+        $tracking_uuid
+      )
+    );
+    $expected_amount = $wpdb->get_var(
+      $wpdb->prepare(
+        "SELECT amount FROM wp_wc_depay_transactions WHERE tracking_uuid = %s ORDER BY id DESC LIMIT 1",
+        $tracking_uuid
+      )
+    );
+    $expected_blockchain = $wpdb->get_var(
+      $wpdb->prepare(
+        "SELECT blockchain FROM wp_wc_depay_transactions WHERE tracking_uuid = %s ORDER BY id DESC LIMIT 1",
+        $tracking_uuid
+      )
+    );
+    $expected_transaction = $wpdb->get_var(
+      $wpdb->prepare(
+        "SELECT transaction_id FROM wp_wc_depay_transactions WHERE tracking_uuid = %s ORDER BY id DESC LIMIT 1",
+        $tracking_uuid
+      )
+    );
     $order = wc_get_order($order_id);
     $status = $request->get_param('status');
     $decimals = $request->get_param('decimals');
@@ -221,7 +272,11 @@ class DePay_WC_Payments_Rest {
       )
     );
 
-    $total = $wpdb->get_var("SELECT COUNT(*) FROM wp_wc_depay_transactions AS total_count");
+    $total = $wpdb->get_var(
+      $wpdb->prepare(
+        "SELECT COUNT(*) FROM wp_wc_depay_transactions AS total_count"
+      )
+    );
 
     return rest_ensure_response([
       "total" => $total,

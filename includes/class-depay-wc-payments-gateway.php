@@ -33,7 +33,12 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
         'accept' => json_encode($accept),
         'created_at' => current_time( 'mysql' )
       ));
-      $checkout_id = $wpdb->get_var("SELECT id FROM wp_wc_depay_checkouts WHERE order_id = $order_id ORDER BY id DESC LIMIT 1");
+      $checkout_id = $wpdb->get_var(
+        $wpdb->prepare(
+          "SELECT id FROM wp_wc_depay_checkouts WHERE order_id = %d ORDER BY id DESC LIMIT 1",
+          $order_id
+        )
+      );
 
       return([
         'result'         => 'success',
