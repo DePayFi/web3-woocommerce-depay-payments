@@ -11,11 +11,11 @@ class DePay_WC_Payments_Admin {
   }
 
   public function scripts_and_styles() {
-    wp_register_script('DEPAY_WC_WIDGETS', plugins_url( 'dist/widgets.bundle.js', DEPAY_WC_PLUGIN_FILE ), array(), '0.0.11', true);
+    wp_register_script('DEPAY_WC_WIDGETS', plugins_url( 'dist/widgets.bundle.js', DEPAY_WC_PLUGIN_FILE ), array(), DEPAY_CURRENT_VERSION, true);
     wp_enqueue_script( 'DEPAY_WC_WIDGETS' );
-    wp_register_style( 'DEPAY_WC_ADMIN', plugins_url( 'assets/css/admin.css', DEPAY_WC_PLUGIN_FILE ), array(), '0.0.11' );
+    wp_register_style( 'DEPAY_WC_ADMIN', plugins_url( 'assets/css/admin.css', DEPAY_WC_PLUGIN_FILE ), array(), DEPAY_CURRENT_VERSION );
     wp_enqueue_style( 'DEPAY_WC_ADMIN' );
-    wp_register_script('DEPAY_WC_ADMIN', plugins_url( 'dist/admin.js', DEPAY_WC_PLUGIN_FILE ), array('react', 'react-dom', 'wp-hooks', 'wp-element', 'wp-components', 'wp-api', 'wc-components', 'wc-navigation'), '0.0.11', true);
+    wp_register_script('DEPAY_WC_ADMIN', plugins_url( 'dist/admin.js', DEPAY_WC_PLUGIN_FILE ), array('react', 'react-dom', 'wp-hooks', 'wp-element', 'wp-components', 'wp-api', 'wc-components', 'wc-navigation'), DEPAY_CURRENT_VERSION, true);
     wp_enqueue_script( 'DEPAY_WC_ADMIN' );
   }
 
