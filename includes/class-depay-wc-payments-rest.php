@@ -1,7 +1,12 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
+use phpseclib3\Crypt\RSA;
+use phpseclib3\Crypt\PublicKeyLoader;
+
 class DePay_WC_Payments_Rest {
+
+  private static $key = "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtqsu0wy94cpz90W4pGsJ\nSf0bfvmsq3su+R1J4AoAYz0XoAu2MXJZM8vrQvG3op7OgB3zze8pj4joaoPU2piT\ndH7kcF4Mde6QG4qKEL3VE+J8CL3qK2dUY0Umu20x/O9O792tlv8+Q/qAVv8yPfdM\nn5Je9Wc7VI5XeIBKP2AzsCkrXuzQlR48Ac5LpViNSSLu0mz5NTBoHkW2sz1sNWc6\nUpYISJkiKTvYc8Bo4p5xD6+ZmlL4hj1Ad/+26SjYcisX2Ut4QD7YKRBP2SbItVkI\nqp9mp6c6MCKNmEUkosxAr0KVfOcrk6/fcc4tI8g+KYZ32G11Ri8Xo4fgHH06DLYP\n3QIDAQAB\n-----END PUBLIC KEY-----\n";
 
   public function register_routes() {
     register_rest_route( 'depay/wc', '/checkouts/(?P<id>\d+)', [ 'methods' => 'GET', 'callback' => [ $this, 'get_checkout_accept' ] ]);
@@ -113,13 +118,23 @@ class DePay_WC_Payments_Rest {
 
   public function validate_payment($request) {
     global $wpdb;
+    $response = new WP_REST_Response();
+
+    $signature = $request->get_header('x-signature');
+    $signature = str_replace("_","/",  $signature);
+    $signature = str_replace("-", "+",  $signature);
+    $key = PublicKeyLoader::load(self::$key)->withHash('sha256')->withPadding(RSA::SIGNATURE_PSS)->withMGFHash('sha256')->withSaltLength(64);
+    if(!$key->verify($request->get_body(), base64_decode($signature))){
+      $response->set_status(422);
+      return $response;
+    }
 
     $tracking_uuid = $request->get_param('uuid');
     $existing_transaction_id = $wpdb->get_var("SELECT id FROM wp_wc_depay_transactions WHERE tracking_uuid = '$tracking_uuid' ORDER BY id DESC LIMIT 1");
 
     if(empty($existing_transaction_id)){
       $response->set_status(404);
-      return rest_ensure_response($response);
+      return $response;
     }
 
     $order_id = $wpdb->get_var("SELECT order_id FROM wp_wc_depay_transactions WHERE tracking_uuid = '$tracking_uuid' ORDER BY id DESC LIMIT 1");
@@ -128,7 +143,6 @@ class DePay_WC_Payments_Rest {
     $expected_blockchain = $wpdb->get_var("SELECT blockchain FROM wp_wc_depay_transactions WHERE tracking_uuid = '$tracking_uuid' ORDER BY id DESC LIMIT 1");
     $expected_transaction = $wpdb->get_var("SELECT transaction_id FROM wp_wc_depay_transactions WHERE tracking_uuid = '$tracking_uuid' ORDER BY id DESC LIMIT 1");
     $order = wc_get_order($order_id);
-    $response = new WP_REST_Response();
     $status = $request->get_param('status');
     $decimals = $request->get_param('decimals');
     $amount = $request->get_param('amount');
@@ -172,7 +186,7 @@ class DePay_WC_Payments_Rest {
     }
 
     $response->set_status(200);
-    return rest_ensure_response($response);
+    return $response;
   }
 
   public function get_transactions_permission($request) {

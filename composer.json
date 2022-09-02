@@ -1,0 +1,8 @@
+{
+    "name": "depay/depay-woocommerce-payments",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "phpseclib/phpseclib": "^3.0"
+    }
+}

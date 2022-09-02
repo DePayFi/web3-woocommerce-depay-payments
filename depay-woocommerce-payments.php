@@ -22,6 +22,8 @@ define( 'DEPAY_WC_PLUGIN_FILE', __FILE__ );
 define( 'DEPAY_WC_ABSPATH', __DIR__ . '/' );
 define( 'DEPAY_MIN_WC_ADMIN_VERSION', '0.23.2' );
 
+require_once DEPAY_WC_ABSPATH . '/vendor/autoload.php';
+
 function depay_activated() {
 	if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) { return; }
   require_once ABSPATH . 'wp-admin/includes/upgrade.php';
