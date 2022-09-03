@@ -94,6 +94,9 @@ Building on the idea that "Web3" is the next generation of a blockchain-based an
 
 == Changelog ==
 
+= 1.1.0 =
+* Adds payment validation polling for resilient payment validation release
+
 = 1.0.1 =
 * Security patches: Safe SQL
 
