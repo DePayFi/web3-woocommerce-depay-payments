@@ -94,6 +94,9 @@ Building on the idea that "Web3" is the next generation of a blockchain-based an
 
 == Changelog ==
 
+= 1.2.0 =
+* Allow wc admins to confirm payments manually
+
 = 1.1.1 =
 * Security update: No ' in SQL
 
