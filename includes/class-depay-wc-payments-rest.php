@@ -249,8 +249,9 @@ class DePay_WC_Payments_Rest {
     if($expected_transaction != $transaction) {
       $wpdb->query(
         $wpdb->prepare(
-          "UPDATE wp_wc_depay_transactions SET transaction_id = %s WHERE tracking_uuid = '$tracking_uuid'",
-          $transaction
+          "UPDATE wp_wc_depay_transactions SET transaction_id = %s WHERE tracking_uuid = %s",
+          $transaction,
+          $tracking_uuid
         )
       );
     }
@@ -263,10 +264,11 @@ class DePay_WC_Payments_Rest {
     ) {
       $wpdb->query(
         $wpdb->prepare(
-          "UPDATE wp_wc_depay_transactions SET status = %s, confirmed_at = %s, confirmed_by = %s, failed_reason = NULL WHERE tracking_uuid = '$tracking_uuid'",
+          "UPDATE wp_wc_depay_transactions SET status = %s, confirmed_at = %s, confirmed_by = %s, failed_reason = NULL WHERE tracking_uuid = %s",
           'SUCCESS',
           current_time( 'mysql' ),
-          'API'
+          'API',
+          $tracking_uuid
         )
       );
       $order->payment_complete();
@@ -275,10 +277,11 @@ class DePay_WC_Payments_Rest {
       if(empty($failed_reason)){ $failed_reason = "MISMATCH"; }
       $wpdb->query(
         $wpdb->prepare(
-          "UPDATE wp_wc_depay_transactions SET failed_reason = %s, status = %s, confirmed_by = %s WHERE tracking_uuid = '$tracking_uuid'",
+          "UPDATE wp_wc_depay_transactions SET failed_reason = %s, status = %s, confirmed_by = %s WHERE tracking_uuid = %s",
           $failed_reason,
           'FAILED',
-          'API'
+          'API',
+          $tracking_uuid
         )
       );
     }
