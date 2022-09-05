@@ -13,7 +13,8 @@ class DePay_WC_Payments_Rest {
     register_rest_route( 'depay/wc', '/checkouts/(?P<id>\d+)/track', [ 'methods' => 'POST', 'callback' => [ $this, 'track_payment' ] ]);
     register_rest_route( 'depay/wc', '/validate', [ 'methods' => 'POST', 'callback' => [ $this, 'validate_payment' ] ]);
     register_rest_route( 'depay/wc', '/release', [ 'methods' => 'POST', 'callback' => [ $this, 'check_release' ] ]);
-    register_rest_route( 'depay/wc', '/transactions', [ 'methods' => 'GET', 'callback' => [ $this, 'fetch_transactions' ], 'permission_callback' => array( $this, 'get_transactions_permission' ) ]);
+    register_rest_route( 'depay/wc', '/transactions', [ 'methods' => 'GET', 'callback' => [ $this, 'fetch_transactions' ], 'permission_callback' => array( $this, 'must_be_wc_admin' ) ]);
+    register_rest_route( 'depay/wc', '/confirm', [ 'methods' => 'POST', 'callback' => [ $this, 'confirm_payment' ], 'permission_callback' => array( $this, 'must_be_wc_admin' ) ]);
   }
 
   public function get_checkout_accept($request) {
@@ -290,7 +291,7 @@ class DePay_WC_Payments_Rest {
     return $response;
   }
 
-  public function get_transactions_permission($request) {
+  public function must_be_wc_admin($request) {
 
     if ( !current_user_can( 'manage_woocommerce' ) ) {
       return new WP_Error( 'depay_woocommerce_not_a_wc_admin', "Not a WooCommerce admin!", array( 'status' => 403 ) );
@@ -332,5 +333,47 @@ class DePay_WC_Payments_Rest {
       "total" => $total,
       "transactions" => $transactions
     ]);
+  }
+
+  public function confirm_payment($request) {
+    global $wpdb;
+    $id = $request->get_param('id');
+    $order_id = $wpdb->get_var(
+      $wpdb->prepare(
+        "SELECT order_id FROM wp_wc_depay_transactions WHERE id = %d LIMIT 1",
+        $id
+      )
+    );
+    if(empty($order_id)) {
+      $response = new WP_REST_Response();
+      $response->set_status(404);
+      return $response;
+    }
+    $status = $wpdb->get_var(
+      $wpdb->prepare(
+        "SELECT status FROM wp_wc_depay_transactions WHERE id = %d LIMIT 1",
+        $id
+      )
+    );
+    if($status == 'SUCCESS') {
+      $response = new WP_REST_Response();
+      $response->set_status(422);
+      return $response;
+    }
+    $wpdb->query(
+      $wpdb->prepare(
+        "UPDATE wp_wc_depay_transactions SET status = %s, confirmed_at = %s, confirmed_by = %s, failed_reason = NULL WHERE id = %d",
+        'SUCCESS',
+        current_time( 'mysql' ),
+        'MANUALLY',
+        $id
+      )
+    );
+    $order = wc_get_order($order_id);
+    $order->payment_complete();    
+
+    $response = new WP_REST_Response();
+    $response->set_status(200);
+    return $response;
   }
 }

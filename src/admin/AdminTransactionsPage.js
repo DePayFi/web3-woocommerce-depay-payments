@@ -2,7 +2,8 @@ import { Blockchain } from "@depay/web3-blockchains"
 
 const { useState, useEffect, useRef } = window.React
 const { Fragment } = window.wp.element
-const { Search, TableCard } = window.wc.components
+const { Dropdown } = window.wp.components
+const { Button, TableCard } = window.wc.components
 const { onQueryChange } = window.wc.navigation
 const getCurrentPage = ()=>{
   return window.location.search.match(/paged=(\d+)/) ? window.location.search.match(/paged=(\d+)/)[1] : 1
@@ -104,6 +105,11 @@ export default function(props) {
       key: 'confirmations_required',
       required: true,
       isSortable: true,
+    },{
+      label: '',
+      key: 'menu',
+      required: true,
+      isSortable: false,
     },
   ])
 
@@ -156,6 +162,35 @@ export default function(props) {
       { display: transaction.confirmed_by, value: transaction.confirmed_by },
       { display: (new Date(transaction.confirmed_at)).toLocaleString(), value: (new Date(transaction.confirmed_at)).toLocaleString() },
       { display: transaction.confirmations_required, value: transaction.confirmations_required },
+      { display: <Dropdown
+          renderToggle={({isOpen, onToggle})=>{
+            if(transaction.status == 'SUCCESS') { return null }
+            return(
+              <button onClick={ onToggle } type="button" title="Choose which charts to display" aria-expanded="false" className="components-button woocommerce-ellipsis-menu__toggle">
+                <svg className="gridicon gridicons-ellipsis" height="24" width="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g><path d="M7 12a2 2 0 11-4.001-.001A2 2 0 017 12zm12-2a2 2 0 10.001 4.001A2 2 0 0019 10zm-7 0a2 2 0 10.001 4.001A2 2 0 0012 10z"></path></g></svg>
+              </button>
+            )
+          }}
+          renderContent={ () => (
+            <div role="menu" aria-orientation="vertical" className="woocommerce-ellipsis-menu__content">
+              <button 
+                onClick={()=>{
+                  if(confirm("This transaction will be marked as succeeded and the order will be marked as paid!")) {
+                    wp.apiRequest({
+                      path: "/depay/wc/confirm",
+                      method: 'POST',
+                      data: { id: transaction.id }
+                    }).always(()=>window.location.reload(true))
+                  }
+                }}
+                type="button" role="menuitem" tabindex="0" className="woocommerce-ellipsis-menu__item" style={{ minWidth: "200px" }}
+              >
+                <svg style={{ height: "16px", width: "16px", position: "relative", top: "2px" }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M470.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L192 338.7 425.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                <span style={{ display: "inline-block", padding: "6px" }}>Confirm Manually</span>
+              </button>
+            </div>
+          ) }
+        />, value: null },
     ]))
   }
 
