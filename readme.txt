@@ -94,6 +94,9 @@ Building on the idea that "Web3" is the next generation of a blockchain-based an
 
 == Changelog ==
 
+= 1.2.1 =
+* Fixed onboarding task list for payments (ensure DePay setup)
+
 = 1.2.0 =
 * Allow wc admins to confirm payments manually
 
