@@ -67,6 +67,8 @@ class DePay_WC_Payments {
    		empty(get_option('depay_wc_tokens'))
     ) {
     	add_filter( 'woocommerce_get_registered_extended_tasks', [ 'DePay_WC_Payments', 'add_extended_task' ], 10, 1 );
+		} else {
+			remove_filter( 'woocommerce_get_registered_extended_tasks', [ 'DePay_WC_Payments', 'add_extended_task' ], 10, 1 );
 		}
 	}
 
