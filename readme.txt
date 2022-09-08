@@ -94,6 +94,9 @@ Building on the idea that "Web3" is the next generation of a blockchain-based an
 
 == Changelog ==
 
+= 1.2.2 =
+* Fixes admin table for transactions
+
 = 1.2.1 =
 * Fixed onboarding task list for payments (ensure DePay setup)
 
