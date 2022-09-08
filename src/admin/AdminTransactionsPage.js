@@ -101,11 +101,6 @@ export default function(props) {
       isSortable: true,
     },
     {
-      label: 'Confirmations required',
-      key: 'confirmations_required',
-      required: true,
-      isSortable: true,
-    },{
       label: '',
       key: 'menu',
       required: true,
@@ -161,7 +156,6 @@ export default function(props) {
       { display: <a target="blank" rel="noopener noreferrer" href={Blockchain.findByName(transaction.blockchain).explorerUrlFor({token: transaction.token_id})}>{transaction.token_id}</a>, value: transaction.token_id },
       { display: transaction.confirmed_by, value: transaction.confirmed_by },
       { display: (new Date(transaction.confirmed_at)).toLocaleString(), value: (new Date(transaction.confirmed_at)).toLocaleString() },
-      { display: transaction.confirmations_required, value: transaction.confirmations_required },
       { display: <Dropdown
           renderToggle={({isOpen, onToggle})=>{
             if(transaction.status == 'SUCCESS') { return null }
