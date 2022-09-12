@@ -30,7 +30,7 @@
   "private": false,
   "dependencies": {
     "@depay/web3-blockchains": "^6.1.0",
-    "@depay/widgets": "^7.16.1"
+    "@depay/widgets": "^7.16.2"
   },
   "engines": {
     "node": ">=16"

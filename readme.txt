@@ -18,7 +18,7 @@ A WooCommerce plugin for P2P cryptocurrency payments on multiple blockchains.
 [youtube https://www.youtube.com/watch?v=bc1sPOnlGyk]
 
 = Features =
-> 📌 Check out the [live demo](https://web3wordpress.xyz "WooCommerce Plugin for Crypto Web3 Payments (live demo) by DePay").
+> 📌 Check out the [live demo](https://web3woocommerce.xyz "WooCommerce Plugin for Crypto Web3 Payments (live demo) by DePay").
 
 * **Wallet-to-wallet**: Middleman-free P2P payments.
 * **Multichain**: Your customers can perform payments on various blockchains.
