@@ -46,7 +46,9 @@ class DePay_WC_Payments {
 
 	public static function setup_admin() {
 
-		if ( !is_admin() || !current_user_can( 'manage_woocommerce' ) ) { return; }
+		if ( !is_admin() || !current_user_can( 'manage_woocommerce' ) ) {
+			return;
+		}
 		new DePay_WC_Payments_Admin( self::$settings );
 	}
 
@@ -60,7 +62,7 @@ class DePay_WC_Payments {
 		}
 	}
 
-	public static function add_gateway($gateways) {
+	public static function add_gateway( $gateways ) {
 
 		$gateways[] = 'DePay_WC_Payments_Gateway';
 		return $gateways;
@@ -79,7 +81,7 @@ class DePay_WC_Payments {
 		}
 	}
 
-	public static function add_extended_task($registered_tasks_list_items) {
+	public static function add_extended_task( $registered_tasks_list_items ) {
 
 		$new_task_name = 'setup_depay_wc_payments';
 		if ( ! in_array( $new_task_name, $registered_tasks_list_items, true ) ) {
