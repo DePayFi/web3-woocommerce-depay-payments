@@ -51,11 +51,11 @@ class DePay_WC_Payments_Rest {
 		);
 		$order = wc_get_order( $order_id );
 		$accepted_payment = null;
-		foreach( json_decode( $accept ) as $accepted ) {
-			if(
+		foreach ( json_decode( $accept ) as $accepted ) {
+			if (
 				$accepted->blockchain == $request->get_param( 'blockchain' ) &&
 				$accepted->token == $request->get_param( 'to_token' )
-			){
+			) {
 				$accepted_payment = $accepted;
 			}
 		}
@@ -77,7 +77,7 @@ class DePay_WC_Payments_Rest {
 			$total_in_usd = bcdiv( $total, $rate, 3 );
 		}
 		
-		if($total_in_usd < 1000) {
+		if ( $total_in_usd < 1000 ) {
 			$required_confirmations = 1;
 		} else {
 			$required_confirmations = 12;
@@ -109,7 +109,7 @@ class DePay_WC_Payments_Rest {
 			) );
 		}
 
-		$post = wp_remote_post( "https://public.depay.com/payments",
+		$post = wp_remote_post( 'https://public.depay.com/payments',
 			array(
 				'headers' => array( 'Content-Type' => 'application/json; charset=utf-8' ),
 				'body' => json_encode([
@@ -134,8 +134,8 @@ class DePay_WC_Payments_Rest {
 			)
 		);
 
-		$response = rest_ensure_response( "{}" );
-		if ( !is_wp_error( $post ) && (wp_remote_retrieve_response_code( $post ) == 200 || wp_remote_retrieve_response_code( $post ) == 201) ) {
+		$response = rest_ensure_response( '{}' );
+		if ( !is_wp_error( $post ) && ( wp_remote_retrieve_response_code( $post ) == 200 || wp_remote_retrieve_response_code( $post ) == 201 ) ) {
 			$response->set_status( 200 );
 		} else {
 			$response->set_status( 500 );
@@ -156,7 +156,7 @@ class DePay_WC_Payments_Rest {
 			)
 		);
 
-		if( empty( $existing_transaction_status ) || 'VALIDATING' == $existing_transaction_status ) {
+		if ( empty( $existing_transaction_status ) || 'VALIDATING' == $existing_transaction_status ) {
 			$response = new WP_REST_Response();
 			$response->set_status( 404 );
 			return $response;
@@ -170,7 +170,7 @@ class DePay_WC_Payments_Rest {
 		);
 		$order = wc_get_order( $order_id );
 
-		if( 'SUCCESS' == $existing_transaction_status ) {
+		if ( 'SUCCESS' == $existing_transaction_status ) {
 			$response = rest_ensure_response( [
 				'forward_to' => $order->get_checkout_order_received_url()
 			] );
@@ -196,10 +196,10 @@ class DePay_WC_Payments_Rest {
 		$response = new WP_REST_Response();
 
 		$signature = $request->get_header( 'x-signature' );
-		$signature = str_replace( '_','/',  $signature );
-		$signature = str_replace( '-', '+',  $signature );
+		$signature = str_replace( '_', '/', $signature );
+		$signature = str_replace( '-', '+', $signature );
 		$key = PublicKeyLoader::load( self::$key )->withHash( 'sha256' )->withPadding( RSA::SIGNATURE_PSS )->withMGFHash( 'sha256' )->withSaltLength( 64 );
-		if(!$key->verify($request->get_body(), base64_decode($signature))){
+		if ( !$key->verify( $request->get_body(), base64_decode( $signature ) ) ) {
 			$response->set_status( 422 );
 			return $response;
 		}
@@ -212,7 +212,7 @@ class DePay_WC_Payments_Rest {
 			)
 		);
 
-		if( empty( $existing_transaction_id ) ){
+		if ( empty( $existing_transaction_id ) ) {
 			$response->set_status( 404 );
 			return $response;
 		}
@@ -281,7 +281,9 @@ class DePay_WC_Payments_Rest {
 			$order->payment_complete();
 		} else {
 			$failed_reason = $request->get_param( 'failed_reason' );
-			if( empty( $failed_reason ) ){ $failed_reason = "MISMATCH"; }
+			if ( empty( $failed_reason ) ) {
+				$failed_reason = "MISMATCH";
+			}
 			$wpdb->query(
 				$wpdb->prepare(
 					'UPDATE wp_wc_depay_transactions SET failed_reason = %s, status = %s, confirmed_by = %s WHERE tracking_uuid = %s',
@@ -297,10 +299,10 @@ class DePay_WC_Payments_Rest {
 		return $response;
 	}
 
-	public function must_be_wc_admin($request) {
+	public function must_be_wc_admin( $request ) {
 
 		if ( !current_user_can( 'manage_woocommerce' ) ) {
-			return new WP_Error( 'depay_woocommerce_not_a_wc_admin', "Not a WooCommerce admin!", array( 'status' => 403 ) );
+			return new WP_Error( 'depay_woocommerce_not_a_wc_admin', 'Not a WooCommerce admin!', array( 'status' => 403 ) );
 		}
 
 		return true;
@@ -371,7 +373,7 @@ class DePay_WC_Payments_Rest {
 				$id
 			)
 		);
-		if( $status == 'SUCCESS' ) {
+		if ( 'SUCCESS' == $status ) {
 			$response = new WP_REST_Response();
 			$response->set_status( 422 );
 			return $response;
