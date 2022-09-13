@@ -20,7 +20,7 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 		}
 		$blockchains = json_decode( get_option( 'depay_wc_blockchains' ) );
 		foreach ( array_reverse( $blockchains ) as $blockchain ) {
-			$icon = $icon . "<img style='width: 28px; height: 28px;' src='" . plugin_dir_url( __FILE__ ) . "images/blockchains/" . $blockchain . ".svg'/>";
+			$icon = $icon . "<img style='width: 28px; height: 28px;' src='" . plugin_dir_url( __FILE__ ) . 'images/blockchains/' . $blockchain . ".svg'/>";
 		}
 		return $icon;    
 	}
@@ -44,10 +44,10 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 				)
 			);
 
-			return([
+			return( [
 				'result'         => 'success',
 				'redirect'       => '#wc-depay-checkout-' . $checkout_id . '-' . time()
-			]);
+			] );
 		} else {
 			$order->payment_complete();
 		}
@@ -56,7 +56,7 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 	public function get_accept( $order ) {
 		$total = $order->get_total();
 		$currency = $order->get_currency();
-		if ( $currency == 'USD' ) {
+		if ( 'USD' == $currency ) {
 			$total_in_usd = $total;
 		} else {
 			$get = wp_remote_get( sprintf( 'https://public.depay.com/currencies/%s', $currency ));
@@ -79,12 +79,14 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 			}
 		} 
 		
-		if ( empty( $accept ) ) { throw new Exception( 'No valid payment route found!' ); }
+		if ( empty( $accept ) ) {
+			throw new Exception( 'No valid payment route found!' );
+		}
 
 		return $accept;
 	}
 
 	public function admin_options() {
-		wp_redirect( "/wp-admin/admin.php?page=wc-admin&path=%2Fdepay%2Fsettings" );
+		wp_redirect( '/wp-admin/admin.php?page=wc-admin&path=%2Fdepay%2Fsettings' );
 	}
 }
