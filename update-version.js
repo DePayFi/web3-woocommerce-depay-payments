@@ -13,6 +13,7 @@ prompt.get(['version'], async (err, result)=> {
   }
   
   await replace({ files: './package.json', from: `"version": "${package.version}",`, to: `"version": "${result.version}",`})
+  await replace({ files: './readme.txt', from: `Stable tag: ${package.version}`, to: `Stable tag: ${result.version}`})
   await replace({ files: './readme.txt', from: `== Changelog ==`, to: `== Changelog ==\n\n= ${result.version} =\n*`})
   await replace({ files: './depay-woocommerce-payments.php', from: `* Version: ${package.version}`, to: `* Version: ${result.version}`})
   await replace({ files: './depay-woocommerce-payments.php', from: `define( 'DEPAY_CURRENT_VERSION', '${package.version}' );`, to: `define( 'DEPAY_CURRENT_VERSION', '${result.version}' );`})
