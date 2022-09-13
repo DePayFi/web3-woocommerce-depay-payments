@@ -109,6 +109,7 @@ class DePay_WC_Payments_Rest {
 			) );
 		}
 
+		// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
 		$fee_receiver = '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb';
 
 		$post = wp_remote_post( 'https://public.depay.com/payments',
@@ -338,7 +339,7 @@ class DePay_WC_Payments_Rest {
 
 		$orderby_sql = sanitize_sql_orderby( "{$orderby} {$order}" );
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$transactions = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM wp_wc_depay_transactions ORDER BY {$orderby_sql} LIMIT %d OFFSET %d", $limit, $offset ) );
 
 		$total = $wpdb->get_var(
