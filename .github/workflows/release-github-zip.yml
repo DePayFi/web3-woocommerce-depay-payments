@@ -13,11 +13,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - uses: vimtor/action-zip@v1
+      - uses: montudor/action-zip@v1
         with:
-          files: /assets /dist /includes /languages /vendor depay-woocommerce-payments LICENSE README.md readme.txt
-          dest: depay-woocommerce-payments.zip
-          recursive: false
+          args: zip -qq -r depay-woocommerce-payments.zip depay-woocommerce-payments.php LICENSE readme.txt /assets /dist /includes /languages /vendor
       
       - name: Release
         uses: softprops/action-gh-release@v1
