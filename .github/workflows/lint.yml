@@ -3,7 +3,7 @@ name: WooCommerce Linter
 on: push
 
 jobs:
-  release:
+  lint:
     runs-on: ubuntu-latest
     steps:
       
