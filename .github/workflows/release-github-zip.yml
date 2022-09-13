@@ -15,7 +15,7 @@ jobs:
 
       - uses: montudor/action-zip@v1
         with:
-          args: zip -qq -r depay-woocommerce-payments.zip depay-woocommerce-payments.php LICENSE readme.txt /assets /dist /includes /languages /vendor
+          args: zip -qq -r depay-woocommerce-payments.zip depay-woocommerce-payments.php LICENSE readme.txt assets dist includes languages vendor
       
       - name: Release
         uses: softprops/action-gh-release@v1
