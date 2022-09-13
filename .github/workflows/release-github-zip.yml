@@ -13,9 +13,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - uses: papeloto/action-zip@v1
+      - uses: vimtor/action-zip@v1
         with:
-          files: /
+          files: /assets /dist /includes /languages /vendor depay-woocommerce-payments LICENSE README.md readme.txt
           dest: depay-woocommerce-payments.zip
       
       - name: Release
