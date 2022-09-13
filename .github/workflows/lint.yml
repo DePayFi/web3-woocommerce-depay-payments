@@ -22,7 +22,7 @@ jobs:
 
       - name: lint
         run: |
-          php ./lint/vendor/bin/phpcs --standard=./lint/pbs-rules-set.xml --warning-severity=0 --report-source --report-full=phpcs-report.txt --extensions=php,html depay-woocommerce-payments.php includes
+          php ./lint/vendor/bin/phpcs --standard=./lint/pbs-rules-set.xml --report-source --report-full=phpcs-report.txt --extensions=php,html depay-woocommerce-payments.php includes
 
       - uses: actions/upload-artifact@v3
         if: failure()
