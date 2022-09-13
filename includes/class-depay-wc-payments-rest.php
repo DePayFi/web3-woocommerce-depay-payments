@@ -282,7 +282,7 @@ class DePay_WC_Payments_Rest {
 		} else {
 			$failed_reason = $request->get_param( 'failed_reason' );
 			if ( empty( $failed_reason ) ) {
-				$failed_reason = "MISMATCH";
+				$failed_reason = 'MISMATCH';
 			}
 			$wpdb->query(
 				$wpdb->prepare(
