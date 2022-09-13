@@ -127,7 +127,7 @@ class DePay_WC_Payments_Rest {
 					'forward_to' => $order->get_checkout_order_received_url(),
 					'forward_on_failure' => false,
 					'fee_amount' => $fee_amount,
-					'fee_receiver' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb' // phpcs:ignore
+					'fee_receiver' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb' // @codingStandardsIgnoreLine
 				]),
 				'method' => 'POST',
 				'data_format' => 'body'
