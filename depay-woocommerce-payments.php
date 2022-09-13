@@ -27,7 +27,10 @@ require_once DEPAY_WC_ABSPATH . '/vendor/autoload.php';
 
 function depay_activated() {
 
-	if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) { return; }
+	if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) { 
+		return;
+	}
+	
 	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 	dbDelta("
 		CREATE TABLE wp_wc_depay_checkouts (
