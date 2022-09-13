@@ -1,0 +1,31 @@
+name: WooCommerce Linter
+
+on: push
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          tools: composer:v2
+
+      - name: install linter
+        run: |
+          cd lint && composer install && cd ..
+
+      - name: lint
+        run: |
+          php ./lint/vendor/bin/phpcs --standard=./lint/pbs-rules-set.xml --warning-severity=0 --report-source --report-full=phpcs-report.txt --ignore-annotations --extensions=php,html depay-woocommerce-payments.php includes
+
+      - uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: phpcs-report
+          path: ${{ github.workspace }}/phpcs-report.txt

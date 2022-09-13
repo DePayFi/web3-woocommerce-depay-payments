@@ -21,3 +21,6 @@ node_modules/
 *.log
 *.sql
 *.sqlite
+
+phpcs-report.txt
+lint/vendor

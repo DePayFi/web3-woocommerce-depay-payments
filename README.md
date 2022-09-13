@@ -19,3 +19,17 @@ yarn update:version
 ```
 yarn release
 ```
+
+### Lint
+
+Install linter if you have not yet:
+
+```
+cd lint && composer install && cd ..
+```
+
+Then run:
+
+```
+php ./lint/vendor/bin/phpcs --standard=./lint/pbs-rules-set.xml --warning-severity=0 --report-source --report-full=phpcs-report.txt --ignore-annotations --extensions=php,html depay-woocommerce-payments.php includes
+```
