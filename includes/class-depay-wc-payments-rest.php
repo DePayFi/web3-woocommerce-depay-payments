@@ -109,6 +109,7 @@ class DePay_WC_Payments_Rest {
 			) );
 		}
 
+		// phpcs:disable PHPCompatibility
 		$post = wp_remote_post( 'https://public.depay.com/payments',
 			array(
 				'headers' => array( 'Content-Type' => 'application/json; charset=utf-8' ),
@@ -127,14 +128,13 @@ class DePay_WC_Payments_Rest {
 					'forward_to' => $order->get_checkout_order_received_url(),
 					'forward_on_failure' => false,
 					'fee_amount' => $fee_amount,
-					// phpcs:disable
 					'fee_receiver' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb'
-					// phpcs:enable
 				]),
 				'method' => 'POST',
 				'data_format' => 'body'
 			)
 		);
+		// phpcs:enable PHPCompatibility
 
 		$response = rest_ensure_response( '{}' );
 		if ( !is_wp_error( $post ) && ( wp_remote_retrieve_response_code( $post ) == 200 || wp_remote_retrieve_response_code( $post ) == 201 ) ) {
