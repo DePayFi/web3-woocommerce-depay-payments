@@ -336,7 +336,11 @@ class DePay_WC_Payments_Rest {
 
 		$transactions = $wpdb->get_results(
 			$wpdb->prepare(
-				'SELECT * FROM wp_wc_depay_transactions ORDER BY $orderby $order LIMIT $limit OFFSET $offset'
+				'SELECT * FROM wp_wc_depay_transactions ORDER BY %s %s LIMIT %d OFFSET %d',
+				$orderby,
+				$order,
+				$limit,
+				$offset
 			)
 		);
 
