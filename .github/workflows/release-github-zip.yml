@@ -17,6 +17,7 @@ jobs:
         with:
           files: /assets /dist /includes /languages /vendor depay-woocommerce-payments LICENSE README.md readme.txt
           dest: depay-woocommerce-payments.zip
+          recursive: false
       
       - name: Release
         uses: softprops/action-gh-release@v1
