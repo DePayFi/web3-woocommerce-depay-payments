@@ -109,7 +109,6 @@ class DePay_WC_Payments_Rest {
 			) );
 		}
 
-		// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
 		$fee_receiver = '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb';
 
 		$post = wp_remote_post( 'https://public.depay.com/payments',
