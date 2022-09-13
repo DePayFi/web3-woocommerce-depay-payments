@@ -324,19 +324,21 @@ class DePay_WC_Payments_Rest {
 
 		$offset = $limit * ( $page - 1 );
 
-		$orderby = sanitize_text_field( $request->get_param( 'orderby' ) );
+		$orderby = $request->get_param( 'orderby' );
 		if ( empty( $orderby ) ) {
 			$orderby = 'created_at';
 		}
 		
-		$order = sanitize_text_field( $request->get_param( 'order' ) );
+		$order = $request->get_param( 'order' );
 		if ( empty( $orderby ) ) {
 			$order = 'desc';
 		}
 
+		$orderby_sql = sanitize_sql_orderby( "{$orderby} {$order}" );
+
 		$transactions = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM wp_wc_depay_transactions ORDER BY $orderby $order LIMIT %d OFFSET %d",
+				"SELECT * FROM wp_wc_depay_transactions ORDER BY {$orderby_sql} LIMIT %d OFFSET %d",
 				$limit,
 				$offset
 			)
