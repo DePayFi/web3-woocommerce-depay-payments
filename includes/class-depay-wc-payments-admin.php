@@ -3,7 +3,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 class DePay_WC_Payments_Admin {
 
-	public function __construct(DePay_WC_Payments_Settings $settings) {
+	public function __construct( DePay_WC_Payments_Settings $settings ) {
 
 		add_action( 'admin_menu', [ $this, 'add_menu' ] );
 		add_action( 'admin_init', [ $settings, 'register_settings' ] );
