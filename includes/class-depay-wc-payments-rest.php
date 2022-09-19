@@ -129,7 +129,7 @@ class DePay_WC_Payments_Rest {
 					'callback' => get_site_url( null, 'index.php?rest_route=/depay/wc/validate' ),
 					'payload' => [
 						'merchant_name' => get_option( 'blogname' ),
-						'merchant_country' => preg_replace('/\:\w*/', "", get_option( 'woocommerce_default_country' ) )
+						'merchant_country' => preg_replace('/\:\w*/', '', get_option( 'woocommerce_default_country' ) )
 					],
 					'forward_to' => $order->get_checkout_order_received_url(),
 					'forward_on_failure' => false,
