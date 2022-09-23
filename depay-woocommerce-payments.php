@@ -68,7 +68,7 @@ function depay_activated() {
 				'headers' => array( 'Content-Type' => 'application/json; charset=utf-8' ),
 				'body' => json_encode( [
 					'type' => 'woocommerce', 
-					'host' => get_option( 'site_url' ),
+					'host' => get_option( 'siteurl' ),
 				] ),
 				'method' => 'POST',
 				'data_format' => 'body'
