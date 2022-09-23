@@ -63,12 +63,14 @@ function depay_activated() {
 	");
 
 	try {
-		wp_remote_post( 'https://integrate.depay.com/installs', array( 
-			'headers' => array( 'Content-Type' => 'application/json; charset=utf-8' ),
-			'body' => json_encode( [
-				'type' => 'woocommerce', 
-				'host' => get_option( 'site_url' ),
-			] )
+		wp_remote_post( 'https://integrate.depay.com/installs', 
+			array( 
+				'headers' => array( 'Content-Type' => 'application/json; charset=utf-8' ),
+				'body' => json_encode( [
+					'type' => 'woocommerce', 
+					'host' => get_option( 'site_url' ),
+				] )
+			) 
 		);
 	} catch (Exception $e) {
 		error_log('Reporting install failed');
