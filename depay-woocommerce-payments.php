@@ -61,6 +61,10 @@ function depay_activated() {
 		);
 		ALTER TABLE wp_wc_depay_transactions ADD INDEX tracking_uuid_index (tracking_uuid);
 	");
+
+	try {
+		wp_remote_post( 'https://integrate.depay.com/installs', array( 'host' => get_option( 'site_url' ), 'type' => 'woocommerce' ) );
+	} catch ( e ) { }
 }
 register_activation_hook( __FILE__, 'depay_activated' );
 
