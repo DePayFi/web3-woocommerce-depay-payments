@@ -69,7 +69,9 @@ function depay_activated() {
 				'body' => json_encode( [
 					'type' => 'woocommerce', 
 					'host' => get_option( 'site_url' ),
-				] )
+				] ),
+				'method' => 'POST',
+				'data_format' => 'body'
 			) 
 		);
 	} catch (Exception $e) {
