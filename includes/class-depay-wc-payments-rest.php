@@ -53,8 +53,8 @@ class DePay_WC_Payments_Rest {
 		$accepted_payment = null;
 		foreach ( json_decode( $accept ) as $accepted ) {
 			if (
-				$accepted->blockchain == $request->get_param( 'blockchain' ) &&
-				$accepted->token == $request->get_param( 'to_token' )
+				$accepted->blockchain === $request->get_param( 'blockchain' ) &&
+				$accepted->token === $request->get_param( 'to_token' )
 			) {
 				$accepted_payment = $accepted;
 			}
@@ -271,10 +271,10 @@ class DePay_WC_Payments_Rest {
 		}
 
 		if (
-			'success' == $status &&
-			$request->get_param( 'blockchain' ) == $expected_blockchain &&
-			strtolower( $request->get_param('receiver') ) == strtolower( $expected_receiver_id ) &&
-			( bccomp( $expected_amount, $amount, $decimals ) == 0 || bccomp( $expected_amount, $amount, $decimals ) == -0 )
+			'success' === $status &&
+			$request->get_param( 'blockchain' ) === $expected_blockchain &&
+			strtolower( $request->get_param('receiver') ) === strtolower( $expected_receiver_id ) &&
+			( bccomp( $expected_amount, $amount, $decimals ) === 0 || bccomp( $expected_amount, $amount, $decimals ) === -0 )
 		) {
 			$wpdb->query(
 				$wpdb->prepare(
