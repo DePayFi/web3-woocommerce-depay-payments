@@ -335,10 +335,20 @@ class DePay_WC_Payments_Rest {
 		if ( empty( $orderby ) ) {
 			$orderby = 'created_at';
 		}
+		if ( ! in_array( $orderby, [ 'created_at', 'status', 'order_id', 'blockchain', 'transaction_id', 'sender_id', 'receiver_id', 'amount', 'token_id', 'confirmed_by', 'confirmed_at' ], true ) ) {
+			$response = new WP_REST_Response();
+			$response->set_status( 400 );
+			return $response;
+		}
 		
 		$order = $request->get_param( 'order' );
 		if ( empty( $orderby ) ) {
 			$order = 'desc';
+		}
+		if ( ! in_array( $order, [ 'asc', 'desc' ], true ) ) {
+			$response = new WP_REST_Response();
+			$response->set_status( 400 );
+			return $response;
 		}
 
 		$orderby_sql = sanitize_sql_orderby( "{$orderby} {$order}" );
