@@ -20,8 +20,8 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 		}
 		$blockchains = json_decode( get_option( 'depay_wc_blockchains' ) );
 		foreach ( array_reverse( $blockchains ) as $blockchain ) {
-			$url = esc_url( plugin_dir_url( __FILE__ ) . "images/blockchains/" . $blockchain . ".svg" );
-			$icon = $icon . "<img style='width: 28px; height: 28px;' src='" .  $url . "'/>";
+			$url = esc_url( plugin_dir_url( __FILE__ ) . 'images/blockchains/' . $blockchain . '.svg' );
+			$icon = $icon . "<img style='width: 28px; height: 28px;' src='" . $url . "'/>";
 		}
 		return $icon;    
 	}
