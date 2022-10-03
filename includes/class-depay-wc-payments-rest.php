@@ -12,8 +12,8 @@ class DePay_WC_Payments_Rest {
 
 	public function register_routes() {
 
-		register_rest_route( 'depay/wc', '/checkouts/(?P<id>\d+)', [ 'methods' => 'GET', 'callback' => [ $this, 'get_checkout_accept' ] ]);
-		register_rest_route( 'depay/wc', '/checkouts/(?P<id>\d+)/track', [ 'methods' => 'POST', 'callback' => [ $this, 'track_payment' ] ]);
+		register_rest_route( 'depay/wc', '/checkouts/(?P<id>[\w-]+)', [ 'methods' => 'GET', 'callback' => [ $this, 'get_checkout_accept' ] ]);
+		register_rest_route( 'depay/wc', '/checkouts/(?P<id>[\w-]+)/track', [ 'methods' => 'POST', 'callback' => [ $this, 'track_payment' ] ]);
 		register_rest_route( 'depay/wc', '/validate', [ 'methods' => 'POST', 'callback' => [ $this, 'validate_payment' ] ]);
 		register_rest_route( 'depay/wc', '/release', [ 'methods' => 'POST', 'callback' => [ $this, 'check_release' ] ]);
 		register_rest_route( 'depay/wc', '/transactions', [ 'methods' => 'GET', 'callback' => [ $this, 'fetch_transactions' ], 'permission_callback' => array( $this, 'must_be_wc_admin' ) ]);
