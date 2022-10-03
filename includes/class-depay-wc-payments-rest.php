@@ -69,7 +69,7 @@ class DePay_WC_Payments_Rest {
 
 		$total = $order->get_total();
 		$currency = $order->get_currency();
-		if ( 'USD' == $currency ) {
+		if ( 'USD' === $currency ) {
 			$total_in_usd = $total;
 		} else {
 			$get = wp_remote_get( sprintf( 'https://public.depay.com/currencies/%s', $currency ) );
@@ -163,7 +163,7 @@ class DePay_WC_Payments_Rest {
 			)
 		);
 
-		if ( empty( $existing_transaction_status ) || 'VALIDATING' == $existing_transaction_status ) {
+		if ( empty( $existing_transaction_status ) || 'VALIDATING' === $existing_transaction_status ) {
 			$response = new WP_REST_Response();
 			$response->set_status( 404 );
 			return $response;
@@ -177,7 +177,7 @@ class DePay_WC_Payments_Rest {
 		);
 		$order = wc_get_order( $order_id );
 
-		if ( 'SUCCESS' == $existing_transaction_status ) {
+		if ( 'SUCCESS' === $existing_transaction_status ) {
 			$response = rest_ensure_response( [
 				'forward_to' => $order->get_checkout_order_received_url()
 			] );
@@ -379,7 +379,7 @@ class DePay_WC_Payments_Rest {
 				$id
 			)
 		);
-		if ( 'SUCCESS' == $status ) {
+		if ( 'SUCCESS' === $status ) {
 			$response = new WP_REST_Response();
 			$response->set_status( 422 );
 			return $response;
