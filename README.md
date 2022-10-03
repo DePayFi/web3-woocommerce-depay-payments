@@ -1,6 +1,6 @@
-## DePay WooCommerce Payments
+## DePay Payments for WooCommerce
 
-WooCommerce DePay plugin to accept Web3 payments directly into your wallet with on-the-fly conversion.
+Web3 Payments directly into your own wallet. Accept thousands of different tokens with on-the-fly conversion on multiple blockchains.
 
 ### Demo
 

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: DePay Payments for WooCommerce
  * Plugin URI: https://depay.com/plugins/woocommerce
- * Description: Accept Web3 payments directly into your own wallet. P2P cryptocurrency payments on multiple blockchains with on-the-fly token conversion.
+ * Description: Web3 Payments directly into your own wallet. Accept thousands of different tokens with on-the-fly conversion on multiple blockchains.
  * Author: DePay
  * Author URI: https://depay.com
  * Text Domain: depay-payments
