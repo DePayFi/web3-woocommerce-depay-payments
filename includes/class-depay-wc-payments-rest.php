@@ -65,7 +65,7 @@ class DePay_WC_Payments_Rest {
 
 		$fee_amount = bcmul( $accepted_payment->amount, '0.015', $decimals );
 		$amount = bcsub( $accepted_payment->amount, $fee_amount, $decimals );
-		$tracking_uuid = vsprintf( '%s%s-%s-%s-%s-%s%s%s', str_split( bin2hex( random_bytes( 16 ) ), 4) );
+		$tracking_uuid = wp_generate_uuid4();
 
 		$total = $order->get_total();
 		$currency = $order->get_currency();
