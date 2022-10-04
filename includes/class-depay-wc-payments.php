@@ -11,6 +11,10 @@ class DePay_WC_Payments {
 
 		define( 'DEPAY_VERSION_NUMBER', self::get_plugin_headers()['Version'] );
 
+		if ( !class_exists( 'WooCommerce' ) ) {
+			return;
+		}
+
 		include_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-gateway.php';
 		include_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-settings.php';
 		include_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-admin.php';
