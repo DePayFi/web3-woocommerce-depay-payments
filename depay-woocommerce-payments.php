@@ -34,7 +34,7 @@ function depay_activated() {
 	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 	dbDelta("
 		CREATE TABLE wp_wc_depay_checkouts (
-			id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+			id VARCHAR(36) NOT NULL,
 			order_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
 			accept LONGTEXT NOT NULL,
 			created_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -43,7 +43,7 @@ function depay_activated() {
 		CREATE TABLE wp_wc_depay_transactions (
 			id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
 			order_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
-			checkout_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
+			checkout_id VARCHAR(36) NOT NULL,
 			tracking_uuid TINYTEXT NOT NULL,
 			blockchain TINYTEXT NOT NULL,
 			transaction_id TINYTEXT NOT NULL,
