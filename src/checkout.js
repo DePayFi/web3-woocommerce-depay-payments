@@ -6,6 +6,20 @@ window.addEventListener( 'hashchange', async()=> {
       accept,
       fee: { amount: '1.5%', receiver: '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb' },
       closed: ()=>{ window.jQuery('form.woocommerce-checkout').removeClass( 'processing' ).unblock() },
+      before: ()=> {
+        let confirmed = true
+        let host = window.location.host
+        if(
+          host.match(/localhost/) ||
+          host.match(/127\.0\.0\.1/) ||
+          host.match(/0\.0\.0\.0/) ||
+          host.match(/0:0:0:0:0:0:0:1/) ||
+          host.match(/::1/)
+        ) {
+          confirmed = window.confirm("Payments performed in local development can not be validated automatically and need to be confirmed manually in the Wordpress admin: DePay -> Transactions");
+        }
+        return(confirmed)
+      },
       track: {
         method: (payment)=>{
           return new Promise((resolve, reject)=>{
