@@ -12,12 +12,60 @@ class DePay_WC_Payments_Rest {
 
 	public function register_routes() {
 
-		register_rest_route( 'depay/wc', '/checkouts/(?P<id>[\w-]+)', [ 'methods' => 'GET', 'callback' => [ $this, 'get_checkout_accept' ] ]);
-		register_rest_route( 'depay/wc', '/checkouts/(?P<id>[\w-]+)/track', [ 'methods' => 'POST', 'callback' => [ $this, 'track_payment' ] ]);
-		register_rest_route( 'depay/wc', '/validate', [ 'methods' => 'POST', 'callback' => [ $this, 'validate_payment' ] ]);
-		register_rest_route( 'depay/wc', '/release', [ 'methods' => 'POST', 'callback' => [ $this, 'check_release' ] ]);
-		register_rest_route( 'depay/wc', '/transactions', [ 'methods' => 'GET', 'callback' => [ $this, 'fetch_transactions' ], 'permission_callback' => array( $this, 'must_be_wc_admin' ) ]);
-		register_rest_route( 'depay/wc', '/confirm', [ 'methods' => 'POST', 'callback' => [ $this, 'confirm_payment' ], 'permission_callback' => array( $this, 'must_be_wc_admin' ) ]);
+		register_rest_route(
+			'depay/wc',
+			'/checkouts/(?P<id>[\w-]+)', 
+			[
+				'methods' => 'GET',
+				'callback' => [ $this, 'get_checkout_accept' ],
+				'permission_callback' => '__return_true'
+			]
+		);
+		register_rest_route(
+			'depay/wc',
+			'/checkouts/(?P<id>[\w-]+)/track',
+			[
+				'methods' => 'POST',
+				'callback' => [ $this, 'track_payment' ],
+				'permission_callback' => '__return_true'
+			]
+		);
+		register_rest_route(
+			'depay/wc', 
+			'/validate',
+			[
+				'methods' => 'POST',
+				'callback' => [ $this, 'validate_payment' ],
+				'permission_callback' => '__return_true'
+			]
+		);
+		register_rest_route(
+			'depay/wc',
+			'/release',
+			[
+				'methods' => 'POST',
+				'callback' => [ $this, 'check_release' ],
+				'permission_callback' => '__return_true'
+			]
+		);
+		register_rest_route(
+			'depay/wc',
+			'/transactions',
+			[
+				'methods' => 'GET',
+				'callback' => [ $this, 'fetch_transactions' ],
+				'permission_callback' => array( $this, 'must_be_wc_admin' ) 
+			]
+		);
+		register_rest_route(
+			'depay/wc',
+			'/confirm',
+			[
+				'methods' => 'POST',
+				'callback' => [ $this, 'confirm_payment' ],
+				'permission_callback' => array( $this, 'must_be_wc_admin' )
+			]
+		);
 	}
 
 	public function get_checkout_accept( $request ) {
@@ -53,8 +101,8 @@ class DePay_WC_Payments_Rest {
 		$accepted_payment = null;
 		foreach ( json_decode( $accept ) as $accepted ) {
 			if (
-				$accepted->blockchain == $request->get_param( 'blockchain' ) &&
-				$accepted->token == $request->get_param( 'to_token' )
+				$accepted->blockchain === $request->get_param( 'blockchain' ) &&
+				$accepted->token === $request->get_param( 'to_token' )
 			) {
 				$accepted_payment = $accepted;
 			}
@@ -69,7 +117,7 @@ class DePay_WC_Payments_Rest {
 
 		$total = $order->get_total();
 		$currency = $order->get_currency();
-		if ( 'USD' == $currency ) {
+		if ( 'USD' === $currency ) {
 			$total_in_usd = $total;
 		} else {
 			$get = wp_remote_get( sprintf( 'https://public.depay.com/currencies/%s', $currency ) );
@@ -163,7 +211,7 @@ class DePay_WC_Payments_Rest {
 			)
 		);
 
-		if ( empty( $existing_transaction_status ) || 'VALIDATING' == $existing_transaction_status ) {
+		if ( empty( $existing_transaction_status ) || 'VALIDATING' === $existing_transaction_status ) {
 			$response = new WP_REST_Response();
 			$response->set_status( 404 );
 			return $response;
@@ -177,7 +225,7 @@ class DePay_WC_Payments_Rest {
 		);
 		$order = wc_get_order( $order_id );
 
-		if ( 'SUCCESS' == $existing_transaction_status ) {
+		if ( 'SUCCESS' === $existing_transaction_status ) {
 			$response = rest_ensure_response( [
 				'forward_to' => $order->get_checkout_order_received_url()
 			] );
@@ -271,10 +319,10 @@ class DePay_WC_Payments_Rest {
 		}
 
 		if (
-			'success' == $status &&
-			$request->get_param( 'blockchain' ) == $expected_blockchain &&
-			strtolower( $request->get_param('receiver') ) == strtolower( $expected_receiver_id ) &&
-			( bccomp( $expected_amount, $amount, $decimals ) == 0 || bccomp( $expected_amount, $amount, $decimals ) == -0 )
+			'success' === $status &&
+			$request->get_param( 'blockchain' ) === $expected_blockchain &&
+			strtolower( $request->get_param('receiver') ) === strtolower( $expected_receiver_id ) &&
+			( bccomp( $expected_amount, $amount, $decimals ) === 0 || bccomp( $expected_amount, $amount, $decimals ) === -0 )
 		) {
 			$wpdb->query(
 				$wpdb->prepare(
@@ -335,10 +383,20 @@ class DePay_WC_Payments_Rest {
 		if ( empty( $orderby ) ) {
 			$orderby = 'created_at';
 		}
+		if ( ! in_array( $orderby, [ 'created_at', 'status', 'order_id', 'blockchain', 'transaction_id', 'sender_id', 'receiver_id', 'amount', 'token_id', 'confirmed_by', 'confirmed_at' ], true ) ) {
+			$response = new WP_REST_Response();
+			$response->set_status( 400 );
+			return $response;
+		}
 		
 		$order = $request->get_param( 'order' );
 		if ( empty( $orderby ) ) {
 			$order = 'desc';
+		}
+		if ( ! in_array( $order, [ 'asc', 'desc' ], true ) ) {
+			$response = new WP_REST_Response();
+			$response->set_status( 400 );
+			return $response;
 		}
 
 		$orderby_sql = sanitize_sql_orderby( "{$orderby} {$order}" );
@@ -379,7 +437,7 @@ class DePay_WC_Payments_Rest {
 				$id
 			)
 		);
-		if ( 'SUCCESS' == $status ) {
+		if ( 'SUCCESS' === $status ) {
 			$response = new WP_REST_Response();
 			$response->set_status( 422 );
 			return $response;
