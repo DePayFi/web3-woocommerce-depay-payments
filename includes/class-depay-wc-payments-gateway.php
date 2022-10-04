@@ -43,7 +43,7 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 			
 			return( [
 				'result'         => 'success',
-				'redirect'       => '#wc-depay-checkout-' . $checkout_id . '-' . time()
+				'redirect'       => '#wc-depay-checkout-' . $checkout_id . '@' . time()
 			] );
 		} else {
 			$order->payment_complete();
