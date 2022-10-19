@@ -7,7 +7,7 @@
  * Author URI: https://depay.com
  * Text Domain: depay-payments
  * Domain Path: /languages
- * Woo: 18734001038389:672f64fc510c4260878cf5a12a5acac8
+ * Woo: 18734001038402:8dd46f8ed09797b4672d0ac7941fcb9e
  * WC requires at least: 6.2
  * WC tested up to: 6.8.0
  * Requires at least: 5.8
