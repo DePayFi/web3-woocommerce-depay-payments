@@ -1,4 +1,7 @@
-*** Changelog ***
+*** DePay Web3 Payments for WooCommerce Changelog ***
 
-= 1.5.0 - 2022-10-19 =
-* First release
+2022-10-19 - version 1.5.0
+* Listing on WooCommerce
+
+2022-10-18 - version 1.0.0
+* Initial release
