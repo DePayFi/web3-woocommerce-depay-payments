@@ -1,5 +1,4 @@
-== DePay Web3 Payments for WooCommerce ==
+*** Changelog ***
 
-= 1.5.0 2022-10-19 =
-
+= 1.5.0 - 2022-10-19 =
 * First release
