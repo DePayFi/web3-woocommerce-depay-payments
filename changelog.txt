@@ -1,0 +1,6 @@
+= DePay Web3 Payments for WooCommerce =
+
+== 1.5.0 ==
+*Release Date: October 19th, 2022*
+
+* First release for WooCommerce
