@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2022-11-3 - version 1.5.1
+* fix: allows to disable depay payment gateway in woocommerce
+
 2022-10-19 - version 1.5.0
 * Listing on WooCommerce
 
