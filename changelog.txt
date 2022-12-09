@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2022-12-9 - version 1.5.3
+* fix: use correct data types for uuids
+
 2022-12-9 - version 1.5.2
 * fix: prevent caching for fetching accepted payments during checkout
 

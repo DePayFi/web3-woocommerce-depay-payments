@@ -74,25 +74,26 @@ class DePay_WC_Payments_Rest {
 		$id = $request->get_param( 'id' );
 		$accept = $wpdb->get_var(
 			$wpdb->prepare(
-				'SELECT accept FROM wp_wc_depay_checkouts WHERE id = %d LIMIT 1',
+				'SELECT accept FROM wp_wc_depay_checkouts WHERE id = %s LIMIT 1',
 				$id
 			)
 		);
 		$order_id = $wpdb->get_var(
 			$wpdb->prepare(
-				'SELECT order_id FROM wp_wc_depay_checkouts WHERE id = %d LIMIT 1',
+				'SELECT order_id FROM wp_wc_depay_checkouts WHERE id = %s LIMIT 1',
 				$id
 			)
 		);
 		$checkout_id = $wpdb->get_var(
 			$wpdb->prepare(
-				'SELECT id FROM wp_wc_depay_checkouts WHERE id = %d LIMIT 1',
+				'SELECT id FROM wp_wc_depay_checkouts WHERE id = %s LIMIT 1',
 				$id
 			)
 		);
 		$order = wc_get_order( $order_id );
 		$response = rest_ensure_response( $accept );
 		$response->header( 'X-Checkout', json_encode( [ 
+			'request_id' => $id,
 			'checkout_id' => $checkout_id,
 			'order_id' => $order_id,
 			'total' => $order->get_total(),
@@ -107,13 +108,13 @@ class DePay_WC_Payments_Rest {
 		$id = $request->get_param( 'id' );
 		$accept = $wpdb->get_var(
 			$wpdb->prepare(
-				'SELECT accept FROM wp_wc_depay_checkouts WHERE id = %d LIMIT 1',
+				'SELECT accept FROM wp_wc_depay_checkouts WHERE id = %s LIMIT 1',
 				$id
 			)
 		);
 		$order_id = $wpdb->get_var(
 			$wpdb->prepare(
-				'SELECT order_id FROM wp_wc_depay_checkouts WHERE id = %d LIMIT 1',
+				'SELECT order_id FROM wp_wc_depay_checkouts WHERE id = %s LIMIT 1',
 				$id
 			)
 		);
@@ -226,7 +227,7 @@ class DePay_WC_Payments_Rest {
 		$checkout_id = $request->get_param( 'checkout_id' );
 		$existing_transaction_status = $wpdb->get_var(
 			$wpdb->prepare(
-				'SELECT status FROM wp_wc_depay_transactions WHERE checkout_id = %d ORDER BY id DESC LIMIT 1',
+				'SELECT status FROM wp_wc_depay_transactions WHERE checkout_id = %s ORDER BY id DESC LIMIT 1',
 				$checkout_id
 			)
 		);
@@ -239,7 +240,7 @@ class DePay_WC_Payments_Rest {
 
 		$order_id = $wpdb->get_var(
 			$wpdb->prepare(
-				'SELECT order_id FROM wp_wc_depay_transactions WHERE checkout_id = %d ORDER BY id DESC LIMIT 1',
+				'SELECT order_id FROM wp_wc_depay_transactions WHERE checkout_id = %s ORDER BY id DESC LIMIT 1',
 				$checkout_id
 			)
 		);
@@ -254,7 +255,7 @@ class DePay_WC_Payments_Rest {
 		} else {
 			$failed_reason = $wpdb->get_var(
 				$wpdb->prepare(
-					'SELECT failed_reason FROM wp_wc_depay_transactions WHERE checkout_id = %d ORDER BY id DESC LIMIT 1',
+					'SELECT failed_reason FROM wp_wc_depay_transactions WHERE checkout_id = %s ORDER BY id DESC LIMIT 1',
 					$checkout_id
 				)
 			);
@@ -442,7 +443,7 @@ class DePay_WC_Payments_Rest {
 		$id = $request->get_param( 'id' );
 		$order_id = $wpdb->get_var(
 			$wpdb->prepare(
-				'SELECT order_id FROM wp_wc_depay_transactions WHERE id = %d LIMIT 1',
+				'SELECT order_id FROM wp_wc_depay_transactions WHERE id = %s LIMIT 1',
 				$id
 			)
 		);
@@ -453,7 +454,7 @@ class DePay_WC_Payments_Rest {
 		}
 		$status = $wpdb->get_var(
 			$wpdb->prepare(
-				'SELECT status FROM wp_wc_depay_transactions WHERE id = %d LIMIT 1',
+				'SELECT status FROM wp_wc_depay_transactions WHERE id = %s LIMIT 1',
 				$id
 			)
 		);
@@ -464,7 +465,7 @@ class DePay_WC_Payments_Rest {
 		}
 		$wpdb->query(
 			$wpdb->prepare(
-				'UPDATE wp_wc_depay_transactions SET status = %s, confirmed_at = %s, confirmed_by = %s, failed_reason = NULL WHERE id = %d',
+				'UPDATE wp_wc_depay_transactions SET status = %s, confirmed_at = %s, confirmed_by = %s, failed_reason = NULL WHERE id = %s',
 				'SUCCESS',
 				current_time( 'mysql' ),
 				'MANUALLY',
