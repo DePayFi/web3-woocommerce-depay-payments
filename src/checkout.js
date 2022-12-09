@@ -1,7 +1,10 @@
 window.addEventListener( 'hashchange', async()=> {
   if ( window.location.hash.startsWith( '#wc-depay-checkout-' ) ) {
     let checkoutId = window.location.hash.match(/wc-depay-checkout-(.*?)@/)[1]
-    let accept = JSON.parse(await wp.apiRequest({ path: `/depay/wc/checkouts/${checkoutId}` }))
+    let accept = JSON.parse(await wp.apiRequest({ 
+      path: `/depay/wc/checkouts/${checkoutId}`,
+      method: 'POST'
+    }))
     DePayWidgets.Payment({ 
       accept,
       fee: { amount: '1.5%', receiver: '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb' },

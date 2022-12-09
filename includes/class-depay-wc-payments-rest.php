@@ -16,7 +16,7 @@ class DePay_WC_Payments_Rest {
 			'depay/wc',
 			'/checkouts/(?P<id>[\w-]+)', 
 			[
-				'methods' => 'GET',
+				'methods' => 'POST',
 				'callback' => [ $this, 'get_checkout_accept' ],
 				'permission_callback' => '__return_true'
 			]
@@ -78,7 +78,27 @@ class DePay_WC_Payments_Rest {
 				$id
 			)
 		);
-		return rest_ensure_response( $accept );
+		$order_id = $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT order_id FROM wp_wc_depay_checkouts WHERE id = %d LIMIT 1',
+				$id
+			)
+		);
+		$checkout_id = $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT id FROM wp_wc_depay_checkouts WHERE id = %d LIMIT 1',
+				$id
+			)
+		);
+		$order = wc_get_order( $order_id );
+		$response = rest_ensure_response( $accept );
+		$response->header( 'X-Checkout', json_encode( [ 
+			"checkout_id" => $checkout_id,
+			"order_id" => $order_id,
+			"total" => $order->get_total(),
+			"currency" => $order->get_currency()
+		] ) );
+		return $response;
 	}
 
 	public function track_payment( $request ) {
