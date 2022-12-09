@@ -93,10 +93,10 @@ class DePay_WC_Payments_Rest {
 		$order = wc_get_order( $order_id );
 		$response = rest_ensure_response( $accept );
 		$response->header( 'X-Checkout', json_encode( [ 
-			"checkout_id" => $checkout_id,
-			"order_id" => $order_id,
-			"total" => $order->get_total(),
-			"currency" => $order->get_currency()
+			'checkout_id' => $checkout_id,
+			'order_id' => $order_id,
+			'total' => $order->get_total(),
+			'currency' => $order->get_currency()
 		] ) );
 		return $response;
 	}
