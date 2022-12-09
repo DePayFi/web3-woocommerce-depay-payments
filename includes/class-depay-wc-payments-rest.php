@@ -66,6 +66,15 @@ class DePay_WC_Payments_Rest {
 				'permission_callback' => array( $this, 'must_be_wc_admin' )
 			]
 		);
+		register_rest_route(
+			'depay/wc',
+			'/debug', 
+			[
+				'methods' => 'GET',
+				'callback' => [ $this, 'debug' ],
+				'permission_callback' => '__return_true'
+			]
+		);
 	}
 
 	public function get_checkout_accept( $request ) {
@@ -477,6 +486,21 @@ class DePay_WC_Payments_Rest {
 
 		$response = new WP_REST_Response();
 		$response->set_status( 200 );
+		return $response;
+	}
+
+	public function debug( $request ) {
+
+		$response = rest_ensure_response( [ 
+			'wc' => wc()->version,
+			'wp' => $GLOBALS[ 'wp_version' ],
+			'depay' => DEPAY_CURRENT_VERSION,
+			'currency' => get_option( 'woocommerce_currency' ),
+			'address' => get_option( 'depay_wc_receiving_wallet_address' ),
+			'accept' => get_option( 'depay_wc_accepted_payments' ),
+		] );
+		$response->set_status( 200 );
+
 		return $response;
 	}
 }
