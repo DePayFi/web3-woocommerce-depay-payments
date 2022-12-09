@@ -71,7 +71,7 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 				array_push($accept, [
 					'blockchain' => $accepted_payment->blockchain,
 					'token' => $accepted_payment->token,
-					'amount' => bcmul( $total_in_usd, $rate, $decimals ),
+					'amount' => bcdiv( $total_in_usd, $rate, $decimals ),
 					'receiver' => $accepted_payment->receiver
 				]);      
 			}

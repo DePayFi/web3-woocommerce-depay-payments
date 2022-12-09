@@ -9,10 +9,10 @@
  * Domain Path: /languages
  * Woo: 18734001038402:8dd46f8ed09797b4672d0ac7941fcb9e
  * WC requires at least: 6.2
- * WC tested up to: 6.8.0
+ * WC tested up to: 7.1.1
  * Requires at least: 5.8
  * Requires PHP: 7.0
- * Version: 1.5.3
+ * Version: 1.5.4
  *
  * @package DePay\Payments
  */
@@ -22,7 +22,7 @@ defined( 'ABSPATH' ) || exit;
 define( 'DEPAY_WC_PLUGIN_FILE', __FILE__ );
 define( 'DEPAY_WC_ABSPATH', __DIR__ . '/' );
 define( 'DEPAY_MIN_WC_ADMIN_VERSION', '0.23.2' );
-define( 'DEPAY_CURRENT_VERSION', '1.5.3' );
+define( 'DEPAY_CURRENT_VERSION', '1.5.4' );
 
 require_once DEPAY_WC_ABSPATH . '/vendor/autoload.php';
 
