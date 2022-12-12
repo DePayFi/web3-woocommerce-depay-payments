@@ -117,4 +117,9 @@ class DePay_WC_Payments {
 		$controller = new DePay_WC_Payments_Rest();
 		$controller->register_routes();
 	}
+	
+	public static function log( $text ) {
+		global $wpdb;
+		$wpdb->insert( 'wp_wc_depay_logs', array( 'log' => $text, 'created_at' => current_time( 'mysql' ) ) );
+	}
 }

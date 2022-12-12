@@ -12,7 +12,7 @@
  * WC tested up to: 7.1.1
  * Requires at least: 5.8
  * Requires PHP: 7.0
- * Version: 1.7.0
+ * Version: 1.8.0
  *
  * @package DePay\Payments
  */
@@ -22,7 +22,7 @@ defined( 'ABSPATH' ) || exit;
 define( 'DEPAY_WC_PLUGIN_FILE', __FILE__ );
 define( 'DEPAY_WC_ABSPATH', __DIR__ . '/' );
 define( 'DEPAY_MIN_WC_ADMIN_VERSION', '0.23.2' );
-define( 'DEPAY_CURRENT_VERSION', '1.7.0' );
+define( 'DEPAY_CURRENT_VERSION', '1.8.0' );
 
 require_once DEPAY_WC_ABSPATH . '/vendor/autoload.php';
 
@@ -34,6 +34,12 @@ function depay_activated() {
 	
 	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 	dbDelta("
+		CREATE TABLE wp_wc_depay_logs (
+			id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+			log LONGTEXT NOT NULL,
+			created_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+			PRIMARY KEY (id)
+		);
 		CREATE TABLE wp_wc_depay_checkouts (
 			id VARCHAR(36) NOT NULL,
 			order_id BIGINT UNSIGNED NOT NULL DEFAULT 0,

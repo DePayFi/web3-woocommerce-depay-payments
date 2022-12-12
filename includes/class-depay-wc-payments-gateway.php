@@ -50,22 +50,31 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 			$order->payment_complete();
 		}
 	}
-	
+
 	public function get_accept( $order ) {
 		$total = $order->get_total();
 		$currency = $order->get_currency();
 		if ( 'USD' == $currency ) {
 			$total_in_usd = $total;
 		} else {
-			$get = wp_remote_get( sprintf( 'https://public.depay.com/currencies/%s', $currency ));
+			$get = wp_remote_get( sprintf( 'https://public.depay.com/currencies/%s', $currency ) );
+			if ( is_wp_error($get) ) {
+				DePay_WC_Payments::log( $get->get_error_message() );
+			}
 			$rate = $get['body'];
 			$total_in_usd = bcdiv( $total, $rate, 3 );
 		}
 		$accept = [];
 		foreach ( json_decode( get_option( 'depay_wc_accepted_payments' ) ) as $accepted_payment ) {
 			$get = wp_remote_get( sprintf( 'https://public.depay.com/tokens/prices/%s/%s', $accepted_payment->blockchain, $accepted_payment->token ) );
+			if ( is_wp_error($get) ) {
+				DePay_WC_Payments::log( $get->get_error_message() );
+			}
 			$rate = $get['body'];
 			$get = wp_remote_get( sprintf( 'https://public.depay.com/tokens/decimals/%s/%s', $accepted_payment->blockchain, $accepted_payment->token ) );
+			if ( is_wp_error($get) ) {
+				DePay_WC_Payments::log( $get->get_error_message() );
+			}
 			$decimals = intval( $get['body'] );
 			if ( !empty( $rate ) && !empty( $decimals ) ) {
 				array_push($accept, [

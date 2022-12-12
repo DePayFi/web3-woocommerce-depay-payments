@@ -223,6 +223,7 @@ class DePay_WC_Payments_Rest {
 		if ( !is_wp_error( $post ) && ( wp_remote_retrieve_response_code( $post ) == 200 || wp_remote_retrieve_response_code( $post ) == 201 ) ) {
 			$response->set_status( 200 );
 		} else {
+			DePay_WC_Payments::log( $post->get_error_message() );
 			$response->set_status( 500 );
 		}
 		
@@ -490,6 +491,8 @@ class DePay_WC_Payments_Rest {
 	}
 
 	public function debug( $request ) {
+		global $wpdb;
+
 		$post_response = wp_remote_post( 'https://public.depay.com', array(
 			'headers' => array( 'Content-Type' => 'application/json; charset=utf-8' ),
 			'body' => json_encode( [] ),
@@ -501,6 +504,7 @@ class DePay_WC_Payments_Rest {
 		$get_response = wp_remote_get( 'https://public.depay.com' );
 		$get_response_code = $get_response['response']['code'];
 		$get_response_successful = ! is_wp_error( $get_response_code ) && $get_response_code >= 200 && $get_response_code < 300;
+		$last_logs = $wpdb->get_results( 'SELECT * FROM wp_wc_depay_logs ORDER BY created_at DESC LIMIT 10' );
 
 		$response = rest_ensure_response( [ 
 			'wc' => wc()->version,
@@ -512,6 +516,7 @@ class DePay_WC_Payments_Rest {
 			'currency' => get_option( 'woocommerce_currency' ),
 			'address' => get_option( 'depay_wc_receiving_wallet_address' ),
 			'accept' => get_option( 'depay_wc_accepted_payments' ),
+			'logs' => $last_logs
 		] );
 		$response->set_status( 200 );
 

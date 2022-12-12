@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2022-12-12 - version 1.8.0
+* adds logs
+
 2022-12-12 - version 1.7.0
 * add CURL, POST and GET status to debug
 
