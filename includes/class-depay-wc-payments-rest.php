@@ -490,11 +490,25 @@ class DePay_WC_Payments_Rest {
 	}
 
 	public function debug( $request ) {
+		$post_response = wp_remote_post( 'https://public.depay.com', array(
+			'headers' => array( 'Content-Type' => 'application/json; charset=utf-8' ),
+			'body' => json_encode( [] ),
+			'method' => 'POST',
+			'data_format' => 'body'
+		) );
+		$post_response_code = $post_response['response']['code'];
+		$post_response_successful = ! is_wp_error( $post_response_code ) && $post_response_code >= 200 && $post_response_code < 300;
+		$get_response = wp_remote_get( 'https://public.depay.com' );
+		$get_response_code = $get_response['response']['code'];
+		$get_response_successful = ! is_wp_error( $get_response_code ) && $get_response_code >= 200 && $get_response_code < 300;
 
 		$response = rest_ensure_response( [ 
 			'wc' => wc()->version,
 			'wp' => $GLOBALS[ 'wp_version' ],
 			'depay' => DEPAY_CURRENT_VERSION,
+			'curl' => ( function_exists( 'fsockopen' ) || function_exists( 'curl_init' ) ),
+			'GET' => $get_response_successful,
+			'POST' => $post_response_successful,
 			'currency' => get_option( 'woocommerce_currency' ),
 			'address' => get_option( 'depay_wc_receiving_wallet_address' ),
 			'accept' => get_option( 'depay_wc_accepted_payments' ),
