@@ -21,7 +21,8 @@ window.addEventListener( 'hashchange', async()=> {
           host.match(/0:0:0:0:0:0:0:1/) ||
           host.match(/::1/)
         ) {
-          confirmed = window.confirm("Payments can not be tested in local development! Make sure to test in a deployed environment where payment validation callbacks can reach your server!");
+          window.alert("Payments can not be tested in local development! Make sure to test in a deployed environment where payment validation callbacks can reach your server!");
+          return(false);
         }
         return(confirmed)
       },
