@@ -13,13 +13,15 @@ window.addEventListener( 'hashchange', async()=> {
         let confirmed = true
         let host = window.location.host
         if(
-          host.match(/localhost/) ||
+          host.match(/^localhost/) ||
+          host.match(/\.local$/) ||
+          host.match(/\.local\:/) ||
           host.match(/127\.0\.0\.1/) ||
           host.match(/0\.0\.0\.0/) ||
           host.match(/0:0:0:0:0:0:0:1/) ||
           host.match(/::1/)
         ) {
-          confirmed = window.confirm("Payments performed in local development can not be validated automatically and need to be confirmed manually in the Wordpress admin: DePay -> Transactions");
+          confirmed = window.confirm("Payments can not be tested in local development! Make sure to test in a deployed environment where payment validation callbacks can reach your server!");
         }
         return(confirmed)
       },
