@@ -168,7 +168,7 @@ class DePay_WC_Payments_Rest {
 			$existing_trace_id = $wpdb->get_var(
 				$wpdb->prepare(
 					'SELECT id FROM wp_wc_depay_transactions WHERE checkout_id = %s ORDER BY id DESC LIMIT 1',
-					$id,
+					$id
 				)
 			);
 			
@@ -194,11 +194,11 @@ class DePay_WC_Payments_Rest {
 			$existing_tracking_uuid = $wpdb->get_var(
 				$wpdb->prepare(
 					'SELECT tracking_uuid FROM wp_wc_depay_transactions WHERE checkout_id = %s ORDER BY id DESC LIMIT 1',
-					$id,
+					$id
 				)
 			);
 
-			if( $existing_tracking_uuid ) { // TRACK FOLLOWS TRACE
+			if ( $existing_tracking_uuid ) { // TRACK FOLLOWS TRACE
 
 				$tracking_uuid = $existing_tracking_uuid;
 
@@ -270,6 +270,7 @@ class DePay_WC_Payments_Rest {
 		);
 
 		$response = rest_ensure_response( '{}' );
+
 		if ( !is_wp_error( $post ) && ( wp_remote_retrieve_response_code( $post ) == 200 || wp_remote_retrieve_response_code( $post ) == 201 ) ) {
 			$response->set_status( 200 );
 		} else {
