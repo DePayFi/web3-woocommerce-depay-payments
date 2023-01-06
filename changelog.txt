@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-1-6 - version 1.9.0
+* upgrades widgets to v9
+
 2022-12-29 - version 1.8.1
 * fix: properly align blockchain logos during checkout
 
