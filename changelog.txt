@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-1-7 - version 1.9.1
+* hide pending transactions in the admin "transactions" tab
+
 2023-1-6 - version 1.9.0
 * upgrades widgets to v9
 

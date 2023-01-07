@@ -488,11 +488,11 @@ class DePay_WC_Payments_Rest {
 		$orderby_sql = sanitize_sql_orderby( "{$orderby} {$order}" );
 
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$transactions = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM wp_wc_depay_transactions ORDER BY {$orderby_sql} LIMIT %d OFFSET %d", $limit, $offset ) );
+		$transactions = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM wp_wc_depay_transactions ORDER BY {$orderby_sql} WHERE status != 'PENDING' LIMIT %d OFFSET %d", $limit, $offset ) );
 
 		$total = $wpdb->get_var(
 			$wpdb->prepare(
-				'SELECT COUNT(*) FROM wp_wc_depay_transactions AS total_count'
+				'SELECT COUNT(*) FROM wp_wc_depay_transactions WHERE status != "PENDING" AS total_count'
 			)
 		);
 
