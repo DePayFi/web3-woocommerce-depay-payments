@@ -53,7 +53,7 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 
 	public function round_token_amount( $amount ) {
 		$amount = strval( $amount );
-		preg_match( '/\d+\.0*( \d{4} )/' , $amount, $digits_after_decimal );
+		preg_match( '/\d+\.0*(\d{4})/' , $amount, $digits_after_decimal );
 		if ( !empty( $digits_after_decimal ) ) {
 			$digits_after_decimal = $digits_after_decimal[0];
 			preg_match( '/\d{4}$/', $digits_after_decimal, $focus );
