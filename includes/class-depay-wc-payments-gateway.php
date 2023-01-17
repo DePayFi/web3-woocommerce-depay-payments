@@ -7,10 +7,10 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 
 	public function __construct() {
 		$title = 'DePay';
-		$this->id                 = 'depay_wc_payments';
-		$this->method_title       = 'DePay';
+		$this->id									= 'depay_wc_payments';
+		$this->method_title				= 'DePay';
 		$this->method_description = 'Web3 Payments directly into your wallet. Accept any token with on-the-fly conversion.';
-		$this->title              = 'DePay';
+		$this->title							= 'DePay';
 		$this->init_settings();
 	}
 
@@ -52,31 +52,31 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 	}
 
 	public function round_token_amount( $amount ) {
-    $amount = strval( $amount );
-    preg_match( "/\d+\.0*( \d{4} )/" , $amount, $digits_after_decimal );
-    if ( !empty( $digits_after_decimal ) ) {
-      $digits_after_decimal = $digits_after_decimal[0];
-      preg_match( "/\d{4}$/", $digits_after_decimal, $focus );
-      $focus = $focus[0];
-      if ( preg_match( "/^0/", $focus ) ) {
-        $float = floatval( "$focus[1].$focus[2]$focus[3]" );
-        $fixed = "0" . number_format( round( $float, 2 ) , 2, '', '' );
-      } else {
-        $float = floatval( "$focus[0].$focus[1]$focus[2]9" );
-        $fixed = number_format( round( $float, 2 ), 2, '', '' );
-      }
-      if ( $fixed == '0999' && round( $amount, 0 ) == 0 ) {
-        return floatval( preg_replace( "/\d{4}$/", '1000', $digits_after_decimal ) );
-      } elseif ( $fixed == '1000' && round( $amount, 0 ) == 0 ) {
-        return floatval( preg_replace( "/\d{5}$/", '1000', $digits_after_decimal ) );
-      } elseif ( $fixed[0] != "0" && strlen( $fixed ) > 3 ) {
-        return floatval( round( $amount, 0 ) );
-      } else {
-        return floatval( preg_replace( "/\d{4}$/", $fixed, $digits_after_decimal ) );
-      }
-    } else {
-      return $amount;
-    }
+		$amount = strval( $amount );
+		preg_match( '/\d+\.0*( \d{4} )/' , $amount, $digits_after_decimal );
+		if ( !empty( $digits_after_decimal ) ) {
+			$digits_after_decimal = $digits_after_decimal[0];
+			preg_match( '/\d{4}$/', $digits_after_decimal, $focus );
+			$focus = $focus[0];
+			if ( preg_match( '/^0/', $focus ) ) {
+				$float = floatval( "$focus[1].$focus[2]$focus[3]" );
+				$fixed = '0' . number_format( round( $float, 2 ) , 2, '', '' );
+			} else {
+				$float = floatval( "$focus[0].$focus[1]$focus[2]9" );
+				$fixed = number_format( round( $float, 2 ), 2, '', '' );
+			}
+			if ( '0999' == $fixed && round( $amount, 0 ) == 0 ) {
+				return floatval( preg_replace( '/\d{4}$/', '1000', $digits_after_decimal ) );
+			} elseif ( '1000' == $fixed && round( $amount, 0 ) == 0 ) {
+				return floatval( preg_replace( '/\d{5}$/', '1000', $digits_after_decimal ) );
+			} elseif ( $fixed[0] != "0" && strlen( $fixed ) > 3 ) {
+				return floatval( round( $amount, 0 ) );
+			} else {
+				return floatval( preg_replace( '/\d{4}$/', $fixed, $digits_after_decimal ) );
+			}
+		} else {
+			return $amount;
+		}
 	}
 
 	public function get_accept( $order ) {
