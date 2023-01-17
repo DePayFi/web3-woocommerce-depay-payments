@@ -51,6 +51,34 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 		}
 	}
 
+	public function round_token_amount( $amount ) {
+    $amount = strval( $amount );
+    preg_match( "/\d+\.0*( \d{4} )/" , $amount, $digits_after_decimal );
+    if ( !empty( $digits_after_decimal ) ) {
+      $digits_after_decimal = $digits_after_decimal[0];
+      preg_match( "/\d{4}$/", $digits_after_decimal, $focus );
+      $focus = $focus[0];
+      if ( preg_match( "/^0/", $focus ) ) {
+        $float = floatval( "$focus[1].$focus[2]$focus[3]" );
+        $fixed = "0" . number_format( round( $float, 2 ) , 2, '', '' );
+      } else {
+        $float = floatval( "$focus[0].$focus[1]$focus[2]9" );
+        $fixed = number_format( round( $float, 2 ), 2, '', '' );
+      }
+      if ( $fixed == '0999' && round( $amount, 0 ) == 0 ) {
+        return floatval( preg_replace( "/\d{4}$/", '1000', $digits_after_decimal ) );
+      } elseif ( $fixed == '1000' && round( $amount, 0 ) == 0 ) {
+        return floatval( preg_replace( "/\d{5}$/", '1000', $digits_after_decimal ) );
+      } elseif ( $fixed[0] != "0" && strlen( $fixed ) > 3 ) {
+        return floatval( round( $amount, 0 ) );
+      } else {
+        return floatval( preg_replace( "/\d{4}$/", $fixed, $digits_after_decimal ) );
+      }
+    } else {
+      return $amount;
+    }
+	}
+
 	public function get_accept( $order ) {
 		$total = $order->get_total();
 		$currency = $order->get_currency();
@@ -80,7 +108,7 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 				array_push($accept, [
 					'blockchain' => $accepted_payment->blockchain,
 					'token' => $accepted_payment->token,
-					'amount' => bcdiv( $total_in_usd, $rate, $decimals ),
+					'amount' => $this->round_token_amount( bcdiv( $total_in_usd, $rate, $decimals ) ),
 					'receiver' => $accepted_payment->receiver
 				]);      
 			}
