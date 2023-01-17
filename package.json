@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "build": "rollup -c rollup.build.config.js",
-    "release": "node release.js",
+    "release": "git push && node release.js",
     "update:version": "node update-version.js"
   },
   "repository": "git@github.com:DePayFi/web3-woocommerce-depay-payments.git",
