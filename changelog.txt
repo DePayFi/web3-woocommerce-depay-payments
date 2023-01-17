@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-1-17 - version 1.9.4
+* fix rounding issue
+
 2023-1-9 - version 1.9.3
 * fix vertical alignment of blockchain icons (checkout)
 
