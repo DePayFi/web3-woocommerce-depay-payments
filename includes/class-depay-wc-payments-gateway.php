@@ -69,7 +69,7 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 				return floatval( preg_replace( '/\d{4}$/', '1000', $digits_after_decimal ) );
 			} elseif ( '1000' == $fixed && round( $amount, 0 ) == 0 ) {
 				return floatval( preg_replace( '/\d{5}$/', '1000', $digits_after_decimal ) );
-			} elseif ( $fixed[0] != "0" && strlen( $fixed ) > 3 ) {
+			} elseif ( '0' != $fixed[0] && strlen( $fixed ) > 3 ) {
 				return floatval( round( $amount, 0 ) );
 			} else {
 				return floatval( preg_replace( '/\d{4}$/', $fixed, $digits_after_decimal ) );
