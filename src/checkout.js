@@ -39,12 +39,17 @@ window.addEventListener( 'hashchange', async()=> {
           })
         },
         poll: {
-          method: ()=>{
-            return fetch('/index.php?rest_route=/depay/wc/release', {
+          method: async ()=>{
+            let response = fetch('/index.php?rest_route=/depay/wc/release', {
               method: 'POST',
               body: JSON.stringify({ checkout_id: checkoutId }),
               headers: { "Content-Type": "application/json" }
             })
+
+            if(response.status == 200) {
+              let json = await response.json()
+              return json
+            }
           }
         }
       }
