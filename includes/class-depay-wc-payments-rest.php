@@ -206,11 +206,11 @@ class DePay_WC_Payments_Rest {
 					$wpdb->prepare(
 						'UPDATE wp_wc_depay_transactions SET transaction_id = %s, status = "VALIDATING", blockchain = %s, sender_id = %s, token_id = %s, amount = %s WHERE tracking_uuid = %s',
 						$transaction,
-						$tracking_uuid,
 						$accepted_payment->blockchain,
 						$request->get_param( 'sender' ),
 						$accepted_payment->token,
-						$amount
+						$amount,
+						$tracking_uuid
 					)
 				);
 
