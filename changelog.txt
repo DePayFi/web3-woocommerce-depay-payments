@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-1-21 - version 1.9.5
+* prevent E numbers (prevent floatval)
+
 2023-1-17 - version 1.9.4
 * fix rounding issue
 
