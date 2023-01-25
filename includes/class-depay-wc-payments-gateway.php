@@ -5,13 +5,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 
+	const GATEWAY_ID = 'depay_wc_payments';
+
 	public function __construct() {
-		$title = 'DePay';
-		$this->id									= 'depay_wc_payments';
+		$this->id									= static::GATEWAY_ID;
 		$this->method_title				= 'DePay';
 		$this->method_description = 'Web3 Payments directly into your wallet. Accept any token with on-the-fly conversion.';
-		$this->title							= 'DePay';
+		$this->supports    				= [ 'products' ];
+		$this->init_form_fields();
 		$this->init_settings();
+		$title 										= get_option( 'depay_wc_checkout_title' );
+		$this->title  						= empty($title) ? 'DePay' : $title;
+		$description 							= get_option( 'depay_wc_checkout_description' );
+		$this->description  			= empty($title) ? null : $description;
 	}
 
 	public function get_icon() {
@@ -22,9 +28,29 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 		$blockchains = json_decode( get_option( 'depay_wc_blockchains' ) );
 		foreach ( array_reverse( $blockchains ) as $blockchain ) {
 			$url = esc_url( plugin_dir_url( __FILE__ ) . 'images/blockchains/' . $blockchain . '.svg' );
-			$icon = $icon . "<img style='width: 32px; height: 32px;' src='" . $url . "'/>";
+			$icon = $icon . "<img style='width: 40px; height: 40px;' src='" . $url . "'/>";
 		}
 		return $icon;    
+	}
+
+	public function init_form_fields() {
+
+		$this->form_fields = array(
+			'title' => array(
+				'title'       => 'Title',
+				'type'        => 'text',
+				'description' => __( 'This controls the title which the user sees during checkout.' ),
+				'default'     => 'DePay',
+				'desc_tip'    => true,
+			),
+			'description' => array(
+				'title'       => 'Description',
+				'type'        => 'textarea',
+				'description' => 'Payment method description that the customer will see on your checkout.',
+				'default'     => 'The goods are yours. No money needed!!!',
+				'desc_tip'    => true,
+			)
+		);
 	}
 
 	public function process_payment( $order_id ) {

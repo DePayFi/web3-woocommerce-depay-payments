@@ -51,5 +51,25 @@ class DePay_WC_Payments_Settings {
 				'default' => null
 			]
 		);
+
+		register_setting(
+			'depay_wc',
+			'depay_wc_checkout_title',
+			[
+				'type' => 'string',
+				'show_in_rest' => true,
+				'default' => 'DePay'
+			]
+		);
+
+		register_setting(
+			'depay_wc',
+			'depay_wc_checkout_description',
+			[
+				'type' => 'string',
+				'show_in_rest' => true,
+				'default' => null
+			]
+		);
 	}
 }

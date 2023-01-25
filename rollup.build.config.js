@@ -1,6 +1,5 @@
 import commonjs from '@rollup/plugin-commonjs'
 import globals from './rollup.globals.js'
-import pkg from './package.json'
 import replace from '@rollup/plugin-replace'
 import resolve from '@rollup/plugin-node-resolve'
 import sucrase from '@rollup/plugin-sucrase'
@@ -10,6 +9,7 @@ import { terser } from "rollup-plugin-terser"
 const files = [
   'src/admin.js',
   'src/checkout.js',
+  'src/block.js',
   'src/widgets.bundle.js', // only build if necessary
 ]
 

@@ -103,3 +103,19 @@ function depay_tasks_init() {
 	
 }
 add_action( 'plugins_loaded', 'depay_tasks_init' );
+
+// TODO: ACTIVATE ONCE FULLY SUPPORTED
+// function depay_blocks_support() {
+// 	if ( class_exists( 'Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType' ) ) {
+// 		require_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-blocks-support.php';
+// 		add_action(
+// 			'woocommerce_blocks_payment_method_type_registration',
+// 			function( Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $payment_method_registry ) {
+// 				$payment_method_registry->register( new DePay_WC_Payments_Blocks_Support );
+// 			}
+// 		);
+// 	}
+// }
+// add_action( 'woocommerce_blocks_loaded', 'depay_blocks_support' );
+
+
