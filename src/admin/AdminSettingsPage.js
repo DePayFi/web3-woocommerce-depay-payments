@@ -12,9 +12,8 @@ export default function(props) {
   const [ checkoutDescription, setCheckoutDescription ] = useState('')
   const [ tokens, setTokens ] = useState()
   const [ tooManyTokensPerChain, setTooManyTokensPerChain ] = useState(false)
-  const [ currency, setCurrency ] = useState()
   const [ denomination, setDenomination ] = useState()
-  const [ tokensForDenomination, setTokensForDenomination ] = useState()
+  const [ tokenForDenomination, setTokenForDenomination ] = useState()
 
   const connectWallet = async()=> {
     let { account, accounts, wallet }  = await window.DePayWidgets.Connect()
@@ -37,20 +36,13 @@ export default function(props) {
     setTokens(newTokens)
   }
 
-  const addTokenForDenomination = async ()=>{
+  const selectTokenForDenomination = async ()=>{
     let token = await DePayWidgets.Select({ what: 'token' })
-    if(tokensForDenomination.find((selectedToken)=>(selectedToken.blockchain == token.blockchain && selectedToken.address == token.address))) { return }
-    if(tokensForDenomination instanceof Array) {
-      setTokensForDenomination(tokensForDenomination.concat([token]))
-    } else {
-      setTokensForDenomination([token])
-    }
+    setTokenForDenomination(token)
   }
 
-  const removeTokenFromDenomination = (index)=> {
-    let newTokens = tokensForDenomination.slice()
-    newTokens.splice(index, 1)
-    setTokensForDenomination(newTokens)
+  const unsetTokenForDenomination = ()=> {
+    setTokenForDenomination(undefined)
   }
 
   const saveSettings = ()=>{
@@ -62,6 +54,7 @@ export default function(props) {
     const settings = new window.wp.api.models.Settings({
       depay_wc_receiving_wallet_address: receivingWalletAddress,
       depay_wc_tokens: JSON.stringify(tokens),
+      depay_wc_token_for_denomination: tokenForDenomination ? JSON.stringify(tokenForDenomination) : '',
       depay_wc_blockchains: JSON.stringify([...new Set(tokens.map((token)=>token.blockchain))]),
       depay_wc_accepted_payments: JSON.stringify(tokens.map((token)=>{
         return({
@@ -72,6 +65,7 @@ export default function(props) {
       })),
       depay_wc_checkout_title: checkoutTitle,
       depay_wc_checkout_description: checkoutDescription,
+      depay_wc_enable_token_denomination: denomination === 'crypto'
     })
 
     settings.save().then((response) => {
@@ -87,11 +81,14 @@ export default function(props) {
         setReceivingWalletAddress(response.depay_wc_receiving_wallet_address)
         if(response.depay_wc_tokens) {
           setTokens(JSON.parse(response.depay_wc_tokens))
+        } else {
+          setTokens([])
         }
+        setTokenForDenomination(response.depay_wc_token_for_denomination?.length ? JSON.parse(response.depay_wc_token_for_denomination) : null)
+        setDenomination(response.depay_wc_enable_token_denomination ? 'crypto' : 'fiat')
         setSettingsAreLoaded(true)
         setCheckoutTitle(response.depay_wc_checkout_title || 'DePay')
         setCheckoutDescription(response.depay_wc_checkout_description || '')
-        setCurrency(response.woocommerce_currency || 'USD')
       })
     })
   }, [])
@@ -257,7 +254,7 @@ export default function(props) {
               Checkout
             </label>
           </div>
-          <div>
+          <div className="woocommerce-setting__input">
             <div className="woocommerce-setting__options-group">
               <p class="description">
                 Configure how the payment method should be displayed during checkout:
@@ -295,7 +292,7 @@ export default function(props) {
               Denomination
             </label>
           </div>
-          <div>
+          <div className="woocommerce-setting__input">
             <div className="woocommerce-setting__options-group">
               <p class="description">
                 Denominate your store items in crypto currency tokens:
@@ -305,49 +302,47 @@ export default function(props) {
                   <span class="woocommerce-settings-historical-data__progress-label">Item Denomination</span>
                   <div>
                     <select class="components-select-control__input" value={ denomination } onChange={ (e)=> setDenomination(e.target.value) }>
-                      <option value="fiat">FIAT ({ currency })</option>
-                      <option value="crypto">Crypto / Tokens</option>
+                      <option value="fiat">Fiat Currency</option>
+                      <option value="crypto">Crypto / Token</option>
                     </select>
                   </div>
                 </label>
               </div>
 
-              { denomination == 'crypto' && 
+              { denomination == 'crypto' && !tokenForDenomination &&
                 <div className="woocommerce-setting__input__addition">
-                  <button onClick={ addTokenForDenomination } type="button" className="components-button is-secondary">Add Token</button>
+                  <button onClick={ selectTokenForDenomination } type="button" className="components-button is-secondary">Select Token</button>
                 </div>
               }
+
               {
-                denomination == 'crypto' && tokensForDenomination && tokensForDenomination.map((token, index)=>{
-                  return(
-                    <table key={ index } class="wp-list-table widefat fixed striped table-view-list page" style={{ marginBottom: "0.4rem"}}>
-                      <tr>
-                        <td style={{ padding: "1rem 1rem 0.4rem 1rem", display: "flex" }}>
-                          <img src={ token.logo } style={{ width: "3rem", height: "3rem" }}/>
-                          <div style={{ paddingLeft: "1rem", paddingBottom: "0.3rem" }}>
-                            <div><strong>{ token.symbol }</strong> ({ token.name })</div>
-                            <div>on { token.blockchain.toUpperCase() }</div>
-                            <div class="row-actions visible">
-                              <span class="delete">
-                                <a href="#" onClick={ ()=>removeTokenFromDenomination(index) }>Remove</a>
-                              </span>
-                            </div>
-                            { !token.routable &&
-                              <div class="notice inline notice-warning notice-alt">
-                                <span>
-                                  This token is not supported for auto-conversion!&nbsp;
-                                </span>
-                                <a href="https://depay.com/docs/payments/plugins/woocommerce#why-are-some-tokens-not-supported-for-auto-conversion" target="_blank">
-                                  Learn More
-                                </a>
-                              </div>
-                            }
+                denomination == 'crypto' && tokenForDenomination &&
+                  <table class="wp-list-table widefat fixed striped table-view-list page" style={{ marginBottom: "0.4rem"}}>
+                    <tr>
+                      <td style={{ padding: "1rem 1rem 0.4rem 1rem", display: "flex" }}>
+                        <img src={ tokenForDenomination.logo } style={{ width: "3rem", height: "3rem" }}/>
+                        <div style={{ paddingLeft: "1rem", paddingBottom: "0.3rem" }}>
+                          <div><strong>{ tokenForDenomination.symbol }</strong> ({ tokenForDenomination.name })</div>
+                          <div>on { tokenForDenomination.blockchain.toUpperCase() }</div>
+                          <div class="row-actions visible">
+                            <span class="delete">
+                              <a href="#" onClick={ ()=>unsetTokenForDenomination() }>Remove</a>
+                            </span>
                           </div>
-                        </td>
-                      </tr>
-                    </table>
-                  )
-                })
+                          { !tokenForDenomination.routable &&
+                            <div class="notice inline notice-warning notice-alt">
+                              <span>
+                                This token is not supported for auto-conversion!&nbsp;
+                              </span>
+                              <a href="https://depay.com/docs/payments/plugins/woocommerce#why-are-some-tokens-not-supported-for-auto-conversion" target="_blank">
+                                Learn More
+                              </a>
+                            </div>
+                          }
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
               }
 
             </div>

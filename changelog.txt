@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-1-26 - version 1.10.1
+* fix prevent error if initial token selection is empty
+
 2023-1-26 - version 1.10.0
 * Adds help to make the right token selection in settings
 * Allows to change payment method name (DePay, Web3, Crypto)
