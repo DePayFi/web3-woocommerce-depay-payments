@@ -130,8 +130,6 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 			}
 			$rate = $get['body'];
 			$total_in_usd = bcdiv( $rate, 1, 3 );
-			error_log('$total_in_usd');
-			error_log($total_in_usd);
 		} else if ( 'USD' == $currency ) {
 			$total_in_usd = $total;
 		} else {
