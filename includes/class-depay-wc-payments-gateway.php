@@ -137,17 +137,17 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 		$accept = [];
 
 		for ($i = 0; $i < count($responses); $i++) {
-    	if( $i % 2 === 0 ) { // even 0, 2, 4 ...
-    		if ( $responses[$i]->success && $responses[$i+1]->success && !empty( $responses[$i]->body ) && !empty( $responses[$i+1]->body ) ) {
-    			$accepted_payment = $accepted_payments[ $i / 2 ];
-    			array_push($accept, [
+			if ( 0 === $i % 2 ) { // even 0, 2, 4 ...
+				if ( $responses[$i]->success && $responses[$i+1]->success && !empty( $responses[$i]->body ) && !empty( $responses[$i+1]->body ) ) {
+					$accepted_payment = $accepted_payments[ $i / 2 ];
+					array_push($accept, [
 						'blockchain' => $accepted_payment->blockchain,
 						'token' => $accepted_payment->token,
 						'amount' => $this->round_token_amount( bcdiv( $total_in_usd, $responses[$i]->body, $responses[$i+1]->body ) ),
 						'receiver' => $accepted_payment->receiver
 					]);
-    		}
-    	}
+				}
+			}
 		}
 		
 		if ( empty( $accept ) ) {
