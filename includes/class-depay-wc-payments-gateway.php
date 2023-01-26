@@ -113,7 +113,7 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 		$token_denominated = false;
 		$token = null;
 
-		if ( get_option( 'depay_wc_enable_token_denomination' ) && !is_null( get_option( 'depay_wc_token_for_denomination' ) ) ) {
+		if ( get_option( 'depay_wc_enable_token_denomination' ) && !empty( get_option( 'depay_wc_token_for_denomination' ) ) ) {
 
 			$token = json_decode( get_option( 'depay_wc_token_for_denomination' ) );
 

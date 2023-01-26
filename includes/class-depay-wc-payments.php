@@ -147,7 +147,7 @@ class DePay_WC_Payments {
 			if ( !empty( $new_value ) ) {
 				$token = json_decode( $new_value );
 				if ( !empty( $token->symbol ) ) {
-					if ( is_null( $old_value ) ) {
+					if ( empty( $old_value ) ) {
 						update_option( 'depay_wc_fiat_denomination_before', get_option ( 'woocommerce_currency' ) );
 					}
 					update_option( 'woocommerce_currency', $token->symbol );
