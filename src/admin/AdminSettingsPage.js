@@ -7,6 +7,7 @@ export default function(props) {
   const { Button } = window.wp.components
   const [ settingsAreLoaded, setSettingsAreLoaded ] = useState(false)
   const [ isSaving, setIsSaving ] = useState()
+  const [ isDisabled, setIsDisabled ] = useState()
   const [ receivingWalletAddress, setReceivingWalletAddress ] = useState()
   const [ checkoutTitle, setCheckoutTitle ] = useState('DePay')
   const [ checkoutDescription, setCheckoutDescription ] = useState('')
@@ -46,10 +47,6 @@ export default function(props) {
   }
 
   const saveSettings = ()=>{
-    if(
-      !receivingWalletAddress &&
-      !tokens
-    ){ return }
     setIsSaving(true)
     const settings = new window.wp.api.models.Settings({
       depay_wc_receiving_wallet_address: receivingWalletAddress,
@@ -90,7 +87,7 @@ export default function(props) {
         setCheckoutTitle(response.depay_wc_checkout_title || 'DePay')
         setCheckoutDescription(response.depay_wc_checkout_description || '')
       })
-    })
+    }).catch(()=>{ setIsLoading(false) })
   }, [])
 
   useEffect(()=>{
@@ -108,6 +105,10 @@ export default function(props) {
       )
     }
   }, [tokens])
+
+  useEffect(()=>{
+    setIsDisabled( ! (receivingWalletAddress && receivingWalletAddress.length && tokens && tokens.length) )
+  }, [ receivingWalletAddress, tokens ])
 
   if(!settingsAreLoaded) { return null }
 
@@ -358,7 +359,7 @@ export default function(props) {
               isPrimary
               isLarge
               onClick={ () => saveSettings('') }
-              disabled={ isSaving }
+              disabled={ isSaving || isDisabled }
             >Save Settings</Button>
           </div>
         </div>

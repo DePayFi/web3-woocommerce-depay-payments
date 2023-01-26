@@ -132,7 +132,7 @@ class DePay_WC_Payments {
 	public static function update_denomination( $option_name, $old_value, $new_value ) {
 
 		if ( 'depay_wc_enable_token_denomination' === $option_name ) {
-			if( $new_value === true ) {
+			if ( true === $new_value ) {
 				if ( !empty( get_option( 'depay_wc_token_for_denomination' ) ) ) {
 					$token = json_decode( get_option( 'depay_wc_token_for_denomination' ) );
 					if ( !empty( $token->symbol ) ) {
@@ -146,8 +146,8 @@ class DePay_WC_Payments {
 		} else if ( 'depay_wc_token_for_denomination' === $option_name ) {
 			if ( !empty( $new_value ) ) {
 				$token = json_decode( $new_value );
-				if( !empty( $token->symbol ) ) {
-					if( is_null( $old_value ) ) {
+				if ( !empty( $token->symbol ) ) {
+					if ( is_null( $old_value ) ) {
 						update_option( 'depay_wc_fiat_denomination_before', get_option ( 'woocommerce_currency' ) );
 					}
 					update_option( 'woocommerce_currency', $token->symbol );
@@ -164,13 +164,13 @@ class DePay_WC_Payments {
 
 		$token = json_decode( get_option( 'depay_wc_token_for_denomination' ) );
 		$currencies[ $token->symbol ] = $token->name;
-    return $currencies;
+		return $currencies;
 	}
 
 	public static function add_crypto_currency_symbol( $currency_symbol, $currency ) {
 
 		$token = json_decode( get_option( 'depay_wc_token_for_denomination' ) );
-		if( $token->symbol === $currency ) {
+		if ( $token->symbol === $currency ) {
 			$currency_symbol = $token->symbol;
 		}
 		return $currency_symbol;

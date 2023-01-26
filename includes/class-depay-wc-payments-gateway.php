@@ -113,16 +113,16 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 		$token_denominated = false;
 		$token = null;
 
-		if( get_option( 'depay_wc_enable_token_denomination' ) && !is_null( get_option( 'depay_wc_token_for_denomination' ) ) ) {
+		if ( get_option( 'depay_wc_enable_token_denomination' ) && !is_null( get_option( 'depay_wc_token_for_denomination' ) ) ) {
 
 			$token = json_decode( get_option( 'depay_wc_token_for_denomination' ) );
 
-			if( $token->symbol === $currency ) {
+			if ( $token->symbol === $currency ) {
 				$token_denominated = true;
 			}
 		}
 
-		if( $token_denominated ) {
+		if ( $token_denominated ) {
 			$get = wp_remote_get( sprintf( 'https://public.depay.com/tokens/prices/%s/%s', $token->blockchain, $token->address ) );
 			if ( is_wp_error($get) || wp_remote_retrieve_response_code( $get ) != 200 ) {
 				DePay_WC_Payments::log( 'Price request failed!' );
@@ -144,7 +144,7 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 			$total_in_usd = bcdiv( $total, $rate, 3 );
 		}
 
-		if( empty($total_in_usd) ) {
+		if ( empty($total_in_usd) ) {
 			DePay_WC_Payments::log( 'total_in_usd empty!' );
 			throw new Exception( 'total_in_usd empty!' );
 		}
@@ -164,7 +164,7 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 			if ( 0 === $i % 2 ) { // even 0, 2, 4 ...
 				if ( $responses[$i]->success && $responses[$i+1]->success && !empty( $responses[$i]->body ) && !empty( $responses[$i+1]->body ) ) {
 					$accepted_payment = $accepted_payments[ $i / 2 ];
-					if( $token_denominated && $token && $token->blockchain === $accepted_payment->blockchain && $token->address === $accepted_payment->token ) {
+					if ( $token_denominated && $token && $token->blockchain === $accepted_payment->blockchain && $token->address === $accepted_payment->token ) {
 						$amount = $total;
 					} else {
 						$amount = $this->round_token_amount( bcdiv( $total_in_usd, $responses[$i]->body, $responses[$i+1]->body ) );
