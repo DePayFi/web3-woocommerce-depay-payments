@@ -20,6 +20,7 @@ export default function(props) {
 
   const addToken = async ()=>{
     let token = await DePayWidgets.Select({ what: 'token' })
+    if(tokens.find((selectedToken)=>(selectedToken.blockchain == token.blockchain && selectedToken.address == token.address))) { return }
     if(tokens instanceof Array) {
       setTokens(tokens.concat([token]))
     } else {
@@ -28,8 +29,9 @@ export default function(props) {
   }
 
   const removeToken = (index)=> {
-    tokens.splice(index, 1)
-    setTokens(tokens)
+    let newTokens = tokens.slice()
+    newTokens.splice(index, 1)
+    setTokens(newTokens)
   }
 
   const saveSettings = ()=>{
