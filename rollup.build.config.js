@@ -10,7 +10,7 @@ const files = [
   'src/admin.js',
   'src/checkout.js',
   'src/block.js',
-  // 'src/widgets.bundle.js', // only build if necessary
+  'src/widgets.bundle.js', // only build if necessary
 ]
 
 export default files.map((file)=>{
