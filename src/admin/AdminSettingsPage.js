@@ -68,6 +68,8 @@ export default function(props) {
         setReceivingWalletAddress(response.depay_wc_receiving_wallet_address)
         if(response.depay_wc_tokens) {
           setTokens(JSON.parse(response.depay_wc_tokens))
+        } else {
+          setTokens([])
         }
         setSettingsAreLoaded(true)
         setCheckoutTitle(response.depay_wc_checkout_title || 'DePay')
