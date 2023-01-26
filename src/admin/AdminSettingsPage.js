@@ -102,6 +102,28 @@ export default function(props) {
         <hr role="presentation"/>
       </div>
 
+      { window.DEPAY_WC_SETUP.bcmath !== '1' &&
+        <div className="woocommerce-settings__wrapper">
+          <div className="woocommerce-setting">
+            <div className="woocommerce-setting__label">
+              <label for="depay-woocommerce-payment-receiver-address">
+                Missing Requirements
+              </label>
+            </div>
+            <div className="woocommerce-setting__input">
+              <div class="notice inline notice-warning notice-alt">
+                <p>
+                  You need to install the "bcmath" php package!&nbsp;
+                  <a href="https://www.google.com/search?q=how+to+install+bcmath+php+wordpress" target="_blank">
+                    Learn How
+                  </a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
       <div className="woocommerce-settings__wrapper">
         <div className="woocommerce-setting">
           <div className="woocommerce-setting__label">

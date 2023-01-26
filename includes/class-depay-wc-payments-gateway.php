@@ -28,7 +28,7 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 		$blockchains = json_decode( get_option( 'depay_wc_blockchains' ) );
 		foreach ( array_reverse( $blockchains ) as $blockchain ) {
 			$url = esc_url( plugin_dir_url( __FILE__ ) . 'images/blockchains/' . $blockchain . '.svg' );
-			$icon = $icon . "<img style='width: 40px; height: 40px;' src='" . $url . "'/>";
+			$icon = $icon . "<img style='height: 40px;' src='" . $url . "'/>";
 		}
 		return $icon;    
 	}
@@ -108,39 +108,50 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 	public function get_accept( $order ) {
 		$total = $order->get_total();
 		$currency = $order->get_currency();
+
+		
+
+		$requests = [];
+
 		if ( 'USD' == $currency ) {
 			$total_in_usd = $total;
 		} else {
 			$get = wp_remote_get( sprintf( 'https://public.depay.com/currencies/%s', $currency ) );
 			if ( is_wp_error($get) ) {
 				DePay_WC_Payments::log( $get->get_error_message() );
+				throw new Exception('Currency request failed!');
 			}
 			$rate = $get['body'];
 			$total_in_usd = bcdiv( $total, $rate, 3 );
 		}
+
+		$accepted_payments = json_decode( get_option( 'depay_wc_accepted_payments' ) );
+
+		foreach ( $accepted_payments as $accepted_payment ) {
+			$requests[] = array( 'url' => sprintf( 'https://public.depay.com/tokens/prices/%s/%s', $accepted_payment->blockchain, $accepted_payment->token ), 'type' => 'GET' );
+			$requests[] = array( 'url' => sprintf( 'https://public.depay.com/tokens/decimals/%s/%s', $accepted_payment->blockchain, $accepted_payment->token ), 'type' => 'GET' );
+		}
+
+		$responses = Requests::request_multiple( $requests );
+
 		$accept = [];
-		foreach ( json_decode( get_option( 'depay_wc_accepted_payments' ) ) as $accepted_payment ) {
-			$get = wp_remote_get( sprintf( 'https://public.depay.com/tokens/prices/%s/%s', $accepted_payment->blockchain, $accepted_payment->token ) );
-			if ( is_wp_error($get) ) {
-				DePay_WC_Payments::log( $get->get_error_message() );
-			}
-			$rate = $get['body'];
-			$get = wp_remote_get( sprintf( 'https://public.depay.com/tokens/decimals/%s/%s', $accepted_payment->blockchain, $accepted_payment->token ) );
-			if ( is_wp_error($get) ) {
-				DePay_WC_Payments::log( $get->get_error_message() );
-			}
-			$decimals = intval( $get['body'] );
-			if ( !empty( $rate ) && !empty( $decimals ) ) {
-				array_push($accept, [
-					'blockchain' => $accepted_payment->blockchain,
-					'token' => $accepted_payment->token,
-					'amount' => $this->round_token_amount( bcdiv( $total_in_usd, $rate, $decimals ) ),
-					'receiver' => $accepted_payment->receiver
-				]);      
-			}
-		} 
+
+		for ($i = 0; $i < count($responses); $i++) {
+    	if( $i % 2 === 0 ) { // even 0, 2, 4 ...
+    		if ( $responses[$i]->success && $responses[$i+1]->success && !empty( $responses[$i]->body ) && !empty( $responses[$i+1]->body ) ) {
+    			$accepted_payment = $accepted_payments[ $i / 2 ];
+    			array_push($accept, [
+						'blockchain' => $accepted_payment->blockchain,
+						'token' => $accepted_payment->token,
+						'amount' => $this->round_token_amount( bcdiv( $total_in_usd, $responses[$i]->body, $responses[$i+1]->body ) ),
+						'receiver' => $accepted_payment->receiver
+					]);
+    		}
+    	}
+		}
 		
 		if ( empty( $accept ) ) {
+			DePay_WC_Payments::log( 'No valid payment route found!' );
 			throw new Exception( 'No valid payment route found!' );
 		}
 
