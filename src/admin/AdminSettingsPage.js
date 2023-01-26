@@ -8,7 +8,10 @@ export default function(props) {
   const [ settingsAreLoaded, setSettingsAreLoaded ] = useState(false)
   const [ isSaving, setIsSaving ] = useState()
   const [ receivingWalletAddress, setReceivingWalletAddress ] = useState()
+  const [ checkoutTitle, setCheckoutTitle ] = useState()
+  const [ checkoutDescription, setCheckoutDescription ] = useState('')
   const [ tokens, setTokens ] = useState()
+  const [ tooManyTokensPerChain, setTooManyTokensPerChain ] = useState(false)
 
   const connectWallet = async()=> {
     let { account, accounts, wallet }  = await window.DePayWidgets.Connect()
@@ -46,6 +49,8 @@ export default function(props) {
           receiver: receivingWalletAddress
         })
       })),
+      depay_wc_checkout_title: checkoutTitle,
+      depay_wc_checkout_description: checkoutDescription,
     })
 
     settings.save().then((response) => {
@@ -63,9 +68,27 @@ export default function(props) {
           setTokens(JSON.parse(response.depay_wc_tokens))
         }
         setSettingsAreLoaded(true)
+        setCheckoutTitle(response.depay_wc_checkout_title)
+        setCheckoutDescription(response.depay_wc_checkout_description)
       })
     })
   }, [])
+
+  useEffect(()=>{
+    if(tokens) {
+      let count = {}
+      tokens.forEach((token)=>{
+        if(count[token.blockchain] == undefined) {
+          count[token.blockchain] = 1
+        } else {
+          count[token.blockchain] += 1
+        }
+      })
+      setTooManyTokensPerChain(
+        !!Object.values(count).find((value)=>value > 2)
+      )
+    }
+  }, [tokens])
 
   if(!settingsAreLoaded) { return null }
 
@@ -78,6 +101,28 @@ export default function(props) {
         </h2>
         <hr role="presentation"/>
       </div>
+
+      { window.DEPAY_WC_SETUP.bcmath !== '1' &&
+        <div className="woocommerce-settings__wrapper">
+          <div className="woocommerce-setting">
+            <div className="woocommerce-setting__label">
+              <label for="depay-woocommerce-payment-receiver-address">
+                Missing Requirements
+              </label>
+            </div>
+            <div className="woocommerce-setting__input">
+              <div class="notice inline notice-warning notice-alt">
+                <p>
+                  You need to install the "bcmath" php package!&nbsp;
+                  <a href="https://www.google.com/search?q=how+to+install+bcmath+php+wordpress" target="_blank">
+                    Learn How
+                  </a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
 
       <div className="woocommerce-settings__wrapper">
         <div className="woocommerce-setting">
@@ -119,6 +164,16 @@ export default function(props) {
             </label>
           </div>
           <div className="woocommerce-setting__input">
+            { tooManyTokensPerChain &&
+              <div class="notice inline notice-warning notice-alt">
+                <p>
+                  Select as few tokens per blockchain as possible!&nbsp;
+                  <a href="https://depay.com/docs/payments/plugins/woocommerce#why-should-i-select-as-few-tokens-per-chain-as-possible" target="_blank">
+                    Learn More
+                  </a>
+                </p>
+              </div>
+            }
             <div className="woocommerce-setting__options-group">
               {
                 tokens && tokens.map((token, index)=>{
@@ -135,6 +190,16 @@ export default function(props) {
                                 <a href="#" onClick={ ()=>removeToken(index) }>Remove</a>
                               </span>
                             </div>
+                            { !token.routable &&
+                              <div class="notice inline notice-warning notice-alt">
+                                <span>
+                                  This token is not supported for auto-conversion!&nbsp;
+                                </span>
+                                <a href="https://depay.com/docs/payments/plugins/woocommerce#why-are-some-tokens-not-supported-for-auto-conversion" target="_blank">
+                                  Learn More
+                                </a>
+                              </div>
+                            }
                           </div>
                         </td>
                       </tr>
@@ -155,6 +220,44 @@ export default function(props) {
               <p class="description">
                 <strong>Payments are peer-to-peer and will always be sent directly to your wallet.</strong>
               </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="woocommerce-settings__wrapper">
+        <div className="woocommerce-setting">
+          <div className="woocommerce-setting__label">
+            <label>
+              Checkout
+            </label>
+          </div>
+          <div>
+            <div className="woocommerce-setting__options-group">
+              <p class="description">
+                Configure how the payment method should be displayed during checkout:
+              </p>
+              <div>
+                <label>
+                  <span class="woocommerce-settings-historical-data__progress-label">Payment Method Name</span>
+                  <div>
+                    <select class="components-select-control__input" value={ checkoutTitle } onChange={ (e)=> setCheckoutTitle(e.target.value) }>
+                      <option value="DePay">DePay</option>
+                      <option value="Crypto">Crypto</option>
+                      <option value="Web3">Web3</option>
+                    </select>
+                  </div>
+                </label>
+              </div>
+            </div>
+            <div>
+              <div>
+                <label>
+                  <span class="woocommerce-settings-historical-data__progress-label">Additional Description</span>
+                  <textarea value={ checkoutDescription } onChange={(e)=>setCheckoutDescription(e.target.value)} style={{ width: '100%' }}>
+                  </textarea>
+                </label>
+              </div>
             </div>
           </div>
         </div>

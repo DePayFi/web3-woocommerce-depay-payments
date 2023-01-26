@@ -14,13 +14,16 @@ class DePay_WC_Payments_Admin {
 
 	public function scripts_and_styles() {
 
+		$extensions = get_loaded_extensions();
+		
 		wp_register_script('DEPAY_WC_WIDGETS', plugins_url( 'dist/widgets.bundle.js', DEPAY_WC_PLUGIN_FILE ), array(), DEPAY_CURRENT_VERSION, true);
 		wp_enqueue_script( 'DEPAY_WC_WIDGETS' );
 		wp_register_style( 'DEPAY_WC_ADMIN', plugins_url( 'assets/css/admin.css', DEPAY_WC_PLUGIN_FILE ), array(), DEPAY_CURRENT_VERSION );
 		wp_enqueue_style( 'DEPAY_WC_ADMIN' );
 		wp_register_script('DEPAY_WC_ADMIN', plugins_url( 'dist/admin.js', DEPAY_WC_PLUGIN_FILE ), array('react', 'react-dom', 'wp-hooks', 'wp-element', 'wp-components', 'wp-api', 'wc-components', 'wc-navigation'), DEPAY_CURRENT_VERSION, true);
 		wp_localize_script('DEPAY_WC_ADMIN', 'DEPAY_WC_SETUP', array(
-			'done' => ( !empty(get_option('depay_wc_receiving_wallet_address')) && !empty(get_option('depay_wc_accepted_payments')) && !empty(get_option('depay_wc_tokens')) )
+			'done' => ( !empty(get_option('depay_wc_receiving_wallet_address')) && !empty(get_option('depay_wc_accepted_payments')) && !empty(get_option('depay_wc_tokens')) ),
+			'bcmath' => in_array('bcmath', $extensions, true),
 		));
 		wp_enqueue_script( 'DEPAY_WC_ADMIN' );
 	}

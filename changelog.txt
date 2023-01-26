@@ -1,5 +1,12 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-1-26 - version 1.10.0
+* Adds help to make the right token selection in settings
+* Allows to change payment method name (DePay, Web3, Crypto)
+* Allows to add an additional payment method description for checkout
+* Improves checkout performance
+* Checks if required packages are installed (bcmath)
+
 2023-1-21 - version 1.9.7
 * fix update values for track follows trace
 

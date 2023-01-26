@@ -71,7 +71,7 @@ class DePay_WC_Payments {
 		$gateways[] = 'DePay_WC_Payments_Gateway';
 		return $gateways;
 	}
-
+	
 	public static function setup_task() {
 
 		if (

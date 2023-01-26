@@ -564,11 +564,14 @@ class DePay_WC_Payments_Rest {
 		$get_response_code = $get_response['response']['code'];
 		$get_response_successful = ! is_wp_error( $get_response_code ) && $get_response_code >= 200 && $get_response_code < 300;
 		$last_logs = $wpdb->get_results( 'SELECT * FROM wp_wc_depay_logs ORDER BY created_at DESC LIMIT 10' );
+		$extensions = get_loaded_extensions();
+		$bcmath_exists = in_array('bcmath', $extensions, true);
 
 		$response = rest_ensure_response( [ 
 			'wc' => wc()->version,
 			'wp' => $GLOBALS[ 'wp_version' ],
 			'depay' => DEPAY_CURRENT_VERSION,
+			'bcmath' => $bcmath_exists,
 			'curl' => ( function_exists( 'fsockopen' ) || function_exists( 'curl_init' ) ),
 			'GET' => $get_response_successful,
 			'POST' => $post_response_successful,

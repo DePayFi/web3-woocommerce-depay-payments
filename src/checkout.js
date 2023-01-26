@@ -1,3 +1,20 @@
+(function ( ) {
+
+jQuery( function($) {
+
+  $( document ).ajaxError(function() {
+    if(typeof window._depayUnmountLoading == 'function') { window._depayUnmountLoading() }
+  })
+
+  $("form.woocommerce-checkout").on('submit', async()=>{
+    var values = $("form.woocommerce-checkout").serialize()
+    if(values.match('payment_method=depay_wc_payments')) {
+      let { unmount } = await DePayWidgets.Loading({ text: 'Loading payment data...' });
+      setTimeout(unmount, 10000)
+    }
+  })
+})
+
 window.addEventListener( 'hashchange', async()=> {
   if ( window.location.hash.startsWith( '#wc-depay-checkout-' ) ) {
     let checkoutId = window.location.hash.match(/wc-depay-checkout-(.*?)@/)[1]
@@ -56,3 +73,5 @@ window.addEventListener( 'hashchange', async()=> {
     })
   }
 } );
+
+})()
