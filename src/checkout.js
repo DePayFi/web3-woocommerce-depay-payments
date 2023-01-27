@@ -6,6 +6,10 @@ jQuery( function($) {
     if(typeof window._depayUnmountLoading == 'function') { window._depayUnmountLoading() }
   })
 
+  $( document ).ajaxComplete(function() {
+    if(typeof window._depayUnmountLoading == 'function') { window._depayUnmountLoading() }
+  })
+
   $("form.woocommerce-checkout").on('submit', async()=>{
     var values = $("form.woocommerce-checkout").serialize()
     if(values.match('payment_method=depay_wc_payments')) {

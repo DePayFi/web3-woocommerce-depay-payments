@@ -7,11 +7,14 @@ export default function(props) {
   const { Button } = window.wp.components
   const [ settingsAreLoaded, setSettingsAreLoaded ] = useState(false)
   const [ isSaving, setIsSaving ] = useState()
+  const [ isDisabled, setIsDisabled ] = useState()
   const [ receivingWalletAddress, setReceivingWalletAddress ] = useState()
   const [ checkoutTitle, setCheckoutTitle ] = useState('DePay')
   const [ checkoutDescription, setCheckoutDescription ] = useState('')
   const [ tokens, setTokens ] = useState()
   const [ tooManyTokensPerChain, setTooManyTokensPerChain ] = useState(false)
+  const [ denomination, setDenomination ] = useState()
+  const [ tokenForDenomination, setTokenForDenomination ] = useState()
 
   const connectWallet = async()=> {
     let { account, accounts, wallet }  = await window.DePayWidgets.Connect()
@@ -20,7 +23,7 @@ export default function(props) {
 
   const addToken = async ()=>{
     let token = await DePayWidgets.Select({ what: 'token' })
-    if(tokens.find((selectedToken)=>(selectedToken.blockchain == token.blockchain && selectedToken.address == token.address))) { return }
+    if((tokens instanceof Array) && tokens.find((selectedToken)=>(selectedToken.blockchain == token.blockchain && selectedToken.address == token.address))) { return }
     if(tokens instanceof Array) {
       setTokens(tokens.concat([token]))
     } else {
@@ -34,15 +37,21 @@ export default function(props) {
     setTokens(newTokens)
   }
 
+  const selectTokenForDenomination = async ()=>{
+    let token = await DePayWidgets.Select({ what: 'token' })
+    setTokenForDenomination(token)
+  }
+
+  const unsetTokenForDenomination = ()=> {
+    setTokenForDenomination(undefined)
+  }
+
   const saveSettings = ()=>{
-    if(
-      !receivingWalletAddress &&
-      !tokens
-    ){ return }
     setIsSaving(true)
     const settings = new window.wp.api.models.Settings({
       depay_wc_receiving_wallet_address: receivingWalletAddress,
       depay_wc_tokens: JSON.stringify(tokens),
+      depay_wc_token_for_denomination: tokenForDenomination ? JSON.stringify(tokenForDenomination) : '',
       depay_wc_blockchains: JSON.stringify([...new Set(tokens.map((token)=>token.blockchain))]),
       depay_wc_accepted_payments: JSON.stringify(tokens.map((token)=>{
         return({
@@ -53,6 +62,7 @@ export default function(props) {
       })),
       depay_wc_checkout_title: checkoutTitle,
       depay_wc_checkout_description: checkoutDescription,
+      depay_wc_enable_token_denomination: denomination === 'crypto'
     })
 
     settings.save().then((response) => {
@@ -71,11 +81,13 @@ export default function(props) {
         } else {
           setTokens([])
         }
+        setTokenForDenomination(response.depay_wc_token_for_denomination?.length ? JSON.parse(response.depay_wc_token_for_denomination) : null)
+        setDenomination(response.depay_wc_enable_token_denomination ? 'crypto' : 'fiat')
         setSettingsAreLoaded(true)
         setCheckoutTitle(response.depay_wc_checkout_title || 'DePay')
         setCheckoutDescription(response.depay_wc_checkout_description || '')
       })
-    })
+    }).catch(()=>{ setIsLoading(false) })
   }, [])
 
   useEffect(()=>{
@@ -93,6 +105,10 @@ export default function(props) {
       )
     }
   }, [tokens])
+
+  useEffect(()=>{
+    setIsDisabled( ! (receivingWalletAddress && receivingWalletAddress.length && tokens && tokens.length) )
+  }, [ receivingWalletAddress, tokens ])
 
   if(!settingsAreLoaded) { return null }
 
@@ -178,6 +194,9 @@ export default function(props) {
                 </p>
               </div>
             }
+            <p class="description">
+              Select the tokens that you want to receive as payment:
+            </p>
             <div className="woocommerce-setting__options-group">
               {
                 tokens && tokens.map((token, index)=>{
@@ -236,7 +255,7 @@ export default function(props) {
               Checkout
             </label>
           </div>
-          <div>
+          <div className="woocommerce-setting__input">
             <div className="woocommerce-setting__options-group">
               <p class="description">
                 Configure how the payment method should be displayed during checkout:
@@ -266,8 +285,73 @@ export default function(props) {
           </div>
         </div>
       </div>
-      
+
       <div className="woocommerce-settings__wrapper">
+        <div className="woocommerce-setting">
+          <div className="woocommerce-setting__label">
+            <label>
+              Denomination
+            </label>
+          </div>
+          <div className="woocommerce-setting__input">
+            <div className="woocommerce-setting__options-group">
+              <p class="description">
+                Denominate your store items in crypto currency tokens:
+              </p>
+              <div>
+                <label>
+                  <span class="woocommerce-settings-historical-data__progress-label">Item Denomination</span>
+                  <div>
+                    <select class="components-select-control__input" value={ denomination } onChange={ (e)=> setDenomination(e.target.value) }>
+                      <option value="fiat">Fiat Currency</option>
+                      <option value="crypto">Crypto / Token</option>
+                    </select>
+                  </div>
+                </label>
+              </div>
+
+              { denomination == 'crypto' && !tokenForDenomination &&
+                <div className="woocommerce-setting__input__addition">
+                  <button onClick={ selectTokenForDenomination } type="button" className="components-button is-secondary">Select Token</button>
+                </div>
+              }
+
+              {
+                denomination == 'crypto' && tokenForDenomination &&
+                  <table class="wp-list-table widefat fixed striped table-view-list page" style={{ marginBottom: "0.4rem"}}>
+                    <tr>
+                      <td style={{ padding: "1rem 1rem 0.4rem 1rem", display: "flex" }}>
+                        <img src={ tokenForDenomination.logo } style={{ width: "3rem", height: "3rem" }}/>
+                        <div style={{ paddingLeft: "1rem", paddingBottom: "0.3rem" }}>
+                          <div><strong>{ tokenForDenomination.symbol }</strong> ({ tokenForDenomination.name })</div>
+                          <div>on { tokenForDenomination.blockchain.toUpperCase() }</div>
+                          <div class="row-actions visible">
+                            <span class="delete">
+                              <a href="#" onClick={ ()=>unsetTokenForDenomination() }>Remove</a>
+                            </span>
+                          </div>
+                          { !tokenForDenomination.routable &&
+                            <div class="notice inline notice-warning notice-alt">
+                              <span>
+                                This token is not supported for auto-conversion!&nbsp;
+                              </span>
+                              <a href="https://depay.com/docs/payments/plugins/woocommerce#why-are-some-tokens-not-supported-for-auto-conversion" target="_blank">
+                                Learn More
+                              </a>
+                            </div>
+                          }
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+              }
+
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div className="woocommerce-settings__wrapper" style={{ paddingTop: '20px' }}>
         <div className="woocommerce-setting">
           <div className="woocommerce-setting__label"></div>
           <div className="woocommerce-setting__input">
@@ -275,7 +359,7 @@ export default function(props) {
               isPrimary
               isLarge
               onClick={ () => saveSettings('') }
-              disabled={ isSaving }
+              disabled={ isSaving || isDisabled }
             >Save Settings</Button>
           </div>
         </div>

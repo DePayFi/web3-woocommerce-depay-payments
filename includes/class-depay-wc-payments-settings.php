@@ -71,5 +71,35 @@ class DePay_WC_Payments_Settings {
 				'default' => null
 			]
 		);
+
+		register_setting(
+			'depay_wc',
+			'depay_wc_token_for_denomination',
+			[
+				'type' => 'string',
+				'show_in_rest' => true,
+				'default' => null
+			]
+		);
+
+		register_setting(
+			'depay_wc',
+			'depay_wc_enable_token_denomination',
+			[
+				'type' => 'boolean',
+				'show_in_rest' => true,
+				'default' => false
+			]
+		);
+
+		register_setting(
+			'depay_wc',
+			'depay_wc_fiat_denomination_before',
+			[
+				'type' => 'string',
+				'show_in_rest' => true,
+				'default' => false
+			]
+		);
 	}
 }

@@ -109,20 +109,42 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 		$total = $order->get_total();
 		$currency = $order->get_currency();
 
-		
-
 		$requests = [];
+		$token_denominated = false;
+		$token = null;
 
-		if ( 'USD' == $currency ) {
+		if ( get_option( 'depay_wc_enable_token_denomination' ) && !empty( get_option( 'depay_wc_token_for_denomination' ) ) ) {
+
+			$token = json_decode( get_option( 'depay_wc_token_for_denomination' ) );
+
+			if ( $token->symbol === $currency ) {
+				$token_denominated = true;
+			}
+		}
+
+		if ( $token_denominated ) {
+			$get = wp_remote_get( sprintf( 'https://public.depay.com/tokens/prices/%s/%s', $token->blockchain, $token->address ) );
+			if ( is_wp_error($get) || wp_remote_retrieve_response_code( $get ) != 200 ) {
+				DePay_WC_Payments::log( 'Price request failed!' );
+				throw new Exception( 'Price request failed!' );
+			}
+			$rate = $get['body'];
+			$total_in_usd = bcdiv( $rate, 1, 3 );
+		} else if ( 'USD' == $currency ) {
 			$total_in_usd = $total;
 		} else {
 			$get = wp_remote_get( sprintf( 'https://public.depay.com/currencies/%s', $currency ) );
-			if ( is_wp_error($get) ) {
-				DePay_WC_Payments::log( $get->get_error_message() );
-				throw new Exception('Currency request failed!');
+			if ( is_wp_error($get) || wp_remote_retrieve_response_code( $get ) != 200 ) {
+				DePay_WC_Payments::log( 'Price request failed!' );
+				throw new Exception( 'Price request failed!' );
 			}
 			$rate = $get['body'];
 			$total_in_usd = bcdiv( $total, $rate, 3 );
+		}
+
+		if ( empty($total_in_usd) ) {
+			DePay_WC_Payments::log( 'total_in_usd empty!' );
+			throw new Exception( 'total_in_usd empty!' );
 		}
 
 		$accepted_payments = json_decode( get_option( 'depay_wc_accepted_payments' ) );
@@ -140,10 +162,15 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 			if ( 0 === $i % 2 ) { // even 0, 2, 4 ...
 				if ( $responses[$i]->success && $responses[$i+1]->success && !empty( $responses[$i]->body ) && !empty( $responses[$i+1]->body ) ) {
 					$accepted_payment = $accepted_payments[ $i / 2 ];
+					if ( $token_denominated && $token && $token->blockchain === $accepted_payment->blockchain && $token->address === $accepted_payment->token ) {
+						$amount = $total;
+					} else {
+						$amount = $this->round_token_amount( bcdiv( $total_in_usd, $responses[$i]->body, $responses[$i+1]->body ) );
+					}
 					array_push($accept, [
 						'blockchain' => $accepted_payment->blockchain,
 						'token' => $accepted_payment->token,
-						'amount' => $this->round_token_amount( bcdiv( $total_in_usd, $responses[$i]->body, $responses[$i+1]->body ) ),
+						'amount' => $amount,
 						'receiver' => $accepted_payment->receiver
 					]);
 				}
