@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-1-27 - version 1.11.0
+* adds crypto/token denomination
+
 2023-1-26 - version 1.10.1
 * fix prevent error if initial token selection is empty
 
