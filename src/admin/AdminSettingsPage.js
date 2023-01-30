@@ -216,9 +216,9 @@ export default function(props) {
                             { !token.routable &&
                               <div class="notice inline notice-warning notice-alt">
                                 <span>
-                                  This token is not supported for auto-conversion!&nbsp;
+                                  This token is not supported for conversion!&nbsp;
                                 </span>
-                                <a href="https://depay.com/docs/payments/plugins/woocommerce#why-are-some-tokens-not-supported-for-auto-conversion" target="_blank">
+                                <a href="https://depay.com/docs/payments/plugins/woocommerce#why-are-some-tokens-not-supported-for-conversion" target="_blank">
                                   Learn More
                                 </a>
                               </div>

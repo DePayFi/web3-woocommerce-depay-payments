@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-1-30 - version 1.11.2
+* update wording for unsupported token warning
+
 2023-1-28 - version 1.11.1
 * fix: already set token denomination upon adding the option for the first time
 
