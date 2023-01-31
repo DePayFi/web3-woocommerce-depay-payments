@@ -1,5 +1,7 @@
 ## DePay Payments for WooCommerce
 
+![Web3 Payments for WooCommerce](/.wordpress-org/screenshot-2.gif)
+
 Web3 Payments directly into your own wallet. Accept thousands of different tokens with on-the-fly conversion on multiple blockchains.
 
 ### Demo

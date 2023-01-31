@@ -1,92 +1,81 @@
-=== WooCommerce Web3 Payments by DePay - Accept P2P Crypto Donations ===
+=== Web3 Cryptocurrency Payments by DePay for WooCommerce ===
 Contributors: depayfi
 Tags: web3, payments, woocommerce, depay, cryptocurrency
-Requires at least: 5.8
-Tested up to: 6.0
-Requires PHP: 7.0
+Requires at least: 6.0
+Tested up to: 6.1.1
+Requires PHP: 7.2
 Stable tag: 1.11.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Web3 Payments directly into your own wallet. P2P crypto payments with on-the-fly conversion.
+Accept Web3 payments, including thousands of cryptocurrency tokens, with the DePay Payments extension for WooCommerce.
 
-== Description ==
-**Web3 Payments directly into your own wallet.**
+== Simple Web3 Cryptocurrency Payments with DePay ==
 
-A WooCommerce plugin for P2P cryptocurrency payments on multiple blockchains.
+Accept thousands of different tokens on multiple blockchains with on-the-fly conversion.
+Process them on your WooCommerce store on-site, and receive them directly into your crypto wallet.
 
-[youtube https://www.youtube.com/watch?v=bc1sPOnlGyk]
+== Availability ==
 
-= Features =
-> 📌 Check out the [live demo](https://web3woocommerce.xyz "WooCommerce Plugin for Crypto Web3 Payments (live demo) by DePay").
+* Worldwide
 
-* **Wallet-to-wallet**: Middleman-free P2P payments.
-* **Multichain**: Your customers can perform payments on various blockchains.
-* **On-the-fly conversion**: 100% decentralized token conversion via decentralized liquidity pools such as Uniswap, PancakeSwap etc. 
-* **Configure incoming tokens**: Receive the tokens you want, while letting your customers pay with tokens they hold.
-* **Open-source**: You can find our [WooCommerce Web3 Payment Plugin on GitHub](https://github.com/DePayFi/web3-woocommerce-depay-payments).
-* **Custom CSS**: Customize the look of your payment widget with your own theme/CSS.
+== Supported Blockchains ==
 
-= Supported wallets =
-Your customers can send you Web3 Payments using the most popular crypto wallets:
-
-* Metamask
-* Coinbase Wallet
-* 100+ additional wallets via [WalletConnect](https://walletconnect.com), **for example**:
-  * Trust Wallet
-  * DeFi Wallet by crypto.com
-  * 1inch Wallet
-  * imToken Wallet
-  * TokenPocket
-  * Pillar
-  * Math Wallet
-  * Ledger Live
-  * Argent Wallet
-  * AlphaWallet
-  * Unstoppable Wallet
-  * Atomic Wallet
-  * Rainbow 
-  * (...)
-
-= Supported blockchains =
 * Ethereum
-* BNB Chain (previously "Binance Smart Chain")
+* BNB Smart Chain
 * Polygon
-* Solana (soon)
 
-= Pricing =
+== Supported Wallets ==
 
-1.5% transaction fee.
+* MetaMask
+* Coinbase
+* Trust Wallet
+* DeFi Wallet by crypto.com
+* 1inch Wallet
+* 100+ additional wallets via WalletConnect
 
-= About DePay = 
-> [DePay](https://depay.com) pioneers Web3 Payments with the power of DeFi. 
-> Driving mass adoption of blockchain-based payments, DePay merges the core ideas of decentralization and interoperability with state-of-the-art Web3 technologies.
-> The first truly decentralized multichain payment protocol built on DeFi. ETHOnline finalist, made in Switzerland (Crypto Valley).
+[youtube https://www.youtube.com/watch?v=j8Vx0Rrx07E]
 
-🤝 Do you want to integrate the DePay payment protocol into your own plugin or project? [We are happy to give you support](https://depay.com/documentation#support).
+== Supported Tokens ==
 
-== Installation ==
+All* ERC20 tokens on Ethereum, All* BEP20 tokens on BSC, All* ERC20 tokens on Polygon.
 
-[youtube https://www.youtube.com/watch?v=bc1sPOnlGyk]
+* if the token standard is strictly adhered to and the token is convertible on a supported decentralized exchange. Check DePay’s documentation for further details about [what tokens are supported](https://depay.com/docs/payments/supported/tokens/).
 
--> [How to Accept Web3 Payments on WooCommerce](https://depay.com/how-to/accept-web3-cryptocurrency-donations-on-wordpress-3kmut5La6fMFiv7lHCfaeF)
+== What are the benefits for me? ==
 
-❤️ The DePay community is [here for you](https://depay.com/documentation#support) in case you need additional support.
+* No gateway, no redirect: Receive Web3 payments directly on your WooCommerce store (on-site).
+* Immediate cash flow: Receive payments directly into your cryptocurrency wallet—settled immediately.
+* You decide: Receive the tokens you want, like Stablecoins, ETH, BNB, MATIC, etc.
+* Automatic conversion: Accept thousands of different tokens from your customers.
+* Multichain support: Accept payments on multiple blockchains in parallel, like Ethereum, Binance Smart Chain, Polygon, etc.
+* Multi-wallet support: Accept payments made with over 100+ cryptocurrency wallets like MetaMask, Coinbase, Trust, crypto.com DeFi, 1inch, etc.
+* Mobile support: Supports cryptocurrency payments on mobile devices and via WalletConnect QR codes.
+* Peer-to-peer: Payments are made directly into your cryptocurrency wallet. No intermediary holds your funds at any time.
+* No hassle: Payments settle immediately; no fraud and no chargebacks.
 
-== Frequently Asked Questions ==
 
-= What are "Web3 Payments"? =
-Building on the idea that "Web3" is the next generation of a blockchain-based and therefore decentralized Internet, "Web3 payments" are a new type of P2P payments. Besides being decentralized and peer-to-peer, they are also characterized by being "permissionless" and not requiring you to trust ("trustless") in centralized entities such as intermediaries. Furthermore, Web3 payments are censorship-resistant. "Open source" code can often be an indicator of Web3 technologies. Read more: [What are Web3 Payments?](https://depay.com/web3-payments).
+== Select DePay as the payment choice during checkout ==
 
-= What does "P2P" mean? =
-Another term we like to use is "wallet-to-wallet".
-When someone sends you a crypto payment through your WooCommerce Shop via DePay, it goes directly from your customers's wallet to your own wallet (this is referred to by the term "peer-to-peer" or "P2P"). There are no intermediaries in between, but smart contracts. These ensure that the payer can pay with any token on supported blockchains, whereupon the tokens are converted into the ones you want to receive.
+* Get started for free: Pay-as-you-go fees per transaction (1.5%). No monthly or setup fees.
+* Multi-Currency support: Denominate your items in 150+ supported fiat currencies.
+* Increase conversion: Support thousands of different tokens on multiple blockchains in parallel.
+* Get paid directly: Peer-to-peer payments. No intermediary holds your funds at any time.
+* Complete payments immediately: No fraud, no chargebacks.
+* Mobile support: Allow customers to pay on or with their mobile devices and via WalletConnect QR codes.
+* Directly on your store: Customers do not redirect to a third-party checkout page.
+* Higher conversion: Seamless one-click Web3 payment experiences for your customers result in fewer abandoned carts.
 
-= How does "on-the-fly" conversion work? =
-* You configure which tokens you want to receive (e.g. USDT, BUSD) per blockchain
-* Your customers pay with any token they currently have in their wallets (e.g. ETH or any other token)
-* Once a transaction is sent, DePay's smart contracts convert the sender token (via decentralized liquidity pools such as Uniswap) into the tokens you have configured to be received. The payments arrive directly in your own wallet after the real-time conversion.
+== What are the benefits for my customers? ==
 
-== Screenshots ==
+* No gateway, no redirect: Customers make payments directly on your WooCommerce store.
+* Seamless experience: Your customers connect their wallets, and DePay automatically suggests the most cost-efficient payment.
+* Auto conversion: Your customers can use any token that exchanges with the cryptocurrencies you accept.
 
-...
+== Mobile Web3 Payments ==
+
+On mobile devices, your customer payment experiences remain seamless.
+
+== Price tags in crypto-currencies ==
+
+Denominate your items in crypto-currencies.
