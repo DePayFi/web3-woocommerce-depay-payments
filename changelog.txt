@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-1-31 - version 1.11.3
+* fixes wordpress.org meta data
+
 2023-1-30 - version 1.11.2
 * update wording for unsupported token warning
 
