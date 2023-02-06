@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-2-6 - version 1.11.5
+* fix: allow payments on "Customer payment page"
+
 2023-2-6 - version 1.11.4
 * upgrade widgets to v9.3.1
 

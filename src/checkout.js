@@ -19,7 +19,7 @@ jQuery( function($) {
   })
 })
 
-window.addEventListener( 'hashchange', async()=> {
+const displayCheckout = async()=>{
   if ( window.location.hash.startsWith( '#wc-depay-checkout-' ) ) {
     let checkoutId = window.location.hash.match(/wc-depay-checkout-(.*?)@/)[1]
     let accept = JSON.parse(await wp.apiRequest({ 
@@ -76,6 +76,9 @@ window.addEventListener( 'hashchange', async()=> {
       }
     })
   }
-} );
+}
+
+document.addEventListener('DOMContentLoaded', displayCheckout);
+window.addEventListener('hashchange', displayCheckout);
 
 })()
