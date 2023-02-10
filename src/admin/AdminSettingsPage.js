@@ -298,52 +298,51 @@ export default function(props) {
               <p class="description">
                 Denominate your store items in crypto currency tokens:
               </p>
-              <div>
-                <label>
-                  <span class="woocommerce-settings-historical-data__progress-label">Item Denomination</span>
-                  <div>
-                    <select class="components-select-control__input" value={ denomination } onChange={ (e)=> setDenomination(e.target.value) }>
-                      <option value="fiat">Fiat Currency</option>
-                      <option value="crypto">Crypto / Token</option>
-                    </select>
-                  </div>
-                </label>
-              </div>
 
-              { denomination == 'crypto' && !tokenForDenomination &&
+              { !tokenForDenomination &&
                 <div className="woocommerce-setting__input__addition">
                   <button onClick={ selectTokenForDenomination } type="button" className="components-button is-secondary">Select Token</button>
                 </div>
               }
 
               {
-                denomination == 'crypto' && tokenForDenomination &&
-                  <table class="wp-list-table widefat fixed striped table-view-list page" style={{ marginBottom: "0.4rem"}}>
-                    <tr>
-                      <td style={{ padding: "1rem 1rem 0.4rem 1rem", display: "flex" }}>
-                        <img src={ tokenForDenomination.logo } style={{ width: "3rem", height: "3rem" }}/>
-                        <div style={{ paddingLeft: "1rem", paddingBottom: "0.3rem" }}>
-                          <div><strong>{ tokenForDenomination.symbol }</strong> ({ tokenForDenomination.name })</div>
-                          <div>on { tokenForDenomination.blockchain.toUpperCase() }</div>
-                          <div class="row-actions visible">
-                            <span class="delete">
-                              <a href="#" onClick={ ()=>unsetTokenForDenomination() }>Remove</a>
-                            </span>
-                          </div>
-                          { !tokenForDenomination.routable &&
-                            <div class="notice inline notice-warning notice-alt">
-                              <span>
-                                This token is not supported for auto-conversion!&nbsp;
+                tokenForDenomination &&
+                  <div>
+                    <table class="wp-list-table widefat fixed striped table-view-list page" style={{ marginBottom: "0.4rem"}}>
+                      <tr>
+                        <td style={{ padding: "1rem 1rem 0.4rem 1rem", display: "flex" }}>
+                          <img src={ tokenForDenomination.logo } style={{ width: "3rem", height: "3rem" }}/>
+                          <div style={{ paddingLeft: "1rem", paddingBottom: "0.3rem" }}>
+                            <div><strong>{ tokenForDenomination.symbol }</strong> ({ tokenForDenomination.name })</div>
+                            <div>on { tokenForDenomination.blockchain.toUpperCase() }</div>
+                            <div class="row-actions visible">
+                              <span class="delete">
+                                <a href="#" onClick={ ()=>unsetTokenForDenomination() }>Remove</a>
                               </span>
-                              <a href="https://depay.com/docs/payments/plugins/woocommerce#why-are-some-tokens-not-supported-for-auto-conversion" target="_blank">
-                                Learn More
-                              </a>
                             </div>
-                          }
-                        </div>
-                      </td>
-                    </tr>
-                  </table>
+                            { !tokenForDenomination.routable &&
+                              <div class="notice inline notice-warning notice-alt">
+                                <span>
+                                  This token is not supported for auto-conversion!&nbsp;
+                                </span>
+                                <a href="https://depay.com/docs/payments/plugins/woocommerce#why-are-some-tokens-not-supported-for-auto-conversion" target="_blank">
+                                  Learn More
+                                </a>
+                              </div>
+                            }
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+                    <div class="notice inline notice-warning notice-alt">
+                      <p>
+                        Please make sure to also set your shop currency after saving this:&nbsp;
+                        <a href="/wp-admin/admin.php?page=wc-settings" target="_blank">
+                          WooCommerce -> Settings -> Currency options -> Currency
+                        </a>
+                      </p>
+                    </div>
+                  </div>
               }
 
             </div>

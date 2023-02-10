@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-2-10 - version 1.11.6
+* fix: only manual switch for WooCommerce currency
+
 2023-2-6 - version 1.11.5
 * fix: allow payments on "Customer payment page"
 

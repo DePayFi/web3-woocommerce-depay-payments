@@ -121,71 +121,9 @@ class DePay_WC_Payments {
 
 	public static function setup_denomination() {
 
-		add_action( 'added_option', [ 'DePay_WC_Payments', 'add_denomination' ], 10, 2);
-		add_action( 'updated_option', [ 'DePay_WC_Payments', 'update_denomination' ], 10, 3);
-
-		if ( get_option( 'depay_wc_enable_token_denomination' ) && !empty( get_option( 'depay_wc_token_for_denomination' ) ) ) {
+		if ( !empty( get_option( 'depay_wc_token_for_denomination' ) ) ) {
 			add_filter( 'woocommerce_currencies', [ 'DePay_WC_Payments', 'add_crypto_currency' ] );
 			add_filter( 'woocommerce_currency_symbol', [ 'DePay_WC_Payments', 'add_crypto_currency_symbol' ], 10, 2 );
-		}
-	}
-
-	public static function add_denomination( $option_name, $new_value ) {
-
-		if ( 'depay_wc_enable_token_denomination' === $option_name ) {
-			if ( true === $new_value ) {
-				if ( !empty( get_option( 'depay_wc_token_for_denomination' ) ) ) {
-					$token = json_decode( get_option( 'depay_wc_token_for_denomination' ) );
-					if ( !empty( $token->symbol ) ) {
-						update_option( 'depay_wc_fiat_denomination_before', get_option ( 'woocommerce_currency' ) );
-						update_option( 'woocommerce_currency', $token->symbol );
-					}
-				}
-			} else {
-				update_option( 'woocommerce_currency', get_option( 'depay_wc_fiat_denomination_before' ) );
-			}
-		} else if ( 'depay_wc_token_for_denomination' === $option_name ) {
-			if ( !empty( $new_value ) ) {
-				$token = json_decode( $new_value );
-				if ( !empty( $token->symbol ) ) {
-					update_option( 'woocommerce_currency', $token->symbol );
-				} else {
-					update_option( 'woocommerce_currency', get_option( 'depay_wc_fiat_denomination_before' ) );	
-				}
-			} else {
-				update_option( 'woocommerce_currency', get_option( 'depay_wc_fiat_denomination_before' ) );	
-			}
-		}
-	}
-
-	public static function update_denomination( $option_name, $old_value, $new_value ) {
-
-		if ( 'depay_wc_enable_token_denomination' === $option_name ) {
-			if ( true === $new_value ) {
-				if ( !empty( get_option( 'depay_wc_token_for_denomination' ) ) ) {
-					$token = json_decode( get_option( 'depay_wc_token_for_denomination' ) );
-					if ( !empty( $token->symbol ) ) {
-						update_option( 'depay_wc_fiat_denomination_before', get_option ( 'woocommerce_currency' ) );
-						update_option( 'woocommerce_currency', $token->symbol );
-					}
-				}
-			} else {
-				update_option( 'woocommerce_currency', get_option( 'depay_wc_fiat_denomination_before' ) );
-			}
-		} else if ( 'depay_wc_token_for_denomination' === $option_name ) {
-			if ( !empty( $new_value ) ) {
-				$token = json_decode( $new_value );
-				if ( !empty( $token->symbol ) ) {
-					if ( empty( $old_value ) ) {
-						update_option( 'depay_wc_fiat_denomination_before', get_option ( 'woocommerce_currency' ) );
-					}
-					update_option( 'woocommerce_currency', $token->symbol );
-				} else {
-					update_option( 'woocommerce_currency', get_option( 'depay_wc_fiat_denomination_before' ) );	
-				}
-			} else {
-				update_option( 'woocommerce_currency', get_option( 'depay_wc_fiat_denomination_before' ) );	
-			}
 		}
 	}
 
