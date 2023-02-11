@@ -29,7 +29,10 @@ const displayCheckout = async()=>{
     DePayWidgets.Payment({ 
       accept,
       fee: { amount: '1.5%', receiver: '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb' },
-      closed: ()=>{ window.jQuery('form.woocommerce-checkout').removeClass( 'processing' ).unblock() },
+      closed: ()=>{
+        window.location.hash = ''
+        window.jQuery('form.woocommerce-checkout').removeClass( 'processing' ).unblock()
+      },
       before: ()=> {
         let confirmed = true
         let host = window.location.host
