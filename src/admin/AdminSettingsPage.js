@@ -11,6 +11,7 @@ export default function(props) {
   const [ receivingWalletAddress, setReceivingWalletAddress ] = useState()
   const [ checkoutTitle, setCheckoutTitle ] = useState('DePay')
   const [ checkoutDescription, setCheckoutDescription ] = useState('')
+  const [ displayedCurrency, setDisplayedCurrency ] = useState('')
   const [ tokens, setTokens ] = useState()
   const [ tooManyTokensPerChain, setTooManyTokensPerChain ] = useState(false)
   const [ denomination, setDenomination ] = useState()
@@ -62,7 +63,7 @@ export default function(props) {
       })),
       depay_wc_checkout_title: checkoutTitle,
       depay_wc_checkout_description: checkoutDescription,
-      depay_wc_enable_token_denomination: denomination === 'crypto'
+      depay_wc_displayed_currency: displayedCurrency,
     })
 
     settings.save().then((response) => {
@@ -82,10 +83,10 @@ export default function(props) {
           setTokens([])
         }
         setTokenForDenomination(response.depay_wc_token_for_denomination?.length ? JSON.parse(response.depay_wc_token_for_denomination) : null)
-        setDenomination(response.depay_wc_enable_token_denomination ? 'crypto' : 'fiat')
         setSettingsAreLoaded(true)
         setCheckoutTitle(response.depay_wc_checkout_title || 'DePay')
         setCheckoutDescription(response.depay_wc_checkout_description || '')
+        setDisplayedCurrency(response.depay_wc_displayed_currency || '')
       })
     }).catch(()=>{ setIsLoading(false) })
   }, [])
@@ -279,6 +280,19 @@ export default function(props) {
                   <span class="woocommerce-settings-historical-data__progress-label">Additional Description</span>
                   <textarea value={ checkoutDescription } onChange={(e)=>setCheckoutDescription(e.target.value)} style={{ width: '100%' }}>
                   </textarea>
+                </label>
+              </div>
+            </div>
+            <div>
+              <div>
+                <label>
+                  <span class="woocommerce-settings-historical-data__progress-label">Displayed currency (within payment widget)</span>
+                  <div>
+                    <select class="components-select-control__input" value={ displayedCurrency } onChange={ (e)=> setDisplayedCurrency(e.target.value) }>
+                      <option value="">Customer's local currency</option>
+                      <option value="store">Store's default currency</option>
+                    </select>
+                  </div>
                 </label>
               </div>
             </div>

@@ -106,6 +106,10 @@ class DePay_WC_Payments {
 		wp_enqueue_script( 'DEPAY_WC_WIDGETS' );
 		wp_register_script( 'DEPAY_WC_CHECKOUT', plugins_url( 'dist/checkout.js', DEPAY_WC_PLUGIN_FILE ), array( 'wp-api-request', 'jquery' ), DEPAY_CURRENT_VERSION, true );
 		wp_enqueue_script( 'DEPAY_WC_CHECKOUT' );
+		wp_localize_script('DEPAY_WC_CHECKOUT', 'DEPAY_WC_CURRENCY', array(
+			'displayCurrency' => ( get_option('depay_wc_displayed_currency') ),
+			'storeCurrency' => ( get_option('woocommerce_currency') )
+		));
 	}
 
 	public static function setup_rest_api() {

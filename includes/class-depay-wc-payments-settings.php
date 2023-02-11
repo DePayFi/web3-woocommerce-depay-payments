@@ -84,17 +84,7 @@ class DePay_WC_Payments_Settings {
 
 		register_setting(
 			'depay_wc',
-			'depay_wc_enable_token_denomination',
-			[
-				'type' => 'boolean',
-				'show_in_rest' => true,
-				'default' => false
-			]
-		);
-
-		register_setting(
-			'depay_wc',
-			'depay_wc_fiat_denomination_before',
+			'depay_wc_displayed_currency',
 			[
 				'type' => 'string',
 				'show_in_rest' => true,
