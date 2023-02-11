@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-2-11 - version 1.11.7
+* fix: checkout with enabled token denomination & reload checkout if page reloaded
+
 2023-2-10 - version 1.11.6
 * fix: only manual switch for WooCommerce currency
 
