@@ -1,3 +1,8 @@
+
+.DePay_woocommerce_token_image {
+    height: 3rem;
+    width: 3rem;
+}
 @media(min-width:783px){
     .woocommerce-settings__wrapper{
         padding:0 13px

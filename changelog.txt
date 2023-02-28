@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-2-28 - version 1.15.0
+* update widgets + add react token image to display token images in admin section properly
+
 2023-2-27 - version 1.14.0
 * updates widgets: Improves "Connect a wallet"
 

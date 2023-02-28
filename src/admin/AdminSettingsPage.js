@@ -205,7 +205,7 @@ export default function(props) {
                     <table key={ index } class="wp-list-table widefat fixed striped table-view-list page" style={{ marginBottom: "0.4rem"}}>
                       <tr>
                         <td style={{ padding: "1rem 1rem 0.4rem 1rem", display: "flex" }}>
-                          <img src={ token.logo } style={{ width: "3rem", height: "3rem" }}/>
+                          <ReactTokenImage.TokenImage blockchain={ token.blockchain } address={ token.address } className="DePay_woocommerce_token_image"/>
                           <div style={{ paddingLeft: "1rem", paddingBottom: "0.3rem" }}>
                             <div><strong>{ token.symbol }</strong> ({ token.name })</div>
                             <div>on { token.blockchain.toUpperCase() }</div>
@@ -325,7 +325,7 @@ export default function(props) {
                     <table class="wp-list-table widefat fixed striped table-view-list page" style={{ marginBottom: "0.4rem"}}>
                       <tr>
                         <td style={{ padding: "1rem 1rem 0.4rem 1rem", display: "flex" }}>
-                          <img src={ tokenForDenomination.logo } style={{ width: "3rem", height: "3rem" }}/>
+                          <ReactTokenImage.TokenImage blockchain={ tokenForDenomination.blockchain } address={ tokenForDenomination.address } className="DePay_woocommerce_token_image"/>
                           <div style={{ paddingLeft: "1rem", paddingBottom: "0.3rem" }}>
                             <div><strong>{ tokenForDenomination.symbol }</strong> ({ tokenForDenomination.name })</div>
                             <div>on { tokenForDenomination.blockchain.toUpperCase() }</div>
