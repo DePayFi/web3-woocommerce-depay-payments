@@ -187,6 +187,19 @@ class DePay_WC_Payments_Rest {
 					'confirmations_required' => $required_confirmations,
 					'created_at' => current_time( 'mysql' )
 				) );
+
+			} else {
+
+				$wpdb->query(
+					$wpdb->prepare(
+						'UPDATE wp_wc_depay_transactions SET blockchain = %s, sender_id = %s, token_id = %s, amount = %s WHERE checkout_id = %s',
+						$accepted_payment->blockchain,
+						$request->get_param( 'sender' ),
+						$accepted_payment->token,
+						$amount,
+						$id
+					)
+				);
 			}
 
 		} else { // PAYMENT TRACKING
@@ -345,6 +358,7 @@ class DePay_WC_Payments_Rest {
 		$signature = str_replace( '-', '+', $signature );
 		$key = PublicKeyLoader::load( self::$key )->withHash( 'sha256' )->withPadding( RSA::SIGNATURE_PSS )->withMGFHash( 'sha256' )->withSaltLength( 64 );
 		if ( !$key->verify( $request->get_body(), base64_decode( $signature ) ) ) {
+			DePay_WC_Payments::log( 'Invalid Signature (validate_payment)' );
 			$response->set_status( 422 );
 			return $response;
 		}
@@ -358,6 +372,7 @@ class DePay_WC_Payments_Rest {
 		);
 
 		if ( empty( $existing_transaction_id ) ) {
+			DePay_WC_Payments::log( 'Transaction not found for tracking_uuid' );
 			$response->set_status( 404 );
 			return $response;
 		}
@@ -429,6 +444,7 @@ class DePay_WC_Payments_Rest {
 			if ( empty( $failed_reason ) ) {
 				$failed_reason = 'MISMATCH';
 			}
+			DePay_WC_Payments::log( 'Validation failed: ' . $failed_reason );
 			$wpdb->query(
 				$wpdb->prepare(
 					'UPDATE wp_wc_depay_transactions SET failed_reason = %s, status = %s, confirmed_by = %s WHERE tracking_uuid = %s',

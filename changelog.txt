@@ -1,5 +1,10 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-3-10 - version 1.15.2
+* update widgets to improve "Connect a wallet"
+* improve payment tracing
+* log payment validation errors
+
 2023-3-2 - version 1.15.1
 * fixes problem with Coinbase wallet
 
