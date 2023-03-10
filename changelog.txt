@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-3-10 - version 1.15.5
+* fix timing issue with callbacks (internal)
+
 2023-3-10 - version 1.15.4
 * fix warning when forwarding to order confirmation
 
