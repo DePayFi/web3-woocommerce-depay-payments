@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-3-10 - version 1.15.3
+* update widgets to prevent page reload during pending payment
+
 2023-3-10 - version 1.15.2
 * update widgets to improve "Connect a wallet"
 * improve payment tracing
