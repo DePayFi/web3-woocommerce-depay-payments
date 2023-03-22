@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-3-22 - version 1.15.7
+* fix: show switch network dialog also upon approval
+
 2023-3-11 - version 1.15.6
 * fixes FIAT & USD conversion (UI/Widget)
 
