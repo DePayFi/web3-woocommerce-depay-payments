@@ -350,7 +350,8 @@ export default function(props) {
                     </table>
                     <div class="notice inline notice-warning notice-alt">
                       <p>
-                        Please make sure to also set your shop currency after saving this:&nbsp;
+                        After saving this, please make sure to also change your default shop currency:
+                        <br/>
                         <a href="/wp-admin/admin.php?page=wc-settings" target="_blank">
                           WooCommerce -> Settings -> Currency options -> Currency
                         </a>

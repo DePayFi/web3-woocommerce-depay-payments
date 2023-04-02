@@ -123,13 +123,17 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 		}
 
 		if ( $token_denominated ) {
-			$get = wp_remote_get( sprintf( 'https://public.depay.com/tokens/prices/%s/%s', $token->blockchain, $token->address ) );
-			if ( is_wp_error($get) || wp_remote_retrieve_response_code( $get ) != 200 ) {
+			$token_price = wp_remote_get( sprintf( 'https://public.depay.com/tokens/prices/%s/%s', $token->blockchain, $token->address ) );
+			if ( is_wp_error($token_price) || wp_remote_retrieve_response_code( $token_price ) != 200 ) {
 				DePay_WC_Payments::log( 'Price request failed!' );
 				throw new Exception( 'Price request failed!' );
 			}
-			$rate = $get['body'];
-			$total_in_usd = bcdiv( $rate, 1, 3 );
+			$token_decimals = wp_remote_get( sprintf( 'https://public.depay.com/tokens/decimals/%s/%s', $token->blockchain, $token->address ) );
+			if ( is_wp_error($token_decimals) || wp_remote_retrieve_response_code( $token_decimals ) != 200 ) {
+				DePay_WC_Payments::log( 'Decimals request failed!' );
+				throw new Exception( 'Decimals request failed!' );
+			}
+			$total_in_usd = bcmul( $token_price['body'], $total, $token_decimals['body'] );
 		} else if ( 'USD' == $currency ) {
 			$total_in_usd = $total;
 		} else {
