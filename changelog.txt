@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-4-6 - version 1.15.10
+* fix: payment validation edge-case
+
 2023-4-2 - version 1.15.9
 * fix: item denomination in crypto currencies
 

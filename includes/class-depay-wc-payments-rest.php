@@ -172,36 +172,20 @@ class DePay_WC_Payments_Rest {
 				)
 			);
 			
-			if ( empty( $existing_trace_id ) ) {
-
-				$wpdb->insert( 'wp_wc_depay_transactions', array(
-					'order_id' => $order_id,
-					'checkout_id' => $id,
-					'tracking_uuid' => $tracking_uuid,
-					'blockchain' => $accepted_payment->blockchain,
-					'sender_id' => $request->get_param( 'sender' ),
-					'receiver_id' => $accepted_payment->receiver,
-					'token_id' => $accepted_payment->token,
-					'amount' => $amount,
-					'status' => 'PENDING',
-					'confirmations_required' => $required_confirmations,
-					'created_at' => current_time( 'mysql' )
-				) );
-
-			} else {
-
-				$wpdb->query(
-					$wpdb->prepare(
-						'UPDATE wp_wc_depay_transactions SET blockchain = %s, sender_id = %s, token_id = %s, amount = %s WHERE checkout_id = %s',
-						$accepted_payment->blockchain,
-						$request->get_param( 'sender' ),
-						$accepted_payment->token,
-						$amount,
-						$id
-					)
-				);
-			}
-
+			$wpdb->insert( 'wp_wc_depay_transactions', array(
+				'order_id' => $order_id,
+				'checkout_id' => $id,
+				'tracking_uuid' => $tracking_uuid,
+				'blockchain' => $accepted_payment->blockchain,
+				'sender_id' => $request->get_param( 'sender' ),
+				'receiver_id' => $accepted_payment->receiver,
+				'token_id' => $accepted_payment->token,
+				'amount' => $amount,
+				'status' => 'PENDING',
+				'confirmations_required' => $required_confirmations,
+				'created_at' => current_time( 'mysql' )
+			) );
+			
 		} else { // PAYMENT TRACKING
 
 			$existing_tracking_uuid = $wpdb->get_var(
