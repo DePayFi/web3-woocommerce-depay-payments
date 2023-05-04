@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-5-4 - version 1.16.0
+* HPOS compatible
+
 2023-4-6 - version 1.15.11
 * fixes some token amount display issues
 

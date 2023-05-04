@@ -9,10 +9,10 @@
  * Domain Path: /languages
  * Woo: 18734001038402:8dd46f8ed09797b4672d0ac7941fcb9e
  * WC requires at least: 6.2
- * WC tested up to: 7.1.1
+ * WC tested up to: 7.6.1
  * Requires at least: 5.8
  * Requires PHP: 7.0
- * Version: 1.15.11
+ * Version: 1.16.0
  *
  * @package DePay\Payments
  */
@@ -22,7 +22,7 @@ defined( 'ABSPATH' ) || exit;
 define( 'DEPAY_WC_PLUGIN_FILE', __FILE__ );
 define( 'DEPAY_WC_ABSPATH', __DIR__ . '/' );
 define( 'DEPAY_MIN_WC_ADMIN_VERSION', '0.23.2' );
-define( 'DEPAY_CURRENT_VERSION', '1.15.11' );
+define( 'DEPAY_CURRENT_VERSION', '1.16.0' );
 
 require_once DEPAY_WC_ABSPATH . '/vendor/autoload.php';
 
@@ -103,6 +103,13 @@ function depay_tasks_init() {
 	
 }
 add_action( 'plugins_loaded', 'depay_tasks_init' );
+
+// HPOS compatible
+add_action( 'before_woocommerce_init', function() {
+	if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+	}
+});
 
 // TODO: ACTIVATE ONCE FULLY SUPPORTED
 // function depay_blocks_support() {
