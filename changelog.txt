@@ -1,5 +1,9 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-5-26 - version 1.16.1
+* removes Woo identifier to ship this plugin from Wordpress.org only
+* fixes ui alignment of blockchain icons on the checkout page
+
 2023-5-4 - version 1.16.0
 * HPOS compatible
 
