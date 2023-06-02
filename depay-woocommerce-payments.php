@@ -30,7 +30,7 @@ function depay_run_migration() {
 	$latestDbVersion = 2;
 	$currentDbVersion = get_option('depay_wc_db_version');
 
-	if( !empty($currentDbVersion) && $currentDbVersion >= $latestDbVersion ) {
+	if ( !empty($currentDbVersion) && $currentDbVersion >= $latestDbVersion ) {
 		return;
 	}
 
@@ -73,8 +73,7 @@ function depay_run_migration() {
 
 	$exists = $wpdb->get_col("SHOW COLUMNS FROM wp_wc_depay_transactions LIKE 'confirmations_required'");
 	if (! empty( $exists ) ) {
-	    $sql = "ALTER TABLE wp_wc_depay_transactions DROP COLUMN confirmations_required";
-	    $wpdb->query($sql);
+			$wpdb->query( "ALTER TABLE wp_wc_depay_transactions DROP COLUMN confirmations_required" );
 	}
 }
 add_action('admin_init', 'depay_run_migration');

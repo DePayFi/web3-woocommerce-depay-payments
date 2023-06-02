@@ -178,9 +178,9 @@ class DePay_WC_Payments_Rest {
 				'commitment_required' => $required_commitment,
 				'created_at' => current_time( 'mysql' )
 			) );
-			if ( $result === false ) {
-		    DePay_WC_Payments::log( 'Storing trace failed!' );
-  			throw new Exception( 'Storing trace failed!!' );
+			if ( false === $result ) {
+				DePay_WC_Payments::log( 'Storing trace failed!' );
+				throw new Exception( 'Storing trace failed!!' );
 			}
 			
 		} else { // PAYMENT TRACKING
@@ -199,22 +199,22 @@ class DePay_WC_Payments_Rest {
 				'commitment_required' => $required_commitment,
 				'created_at' => current_time( 'mysql' )
 			) );
-			if ( $result === false ) {
-		    DePay_WC_Payments::log( 'Storing tracking failed!' );
-  			throw new Exception( 'Storing tracking failed!!' );
+			if ( false === $result ) {
+				DePay_WC_Payments::log( 'Storing tracking failed!' );
+				throw new Exception( 'Storing tracking failed!!' );
 			}
 
 		}
 
 		$fee_receivers = [
 				// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
-		    'ethereum' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
+				'ethereum' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
 				// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
-		    'bsc' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
+				'bsc' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
 				// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
-		    'polygon' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
+				'polygon' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
 				// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
-		    'solana' => '5hqJfrh7SrokFqj16anNqACyUv1PCg7oEqi7oUya1kMQ'
+				'solana' => '5hqJfrh7SrokFqj16anNqACyUv1PCg7oEqi7oUya1kMQ'
 		];
 
 		$post = wp_remote_post( 'https://public.depay.com/payments',
