@@ -24,13 +24,11 @@ class DePay_WC_Payments_Admin {
 		wp_enqueue_script( 'DEPAY_WC_BLOCKCHAINS' );
 		wp_register_script('DEPAY_WC_CLIENT', plugins_url( 'dist/web3-client.js', DEPAY_WC_PLUGIN_FILE ), array(), DEPAY_CURRENT_VERSION, true);
 		wp_enqueue_script( 'DEPAY_WC_CLIENT' );
-		wp_register_script('DEPAY_WC_CONSTANTS', plugins_url( 'dist/web3-constants.js', DEPAY_WC_PLUGIN_FILE ), array(), DEPAY_CURRENT_VERSION, true);
-		wp_enqueue_script( 'DEPAY_WC_CONSTANTS' );
 		wp_register_script('DEPAY_WC_WIDGETS', plugins_url( 'dist/widgets.bundle.js', DEPAY_WC_PLUGIN_FILE ), array(), DEPAY_CURRENT_VERSION, true);
 		wp_enqueue_script( 'DEPAY_WC_WIDGETS' );
 		wp_register_style( 'DEPAY_WC_ADMIN', plugins_url( 'assets/css/admin.css', DEPAY_WC_PLUGIN_FILE ), array(), DEPAY_CURRENT_VERSION );
 		wp_enqueue_style( 'DEPAY_WC_ADMIN' );
-		wp_register_script('DEPAY_WC_REACT_TOKEN_IMAGE', plugins_url( 'dist/react-token-image.js', DEPAY_WC_PLUGIN_FILE ), array('react', 'react-dom', 'DEPAY_WC_ETHERS', 'DEPAY_WC_SOLANA_WEB3', 'DEPAY_WC_BLOCKCHAINS', 'DEPAY_WC_CLIENT', 'DEPAY_WC_CONSTANTS'), DEPAY_CURRENT_VERSION, true);
+		wp_register_script('DEPAY_WC_REACT_TOKEN_IMAGE', plugins_url( 'dist/react-token-image.js', DEPAY_WC_PLUGIN_FILE ), array('react', 'react-dom', 'DEPAY_WC_ETHERS', 'DEPAY_WC_SOLANA_WEB3', 'DEPAY_WC_BLOCKCHAINS', 'DEPAY_WC_CLIENT'), DEPAY_CURRENT_VERSION, true);
 		wp_enqueue_script( 'DEPAY_WC_REACT_TOKEN_IMAGE' );
 		wp_register_script('DEPAY_WC_ADMIN', plugins_url( 'dist/admin.js', DEPAY_WC_PLUGIN_FILE ), array('react', 'react-dom', 'wp-hooks', 'wp-element', 'wp-components', 'wp-api', 'wc-components', 'wc-navigation', 'DEPAY_WC_REACT_TOKEN_IMAGE'), DEPAY_CURRENT_VERSION, true);
 		wp_localize_script('DEPAY_WC_ADMIN', 'DEPAY_WC_SETUP', array(

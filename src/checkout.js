@@ -19,6 +19,13 @@ jQuery( function($) {
   })
 })
 
+const feeReceivers = {
+  'ethereum': '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
+  'bsc': '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
+  'polygon': '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
+  'solana': '5hqJfrh7SrokFqj16anNqACyUv1PCg7oEqi7oUya1kMQ',
+}
+
 const displayCheckout = async()=>{
   if ( window.location.hash.startsWith( '#wc-depay-checkout-' ) ) {
     const checkoutId = window.location.hash.match(/wc-depay-checkout-(.*?)@/)[1]
@@ -27,8 +34,11 @@ const displayCheckout = async()=>{
       method: 'POST'
     }))
     let configuration = { 
-      accept,
-      fee: { amount: '1.5%', receiver: '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb' },
+      accept: accept.map((_accept)=>{
+        return {..._accept,
+          fee: { amount: '1.5%', receiver: feeReceivers[_accept.blockchain] }
+        }
+      }),
       closed: ()=>{
         window.location.hash = ''
         window.jQuery('form.woocommerce-checkout').removeClass( 'processing' ).unblock()
@@ -81,6 +91,7 @@ const displayCheckout = async()=>{
     if(window.DEPAY_WC_CURRENCY && window.DEPAY_WC_CURRENCY.displayCurrency == 'store' && window.DEPAY_WC_CURRENCY.storeCurrency?.length) {
       configuration.currency = window.DEPAY_WC_CURRENCY.storeCurrency
     }
+    console.log(configuration)
     DePayWidgets.Payment(configuration)
   }
 }

@@ -61,12 +61,16 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 			
 			$accept = $this->get_accept( $order );
 			$checkout_id = wp_generate_uuid4();
-			$wpdb->insert( 'wp_wc_depay_checkouts', array(
+			$result = $wpdb->insert( 'wp_wc_depay_checkouts', array(
 				'id' => $checkout_id,
 				'order_id' => $order_id,
 				'accept' => json_encode( $accept ),
 				'created_at' => current_time( 'mysql' )
 			));
+			if ( $result === false ) {
+		    DePay_WC_Payments::log( 'Storing checkout failed!' );
+  			throw new Exception( 'Storing checkout failed!!' );
+			}
 			
 			return( [
 				'result'         => 'success',

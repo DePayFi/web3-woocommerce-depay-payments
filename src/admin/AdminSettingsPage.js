@@ -8,23 +8,50 @@ export default function(props) {
   const [ settingsAreLoaded, setSettingsAreLoaded ] = useState(false)
   const [ isSaving, setIsSaving ] = useState()
   const [ isDisabled, setIsDisabled ] = useState()
-  const [ receivingWalletAddress, setReceivingWalletAddress ] = useState()
   const [ checkoutTitle, setCheckoutTitle ] = useState('DePay')
   const [ checkoutDescription, setCheckoutDescription ] = useState('')
   const [ displayedCurrency, setDisplayedCurrency ] = useState('')
   const [ tokens, setTokens ] = useState()
+  const [ invalidReceivers, setInvalidReceivers ] = useState([])
   const [ tooManyTokensPerChain, setTooManyTokensPerChain ] = useState(false)
   const [ denomination, setDenomination ] = useState()
   const [ tokenForDenomination, setTokenForDenomination ] = useState()
 
-  const connectWallet = async()=> {
+  const setReceivingWalletAddress = (receiver, index, blockchain)=>{
+    
+    let newInvalidReceivers = [...invalidReceivers]
+    if(!receiver || receiver.length === 0) {
+      newInvalidReceivers[index] = 'Please enter a receiver address!'
+    } else {
+      try {
+        if(blockchain === 'solana') {
+          receiver = new SolanaWeb3js.PublicKey(receiver).toString()
+        } else {
+          receiver = ethers.ethers.utils.getAddress(receiver)
+        }
+        newInvalidReceivers[index] = undefined
+      } catch {
+        newInvalidReceivers[index] = 'This address is invalid!'
+      }
+    }
+    setInvalidReceivers(newInvalidReceivers)
+
+    let newTokens = [...tokens]
+    newTokens[index].receiver = receiver
+    setTokens(newTokens)
+  }
+
+  const connectWallet = async(index, blockchain)=> {
     let { account, accounts, wallet }  = await window.DePayWidgets.Connect()
-    setReceivingWalletAddress(account)
+    setReceivingWalletAddress(account, index, blockchain)
   }
 
   const addToken = async ()=>{
     let token = await DePayWidgets.Select({ what: 'token' })
     if((tokens instanceof Array) && tokens.find((selectedToken)=>(selectedToken.blockchain == token.blockchain && selectedToken.address == token.address))) { return }
+    let newInvalidReceivers = [...invalidReceivers]
+    newInvalidReceivers[tokens.length] = 'Please enter a receiver address!'
+    setInvalidReceivers(newInvalidReceivers)
     if(tokens instanceof Array) {
       setTokens(tokens.concat([token]))
     } else {
@@ -50,7 +77,6 @@ export default function(props) {
   const saveSettings = ()=>{
     setIsSaving(true)
     const settings = new window.wp.api.models.Settings({
-      depay_wc_receiving_wallet_address: receivingWalletAddress,
       depay_wc_tokens: JSON.stringify(tokens),
       depay_wc_token_for_denomination: tokenForDenomination ? JSON.stringify(tokenForDenomination) : '',
       depay_wc_blockchains: JSON.stringify([...new Set(tokens.map((token)=>token.blockchain))]),
@@ -58,7 +84,7 @@ export default function(props) {
         return({
           blockchain: token.blockchain,
           token: token.address,
-          receiver: receivingWalletAddress
+          receiver: token.receiver
         })
       })),
       depay_wc_checkout_title: checkoutTitle,
@@ -76,9 +102,14 @@ export default function(props) {
     wp.api.loadPromise.then(() => {
       const settings = new wp.api.models.Settings()
       settings.fetch().then((response)=> {
-        setReceivingWalletAddress(response.depay_wc_receiving_wallet_address)
         if(response.depay_wc_tokens) {
-          setTokens(JSON.parse(response.depay_wc_tokens))
+          let parsedTokens = JSON.parse(response.depay_wc_tokens)
+          parsedTokens.forEach((parsedToken)=>{
+            if(parsedToken.receiver === undefined && response.depay_wc_receiving_wallet_address) {
+              parsedToken.receiver = response.depay_wc_receiving_wallet_address
+            }
+          })
+          setTokens(parsedTokens)
         } else {
           setTokens([])
         }
@@ -108,8 +139,8 @@ export default function(props) {
   }, [tokens])
 
   useEffect(()=>{
-    setIsDisabled( ! (receivingWalletAddress && receivingWalletAddress.length && tokens && tokens.length) )
-  }, [ receivingWalletAddress, tokens ])
+    setIsDisabled( ! (tokens && tokens.length && tokens.every((token)=>token.receiver && token.receiver.length > 0) && invalidReceivers.filter(Boolean).length === 0) )
+  }, [ tokens ])
 
   if(!settingsAreLoaded) { return null }
 
@@ -132,7 +163,7 @@ export default function(props) {
               </label>
             </div>
             <div className="woocommerce-setting__input">
-              <div class="notice inline notice-warning notice-alt">
+              <div className="notice inline notice-warning notice-alt">
                 <p>
                   You need to install the "bcmath" php package!&nbsp;
                   <a href="https://www.google.com/search?q=how+to+install+bcmath+php+wordpress" target="_blank">
@@ -148,45 +179,13 @@ export default function(props) {
       <div className="woocommerce-settings__wrapper">
         <div className="woocommerce-setting">
           <div className="woocommerce-setting__label">
-            <label for="depay-woocommerce-payment-receiver-address">
-              Wallet Address
-            </label>
-          </div>
-          <div className="woocommerce-setting__input">
-            <div className="woocommerce-setting__options-group">
-              <div className="components-base-control">
-                <input 
-                  id="depay-woocommerce-payment-receiver-address" 
-                  type="text" 
-                  value={ receivingWalletAddress }
-                  onChange={ (event)=>setReceivingWalletAddress(event.target.value) }
-                />
-              </div>
-            </div>
-            <div className="woocommerce-setting__input__addition">
-              <button type="button" className="components-button is-secondary" onClick={ connectWallet }>Connect Wallet</button>
-            </div>
-            <div>
-              <p class="description">
-                This address is used to receive payments.
-                <br/>
-                <strong>Please double check that it is set to your wallet address.</strong>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="woocommerce-settings__wrapper">
-        <div className="woocommerce-setting">
-          <div className="woocommerce-setting__label">
             <label>
               Accepted Payments
             </label>
           </div>
           <div className="woocommerce-setting__input">
             { tooManyTokensPerChain &&
-              <div class="notice inline notice-warning notice-alt">
+              <div className="notice inline notice-warning notice-alt">
                 <p>
                   Select as few tokens per blockchain as possible!&nbsp;
                   <a href="https://depay.com/docs/payments/plugins/woocommerce#why-should-i-select-as-few-tokens-per-chain-as-possible" target="_blank">
@@ -195,27 +194,56 @@ export default function(props) {
                 </p>
               </div>
             }
-            <p class="description">
+            <p className="description">
               Select the tokens that you want to receive as payment:
             </p>
             <div className="woocommerce-setting__options-group">
               {
                 tokens && tokens.map((token, index)=>{
                   return(
-                    <table key={ index } class="wp-list-table widefat fixed striped table-view-list page" style={{ marginBottom: "0.4rem"}}>
+                    <table key={ index } className="wp-list-table widefat fixed striped table-view-list page" style={{ marginBottom: "0.4rem"}}>
                       <tr>
                         <td style={{ padding: "1rem 1rem 0.4rem 1rem", display: "flex" }}>
                           <ReactTokenImage.TokenImage blockchain={ token.blockchain } address={ token.address } className="DePay_woocommerce_token_image"/>
-                          <div style={{ paddingLeft: "1rem", paddingBottom: "0.3rem" }}>
-                            <div><strong>{ token.symbol }</strong> ({ token.name })</div>
-                            <div>on { token.blockchain.toUpperCase() }</div>
-                            <div class="row-actions visible">
-                              <span class="delete">
-                                <a href="#" onClick={ ()=>removeToken(index) }>Remove</a>
-                              </span>
+                          <div style={{ paddingLeft: "1rem", paddingBottom: "0.3rem", flex: 1 }}>
+                            <div style={{ display: 'flex', justifyontent: 'space-between' }}>
+                              <div>
+                                <strong>{ token.symbol }</strong> ({ token.name }) on { Web3Blockchains[token.blockchain].label }
+                                <img src={ Web3Blockchains[token.blockchain].logo } style={{ position: 'relative', top: '3px', left: '5px', width: "18px", height: "18px", borderRadius: "99px", background: "white" }}/>
+                              </div>
+                              <div class="row-actions visible" style={{ marginLeft: "auto" }}>
+                                <span className="delete">
+                                  <a href="#" onClick={ ()=>removeToken(index) }>Remove</a>
+                                </span>
+                              </div>
+                            </div>
+                            <div className="woocommerce-setting__input__addition">
+                              <label style={{ marginBottom: 0 }}>
+                                <span className="">Receiver</span>
+                                <div className="components-base-control">
+                                  <input
+                                    required="required"
+                                    style={{ width: "100%" }}
+                                    id="depay-woocommerce-payment-receiver-address" 
+                                    type="text" 
+                                    value={ token.receiver }
+                                    onChange={ (event)=>setReceivingWalletAddress(event.target.value, index, token.blockchain) }
+                                  />
+                                </div>
+                                { invalidReceivers[index] &&
+                                  <div className="notice inline notice-warning notice-alt" style={{ marginBottom: 0 }}>
+                                    {invalidReceivers[index]}
+                                  </div>
+                                }
+                              </label>
+                            </div>
+                            <div className="row-actions visible">
+                              <div className="woocommerce-setting__input__addition">
+                                <button type="button" className="components-button is-secondary" onClick={ ()=>connectWallet(index, token.blockchain) }>Connect Wallet</button>
+                              </div>
                             </div>
                             { !token.routable &&
-                              <div class="notice inline notice-warning notice-alt">
+                              <div className="notice inline notice-warning notice-alt">
                                 <span>
                                   This token is not supported for conversion!&nbsp;
                                 </span>
@@ -236,13 +264,15 @@ export default function(props) {
               <button onClick={ addToken } type="button" className="components-button is-secondary">Add Token</button>
             </div>
             <div>
-              <p class="description">
-                Each incoming payment will be converted on-the-fly into your selected tokens on the selected blockchain.
-                Payment senders will be able to use any routable token as means of payment.
-                Tokens will be converted on-the-fly using decentralized finance to ensure you will always get the tokens you've configured.
+              <p className="description">&nbsp;</p>
+            </div>
+            <div>
+              <p className="description">
+                Each incoming payment will be converted on-the-fly into your selected tokens on the selected blockchains.
+                Customers will be able to use any convertible token as means of payment.
               </p>
-              <p class="description">
-                <strong>Payments are peer-to-peer and will always be sent directly to your wallet.</strong>
+              <p className="description">
+                <strong>Payments are sent directly into your wallet.</strong>
               </p>
             </div>
           </div>
@@ -258,14 +288,14 @@ export default function(props) {
           </div>
           <div className="woocommerce-setting__input">
             <div className="woocommerce-setting__options-group">
-              <p class="description">
+              <p className="description">
                 Configure how the payment method should be displayed during checkout:
               </p>
               <div>
                 <label>
-                  <span class="woocommerce-settings-historical-data__progress-label">Payment Method Name</span>
+                  <span className="woocommerce-settings-historical-data__progress-label">Payment Method Name</span>
                   <div>
-                    <select class="components-select-control__input" value={ checkoutTitle } onChange={ (e)=> setCheckoutTitle(e.target.value) }>
+                    <select className="components-select-control__input" value={ checkoutTitle } onChange={ (e)=> setCheckoutTitle(e.target.value) }>
                       <option value="DePay">DePay</option>
                       <option value="Crypto">Crypto</option>
                       <option value="Web3">Web3</option>
@@ -277,7 +307,7 @@ export default function(props) {
             <div>
               <div>
                 <label>
-                  <span class="woocommerce-settings-historical-data__progress-label">Additional Description</span>
+                  <span className="woocommerce-settings-historical-data__progress-label">Additional Description</span>
                   <textarea value={ checkoutDescription } onChange={(e)=>setCheckoutDescription(e.target.value)} style={{ width: '100%' }}>
                   </textarea>
                 </label>
@@ -286,9 +316,9 @@ export default function(props) {
             <div>
               <div>
                 <label>
-                  <span class="woocommerce-settings-historical-data__progress-label">Displayed currency (within payment widget)</span>
+                  <span className="woocommerce-settings-historical-data__progress-label">Displayed currency (within payment widget)</span>
                   <div>
-                    <select class="components-select-control__input" value={ displayedCurrency } onChange={ (e)=> setDisplayedCurrency(e.target.value) }>
+                    <select className="components-select-control__input" value={ displayedCurrency } onChange={ (e)=> setDisplayedCurrency(e.target.value) }>
                       <option value="">Customer's local currency</option>
                       <option value="store">Store's default currency</option>
                     </select>
@@ -309,7 +339,7 @@ export default function(props) {
           </div>
           <div className="woocommerce-setting__input">
             <div className="woocommerce-setting__options-group">
-              <p class="description">
+              <p className="description">
                 Denominate your store items in crypto currency tokens:
               </p>
 
@@ -322,20 +352,20 @@ export default function(props) {
               {
                 tokenForDenomination &&
                   <div>
-                    <table class="wp-list-table widefat fixed striped table-view-list page" style={{ marginBottom: "0.4rem"}}>
+                    <table className="wp-list-table widefat fixed striped table-view-list page" style={{ marginBottom: "0.4rem"}}>
                       <tr>
                         <td style={{ padding: "1rem 1rem 0.4rem 1rem", display: "flex" }}>
                           <ReactTokenImage.TokenImage blockchain={ tokenForDenomination.blockchain } address={ tokenForDenomination.address } className="DePay_woocommerce_token_image"/>
                           <div style={{ paddingLeft: "1rem", paddingBottom: "0.3rem" }}>
                             <div><strong>{ tokenForDenomination.symbol }</strong> ({ tokenForDenomination.name })</div>
                             <div>on { tokenForDenomination.blockchain.toUpperCase() }</div>
-                            <div class="row-actions visible">
-                              <span class="delete">
+                            <div className="row-actions visible">
+                              <span className="delete">
                                 <a href="#" onClick={ ()=>unsetTokenForDenomination() }>Remove</a>
                               </span>
                             </div>
                             { !tokenForDenomination.routable &&
-                              <div class="notice inline notice-warning notice-alt">
+                              <div className="notice inline notice-warning notice-alt">
                                 <span>
                                   This token is not supported for auto-conversion!&nbsp;
                                 </span>
@@ -348,7 +378,7 @@ export default function(props) {
                         </td>
                       </tr>
                     </table>
-                    <div class="notice inline notice-warning notice-alt">
+                    <div className="notice inline notice-warning notice-alt">
                       <p>
                         After saving this, please make sure to also change your default shop currency:
                         <br/>

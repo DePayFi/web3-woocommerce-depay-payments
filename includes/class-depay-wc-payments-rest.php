@@ -156,23 +156,16 @@ class DePay_WC_Payments_Rest {
 		}
 		
 		if ( $total_in_usd < 1000 ) {
-			$required_confirmations = 1;
+			$required_commitment = 'confirmed';
 		} else {
-			$required_confirmations = 12;
+			$required_commitment = 'finalized';
 		}
 
 		$transaction_id = $request->get_param( 'transaction' );
 
 		if ( empty($transaction_id) ) { // PAYMENT TRACE
 
-			$existing_trace_id = $wpdb->get_var(
-				$wpdb->prepare(
-					'SELECT id FROM wp_wc_depay_transactions WHERE checkout_id = %s ORDER BY id DESC LIMIT 1',
-					$id
-				)
-			);
-			
-			$wpdb->insert( 'wp_wc_depay_transactions', array(
+			$result = $wpdb->insert( 'wp_wc_depay_transactions', array(
 				'order_id' => $order_id,
 				'checkout_id' => $id,
 				'tracking_uuid' => $tracking_uuid,
@@ -182,64 +175,47 @@ class DePay_WC_Payments_Rest {
 				'token_id' => $accepted_payment->token,
 				'amount' => $amount,
 				'status' => 'PENDING',
-				'confirmations_required' => $required_confirmations,
+				'commitment_required' => $required_commitment,
 				'created_at' => current_time( 'mysql' )
 			) );
+			if ( $result === false ) {
+		    DePay_WC_Payments::log( 'Storing trace failed!' );
+  			throw new Exception( 'Storing trace failed!!' );
+			}
 			
 		} else { // PAYMENT TRACKING
 
-			$existing_tracking_uuid = $wpdb->get_var(
-				$wpdb->prepare(
-					'SELECT tracking_uuid FROM wp_wc_depay_transactions WHERE checkout_id = %s ORDER BY id DESC LIMIT 1',
-					$id
-				)
-			);
-
-			if ( $existing_tracking_uuid ) { // TRACK FOLLOWS TRACE
-
-				$tracking_uuid = $existing_tracking_uuid;
-
-				$wpdb->query(
-					$wpdb->prepare(
-						'UPDATE wp_wc_depay_transactions SET transaction_id = %s, status = "VALIDATING", blockchain = %s, sender_id = %s, token_id = %s, amount = %s WHERE tracking_uuid = %s',
-						$transaction,
-						$accepted_payment->blockchain,
-						$request->get_param( 'sender' ),
-						$accepted_payment->token,
-						$amount,
-						$tracking_uuid
-					)
-				);
-
-			} else { // TRACK WITHOUT ANY PRIOR TRACE
-
-				$existing_transaction_id = $wpdb->get_var(
-					$wpdb->prepare(
-						'SELECT id FROM wp_wc_depay_transactions WHERE transaction_id = %s AND blockchain = %s ORDER BY id DESC LIMIT 1',
-						$transaction_id,
-						$accepted_payment->blockchain
-					)
-				);
-
-				$wpdb->insert( 'wp_wc_depay_transactions', array(
-					'order_id' => $order_id,
-					'checkout_id' => $id,
-					'tracking_uuid' => $tracking_uuid,
-					'blockchain' => $accepted_payment->blockchain,
-					'transaction_id' => $transaction_id,
-					'sender_id' => $request->get_param( 'sender' ),
-					'receiver_id' => $accepted_payment->receiver,
-					'token_id' => $accepted_payment->token,
-					'amount' => $amount,
-					'status' => 'VALIDATING',
-					'confirmations_required' => $required_confirmations,
-					'created_at' => current_time( 'mysql' )
-				) );
+			$result = $wpdb->insert( 'wp_wc_depay_transactions', array(
+				'order_id' => $order_id,
+				'checkout_id' => $id,
+				'tracking_uuid' => $tracking_uuid,
+				'blockchain' => $accepted_payment->blockchain,
+				'transaction_id' => $transaction_id,
+				'sender_id' => $request->get_param( 'sender' ),
+				'receiver_id' => $accepted_payment->receiver,
+				'token_id' => $accepted_payment->token,
+				'amount' => $amount,
+				'status' => 'VALIDATING',
+				'commitment_required' => $required_commitment,
+				'created_at' => current_time( 'mysql' )
+			) );
+			if ( $result === false ) {
+		    DePay_WC_Payments::log( 'Storing tracking failed!' );
+  			throw new Exception( 'Storing tracking failed!!' );
 			}
+
 		}
 
-		// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
-		$fee_receiver = '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb';
+		$fee_receivers = [
+				// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
+		    'ethereum' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
+				// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
+		    'bsc' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
+				// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
+		    'polygon' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
+				// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
+		    'solana' => '5hqJfrh7SrokFqj16anNqACyUv1PCg7oEqi7oUya1kMQ'
+		];
 
 		$post = wp_remote_post( 'https://public.depay.com/payments',
 			array(
@@ -249,7 +225,7 @@ class DePay_WC_Payments_Rest {
 					'receiver' => $accepted_payment->receiver,
 					'token' => $accepted_payment->token,
 					'amount' => $amount,
-					'confirmations' => $required_confirmations,
+					'commitment' => $required_commitment,
 					'transaction' => $transaction_id,
 					'sender' => $request->get_param( 'sender' ),
 					'nonce' => $request->get_param( 'nonce' ),
@@ -263,7 +239,7 @@ class DePay_WC_Payments_Rest {
 					'forward_to' => $order->get_checkout_order_received_url(),
 					'forward_on_failure' => false,
 					'fee_amount' => $fee_amount,
-					'fee_receiver' => $fee_receiver
+					'fee_receiver' => $fee_receivers[$accepted_payment->blockchain]
 				]),
 				'method' => 'POST',
 				'data_format' => 'body'
