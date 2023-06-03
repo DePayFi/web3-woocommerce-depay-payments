@@ -4,7 +4,7 @@ Tags: web3, payments, woocommerce, depay, cryptocurrency
 Requires at least: 6.0
 Tested up to: 6.2.0
 Requires PHP: 7.2
-Stable tag: 1.17.1
+Stable tag: 1.17.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,8 +12,7 @@ Accept Web3 payments, including thousands of cryptocurrency tokens, with the DeP
 
 == Simple Web3 Cryptocurrency Payments with DePay ==
 
-Accept thousands of different tokens on multiple blockchains with on-the-fly conversion.
-Process them on your WooCommerce store on-site, and receive them directly into your crypto wallet.
+Accept thousands of different tokens on multiple blockchains with on-the-fly conversion. Process cryptocurrency payments directly on your WooCommerce store and receive them directly into your crypto wallet.
 
 [youtube https://www.youtube.com/watch?v=j8Vx0Rrx07E]
 

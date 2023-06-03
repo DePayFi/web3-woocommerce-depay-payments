@@ -119,7 +119,7 @@ export default function(props) {
         setCheckoutDescription(response.depay_wc_checkout_description || '')
         setDisplayedCurrency(response.depay_wc_displayed_currency || '')
       })
-    }).catch(()=>{ setIsLoading(false) })
+    }).catch(()=>{})
   }, [])
 
   useEffect(()=>{
@@ -402,7 +402,7 @@ export default function(props) {
             <Button
               isPrimary
               isLarge
-              onClick={ () => saveSettings('') }
+              onClick={ () => saveSettings() }
               disabled={ isSaving || isDisabled }
             >Save Settings</Button>
           </div>

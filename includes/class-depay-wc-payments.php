@@ -59,7 +59,6 @@ class DePay_WC_Payments {
 
 	public static function setup_gateway() {
 		if (
-			!empty( get_option( 'depay_wc_receiving_wallet_address' ) ) &&
 			!empty( get_option( 'depay_wc_accepted_payments' ) ) &&
 			!empty( get_option( 'depay_wc_tokens' ) )
 		) {
@@ -76,7 +75,6 @@ class DePay_WC_Payments {
 	public static function setup_task() {
 
 		if (
-			empty( get_option( 'depay_wc_receiving_wallet_address' ) ) &&
 			empty( get_option( 'depay_wc_accepted_payments' ) ) &&
 			empty( get_option( 'depay_wc_tokens' ) )
 		) {

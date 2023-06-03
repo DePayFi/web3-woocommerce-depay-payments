@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-6-3 - version 1.17.2
+* fixes setup task recognition
+
 2023-6-2 - version 1.17.1
 * update readme & wordpress.org assets
 
