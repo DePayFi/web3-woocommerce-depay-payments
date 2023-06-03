@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-6-3 - version 1.17.3
+* fix migration errors
+
 2023-6-3 - version 1.17.2
 * fixes setup task recognition
 

@@ -11,7 +11,7 @@
  * WC tested up to: 7.6.1
  * Requires at least: 5.8
  * Requires PHP: 7.0
- * Version: 1.17.2
+ * Version: 1.17.3
  *
  * @package DePay\Payments
  */
@@ -21,11 +21,12 @@ defined( 'ABSPATH' ) || exit;
 define( 'DEPAY_WC_PLUGIN_FILE', __FILE__ );
 define( 'DEPAY_WC_ABSPATH', __DIR__ . '/' );
 define( 'DEPAY_MIN_WC_ADMIN_VERSION', '0.23.2' );
-define( 'DEPAY_CURRENT_VERSION', '1.17.2' );
+define( 'DEPAY_CURRENT_VERSION', '1.17.3' );
 
 require_once DEPAY_WC_ABSPATH . '/vendor/autoload.php';
 
 function depay_run_migration() {
+	global $wpdb;
 
 	$latestDbVersion = 2;
 	$currentDbVersion = get_option('depay_wc_db_version');
@@ -75,6 +76,7 @@ function depay_run_migration() {
 	if (! empty( $exists ) ) {
 			$wpdb->query( 'ALTER TABLE wp_wc_depay_transactions DROP COLUMN confirmations_required' );
 	}
+	update_option( 'depay_wc_db_version', $latestDbVersion );
 }
 add_action('admin_init', 'depay_run_migration');
 
