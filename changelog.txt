@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-6-4 - version 1.17.4
+* fixes images in connect wallet dialog
+
 2023-6-3 - version 1.17.3
 * fix migration errors
 
