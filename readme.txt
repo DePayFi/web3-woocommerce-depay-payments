@@ -2,9 +2,9 @@
 Contributors: depayfi
 Tags: web3, payments, woocommerce, depay, cryptocurrency
 Requires at least: 6.0
-Tested up to: 6.2.0
+Tested up to: 6.2
 Requires PHP: 7.2
-Stable tag: 1.17.5
+Stable tag: 1.17.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
