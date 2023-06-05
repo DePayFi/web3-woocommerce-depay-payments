@@ -12,16 +12,15 @@ export default function(props) {
   const [ checkoutDescription, setCheckoutDescription ] = useState('')
   const [ displayedCurrency, setDisplayedCurrency ] = useState('')
   const [ tokens, setTokens ] = useState()
-  const [ invalidReceivers, setInvalidReceivers ] = useState([])
   const [ tooManyTokensPerChain, setTooManyTokensPerChain ] = useState(false)
   const [ denomination, setDenomination ] = useState()
   const [ tokenForDenomination, setTokenForDenomination ] = useState()
 
   const setReceivingWalletAddress = (receiver, index, blockchain)=>{
     
-    let newInvalidReceivers = [...invalidReceivers]
+    let newTokens = [...tokens]
     if(!receiver || receiver.length === 0) {
-      newInvalidReceivers[index] = 'Please enter a receiver address!'
+      newTokens[index].error = 'Please enter a receiver address!'
     } else {
       try {
         if(blockchain === 'solana') {
@@ -29,14 +28,12 @@ export default function(props) {
         } else {
           receiver = ethers.ethers.utils.getAddress(receiver)
         }
-        newInvalidReceivers[index] = undefined
+        newTokens[index].error = undefined
       } catch {
-        newInvalidReceivers[index] = 'This address is invalid!'
+        newTokens[index].error = 'This address is invalid!'
       }
     }
-    setInvalidReceivers(newInvalidReceivers)
 
-    let newTokens = [...tokens]
     newTokens[index].receiver = receiver
     setTokens(newTokens)
   }
@@ -49,9 +46,7 @@ export default function(props) {
   const addToken = async ()=>{
     let token = await DePayWidgets.Select({ what: 'token' })
     if((tokens instanceof Array) && tokens.find((selectedToken)=>(selectedToken.blockchain == token.blockchain && selectedToken.address == token.address))) { return }
-    let newInvalidReceivers = [...invalidReceivers]
-    newInvalidReceivers[tokens.length] = 'Please enter a receiver address!'
-    setInvalidReceivers(newInvalidReceivers)
+    token.error = 'Please enter a receiver address!'
     if(tokens instanceof Array) {
       setTokens(tokens.concat([token]))
     } else {
@@ -139,7 +134,7 @@ export default function(props) {
   }, [tokens])
 
   useEffect(()=>{
-    setIsDisabled( ! (tokens && tokens.length && tokens.every((token)=>token.receiver && token.receiver.length > 0) && invalidReceivers.filter(Boolean).length === 0) )
+    setIsDisabled( ! (tokens && tokens.length && tokens.every((token)=>token.receiver && token.receiver.length > 0 && token.error === undefined) ) )
   }, [ tokens ])
 
   if(!settingsAreLoaded) { return null }
@@ -201,7 +196,7 @@ export default function(props) {
               {
                 tokens && tokens.map((token, index)=>{
                   return(
-                    <table key={ index } className="wp-list-table widefat fixed striped table-view-list page" style={{ marginBottom: "0.4rem"}}>
+                    <table key={ `${index}-${token.blockchain}-${token.symbol}` } className="wp-list-table widefat fixed striped table-view-list page" style={{ marginBottom: "0.4rem"}}>
                       <tr>
                         <td style={{ padding: "1rem 1rem 0.4rem 1rem", display: "flex" }}>
                           <ReactTokenImage.TokenImage blockchain={ token.blockchain } address={ token.address } className="DePay_woocommerce_token_image"/>
@@ -230,9 +225,9 @@ export default function(props) {
                                     onChange={ (event)=>setReceivingWalletAddress(event.target.value, index, token.blockchain) }
                                   />
                                 </div>
-                                { invalidReceivers[index] &&
+                                { token.error &&
                                   <div className="notice inline notice-warning notice-alt" style={{ marginBottom: 0 }}>
-                                    {invalidReceivers[index]}
+                                    {token.error}
                                   </div>
                                 }
                               </label>
