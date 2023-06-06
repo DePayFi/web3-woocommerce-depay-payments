@@ -554,6 +554,7 @@ class DePay_WC_Payments_Rest {
 			'currency' => get_option( 'woocommerce_currency' ),
 			'address' => get_option( 'depay_wc_receiving_wallet_address' ),
 			'accept' => get_option( 'depay_wc_accepted_payments' ),
+			'db' => get_option( 'depay_wc_db_version' ),
 			'logs' => $last_logs
 		] );
 		$response->set_status( 200 );

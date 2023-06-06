@@ -11,7 +11,7 @@
  * WC tested up to: 7.6.1
  * Requires at least: 5.8
  * Requires PHP: 7.0
- * Version: 1.17.6
+ * Version: 1.17.7
  *
  * @package DePay\Payments
  */
@@ -21,14 +21,14 @@ defined( 'ABSPATH' ) || exit;
 define( 'DEPAY_WC_PLUGIN_FILE', __FILE__ );
 define( 'DEPAY_WC_ABSPATH', __DIR__ . '/' );
 define( 'DEPAY_MIN_WC_ADMIN_VERSION', '0.23.2' );
-define( 'DEPAY_CURRENT_VERSION', '1.17.6' );
+define( 'DEPAY_CURRENT_VERSION', '1.17.7' );
 
 require_once DEPAY_WC_ABSPATH . '/vendor/autoload.php';
 
 function depay_run_migration() {
 	global $wpdb;
 
-	$latestDbVersion = 2;
+	$latestDbVersion = 3;
 	$currentDbVersion = get_option('depay_wc_db_version');
 
 	if ( !empty($currentDbVersion) && $currentDbVersion >= $latestDbVersion ) {
@@ -40,15 +40,15 @@ function depay_run_migration() {
 		CREATE TABLE wp_wc_depay_logs (
 			id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
 			log LONGTEXT NOT NULL,
-			created_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-			PRIMARY KEY (id)
+			created_at datetime NOT NULL DEFAULT '1000-01-01 00:00:00',
+			PRIMARY KEY  (id)
 		);
 		CREATE TABLE wp_wc_depay_checkouts (
 			id VARCHAR(36) NOT NULL,
 			order_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
 			accept LONGTEXT NOT NULL,
-			created_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-			PRIMARY KEY (id)
+			created_at datetime NOT NULL DEFAULT '1000-01-01 00:00:00',
+			PRIMARY KEY  (id)
 		);
 		CREATE TABLE wp_wc_depay_transactions (
 			id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -63,13 +63,13 @@ function depay_run_migration() {
 			amount TINYTEXT NOT NULL,
 			status TINYTEXT NOT NULL,
 			failed_reason TINYTEXT NOT NULL,
-			commitment_required TINYTEXT NOT NULL DEFAULT 'confirmed',
+			commitment_required TINYTEXT NOT NULL,
 			confirmed_by TINYTEXT NOT NULL,
-			confirmed_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-			created_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-			PRIMARY KEY (id)
+			confirmed_at datetime NOT NULL DEFAULT '1000-01-01 00:00:00',
+			created_at datetime NOT NULL DEFAULT '1000-01-01 00:00:00',
+			PRIMARY KEY  (id),
+			KEY tracking_uuid_index (tracking_uuid(191))
 		);
-		ALTER TABLE wp_wc_depay_transactions ADD INDEX tracking_uuid_index (tracking_uuid);
 	");
 
 	$exists = $wpdb->get_col("SHOW COLUMNS FROM wp_wc_depay_transactions LIKE 'confirmations_required'");
@@ -78,6 +78,7 @@ function depay_run_migration() {
 	}
 	update_option( 'depay_wc_db_version', $latestDbVersion );
 }
+
 add_action('admin_init', 'depay_run_migration');
 
 function depay_activated() {
