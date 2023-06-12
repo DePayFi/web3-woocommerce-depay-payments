@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-6-12 - version 1.17.8
+* fix denominating in token
+
 2023-6-6 - version 1.17.7
 * fixes error that prevents payment during checkout
 
