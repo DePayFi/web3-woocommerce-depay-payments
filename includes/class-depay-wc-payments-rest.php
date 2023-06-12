@@ -151,11 +151,11 @@ class DePay_WC_Payments_Rest {
 		if ( 'USD' === $currency ) {
 			$total_in_usd = $total;
 		} else {
-			if( get_option( 'depay_wc_token_for_denomination' ) ) {
+			if ( get_option( 'depay_wc_token_for_denomination' ) ) {
 				$token = json_decode( get_option( 'depay_wc_token_for_denomination' ) );
 			}
 
-			if( !empty($token) && $token->symbol ===  $currency ) {
+			if ( !empty($token) && $token->symbol ===  $currency ) {
 				$total_in_usd = 0;
 			} else {
 				$get = wp_remote_get( sprintf( 'https://public.depay.com/currencies/%s', $currency ) );
