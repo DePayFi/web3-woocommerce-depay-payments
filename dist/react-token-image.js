@@ -38,7 +38,7 @@
 
     React.useEffect(()=>{
       const storedImage = localStorage.getItem(localStorageKey);
-      if(storedImage && storedImage.length) { return setSrc(storedImage) }
+      if(storedImage && storedImage.length && storedImage != UNKNOWN_IMAGE) { return setSrc(storedImage) }
       if(NATIVE.toLowerCase() == address.toLowerCase()) {
         setSrc(Blockchains__default['default'].findByName(blockchain).logo);
       } else {
