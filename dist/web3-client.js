@@ -445,8 +445,8 @@
     setProvider: setProvider$1,
   };
 
-  let supported = ['ethereum', 'bsc', 'polygon', 'solana', 'fantom', 'velas'];
-  supported.evm = ['ethereum', 'bsc', 'polygon', 'fantom', 'velas'];
+  let supported = ['ethereum', 'bsc', 'polygon', 'solana', 'fantom', 'arbitrum', 'avalanche', 'gnosis', 'optimism'];
+  supported.evm = ['ethereum', 'bsc', 'polygon', 'fantom', 'arbitrum', 'avalanche', 'gnosis', 'optimism'];
   supported.solana = ['solana'];
 
   function _optionalChain$1(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
@@ -691,6 +691,12 @@
       return provider.estimateGas({ from, to, value })
     } else {
       let contract = new ethers.ethers.Contract(to, api, provider);
+      let fragment = contract.interface.fragments.find((fragment) => {
+        return fragment.name == method
+      });
+      if(contract[method] === undefined) {
+        method = `${method}(${fragment.inputs.map((input)=>input.type).join(',')})`;
+      }
       let contractMethod = contract.estimateGas[method];
       let contractArguments = getContractArguments({ contract, method, params });
       if(contractArguments) {
@@ -729,9 +735,17 @@
   };
 
   const contractCall = ({ address, api, method, params, provider, block }) => {
-    let contract = new ethers.ethers.Contract(address, api, provider);
-    let args = paramsToContractArgs({ contract, method, params });
-    return contract[method](...args, { blockTag: block })
+    const contract = new ethers.ethers.Contract(address, api, provider);
+    const args = paramsToContractArgs({ contract, method, params });
+    const fragment = contract.interface.fragments.find((fragment)=>fragment.name === method);
+    if(contract[method] === undefined) {
+      method = `${method}(${fragment.inputs.map((input)=>input.type).join(',')})`;
+    }
+    if(fragment && fragment.stateMutability === 'nonpayable') {
+      return contract.callStatic[method](...args, { blockTag: block })
+    } else {
+      return contract[method](...args, { blockTag: block })
+    }
   };
 
   const balance$1 = ({ address, provider }) => {
@@ -761,17 +775,25 @@
 
     if(strategy === 'fastest') {
 
-      return Promise.race((await EVM.getProviders(blockchain)).map((provider)=>{
-
-        const request = singleRequest$1({ blockchain, address, api, method, params, block, provider });
+      const providers = await EVM.getProviders(blockchain);
       
-        if(timeout) {
-          const timeoutPromise = new Promise((_, reject)=>setTimeout(()=>{ reject(new Error("Web3ClientTimeout")); }, timeout));
-          return Promise.race([request, timeoutPromise])
-        } else {
-          return request
-        }
-      }))
+      let allRequestsFailed = [];
+
+      const allRequestsInParallel = providers.map((provider)=>{
+        return new Promise((resolve)=>{
+          allRequestsFailed.push(
+            singleRequest$1({ blockchain, address, api, method, params, block, provider }).then(resolve)
+          );
+        })
+      });
+      
+      const timeoutPromise = new Promise((_, reject)=>setTimeout(()=>{ reject(new Error("Web3ClientTimeout")); }, timeout || 10000));
+
+      allRequestsFailed = Promise.all(allRequestsFailed.map((request)=>{
+        return new Promise((resolve)=>{ request.catch(resolve); })
+      })).then(()=>{ return });
+
+      return Promise.race([...allRequestsInParallel, timeoutPromise, allRequestsFailed])
 
     } else { // failover
 
@@ -846,17 +868,24 @@
 
     if(strategy === 'fastest') {
 
-      return Promise.race(providers.map((provider)=>{
+      let allRequestsFailed = [];
 
-        const succeedingRequest = new Promise((resolve)=>{
-          singleRequest({ blockchain, address, api, method, params, block, provider }).then(resolve);
-        }); // failing requests are ignored during race/fastest
+      const allRequestsInParallel = providers.map((provider)=>{
+        return new Promise((resolve)=>{
+          allRequestsFailed.push(
+            singleRequest({ blockchain, address, api, method, params, block, provider }).then(resolve)
+          );
+        })
+      });
       
-        const timeoutPromise = new Promise((_, reject)=>setTimeout(()=>{ reject(new Error("Web3ClientTimeout")); }, timeout || 10000));
-          
-        return Promise.race([succeedingRequest, timeoutPromise])
-      }))
-      
+      const timeoutPromise = new Promise((_, reject)=>setTimeout(()=>{ reject(new Error("Web3ClientTimeout")); }, timeout || 10000));
+
+      allRequestsFailed = Promise.all(allRequestsFailed.map((request)=>{
+        return new Promise((resolve)=>{ request.catch(resolve); })
+      })).then(()=>{ return });
+
+      return Promise.race([...allRequestsInParallel, timeoutPromise, allRequestsFailed])
+
     } else { // failover
 
       const provider = await Solana.getProvider(blockchain);

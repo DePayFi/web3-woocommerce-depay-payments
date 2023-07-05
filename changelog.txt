@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-7-5 - version 1.17.10
+* fixes metamask mobile wallet connection
+
 2023-6-16 - version 1.17.9
 * fix polygon logo
 * fix some solana routing (widget)
