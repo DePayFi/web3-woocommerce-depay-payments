@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-8-3 - version 1.18.0
+* adds SolanaPay support
+
 2023-7-5 - version 1.17.10
 * fixes metamask mobile wallet connection
 
