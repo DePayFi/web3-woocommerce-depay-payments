@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-8-16 - version 1.18.3
+* tested with latest WooCommerce version
+
 2023-8-16 - version 1.18.2
 * fixes WalletConnect v2 issue
 
