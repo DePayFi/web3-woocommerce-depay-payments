@@ -63,13 +63,15 @@ const displayCheckout = async()=>{
       track: {
         method: (payment)=>{
           return new Promise((resolve, reject)=>{
-            wp.apiRequest({
-              path: `/depay/wc/checkouts/${checkoutId}/track`,
-              method: 'POST',
-              data: payment
-            })
-            .done((result)=>resolve({ status: 200 }))
-            .fail((request, status)=>reject(status))
+            try {
+              wp.apiRequest({
+                path: `/depay/wc/checkouts/${checkoutId}/track`,
+                method: 'POST',
+                data: payment
+              })
+              .done(()=>resolve({ status: 200 }))
+              .fail((request, status)=>reject(status))
+            } catch { reject() }
           })
         },
         poll: {
