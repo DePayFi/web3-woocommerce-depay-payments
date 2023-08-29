@@ -47,7 +47,7 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 				'title'       => 'Description',
 				'type'        => 'textarea',
 				'description' => 'Payment method description that the customer will see on your checkout.',
-				'default'     => 'The goods are yours. No money needed!!!',
+				'default'     => '',
 				'desc_tip'    => true,
 			)
 		);
