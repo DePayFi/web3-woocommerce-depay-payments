@@ -35,8 +35,6 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 
 	public function init_form_fields() {
 
-		error_log("init_form_fields!!!");
-
 		$this->form_fields = array(
 			'title' => array(
 				'title'       => 'Title',
