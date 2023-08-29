@@ -17,7 +17,7 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 		$title 										= get_option( 'depay_wc_checkout_title' );
 		$this->title  						= empty($title) ? 'DePay' : $title;
 		$description 							= get_option( 'depay_wc_checkout_description' );
-		$this->description  			= empty($title) ? null : $description;
+		$this->description  			= empty($description) ? null : $description;
 	}
 
 	public function get_icon() {
@@ -34,6 +34,8 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 	}
 
 	public function init_form_fields() {
+
+		error_log("init_form_fields!!!");
 
 		$this->form_fields = array(
 			'title' => array(

@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-8-29 - version 1.19.2
+* fixes setting checkout description
+
 2023-8-29 - version 1.19.1
 * removes default value for additional description
 
