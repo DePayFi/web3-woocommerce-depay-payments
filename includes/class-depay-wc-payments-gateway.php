@@ -21,7 +21,7 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 	}
 
 	public function get_title() {
-		return '<div style="flex-grow: 1;">'. $this->title . '</div>';    
+		return '<div style="flex-grow: 1;">' . $this->title . '</div>';    
 	}
 
 	public function get_icon() {
@@ -33,7 +33,7 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 		$size = 30 * pow(0.95, count($blockchains));
 		foreach ( array_reverse( $blockchains ) as $blockchain ) {
 			$url = esc_url( plugin_dir_url( __FILE__ ) . 'images/blockchains/' . $blockchain . '.svg' );
-			$icon = $icon . "<img title='Payments on ". ucfirst($blockchain) ."' style='height: ". $size ."px; margin-right: 2px; vertical-align: middle;' src='" . $url . "'/>";
+			$icon = $icon . "<img title='Payments on " . ucfirst($blockchain) . "' style='height: " . $size . "px; margin-right: 2px; vertical-align: middle;' src='" . $url . "'/>";
 		}
 		return $icon . '</div>';    
 	}
@@ -160,7 +160,7 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 		$accepted_payments = json_decode( get_option( 'depay_wc_accepted_payments' ) );
 
 		foreach ( $accepted_payments as $accepted_payment ) {
-			$requests[] = array( 'url' => sprintf( 'https://public.depay.com/conversions/%s/%s/USD?amount='  . $price_format_specifier, $accepted_payment->blockchain, $accepted_payment->token, $total_in_usd ), 'type' => 'GET' );
+			$requests[] = array( 'url' => sprintf( 'https://public.depay.com/conversions/%s/%s/USD?amount=' . $price_format_specifier, $accepted_payment->blockchain, $accepted_payment->token, $total_in_usd ), 'type' => 'GET' );
 			$requests[] = array( 'url' => sprintf( 'https://public.depay.com/tokens/decimals/%s/%s', $accepted_payment->blockchain, $accepted_payment->token ), 'type' => 'GET' );
 		}
 
