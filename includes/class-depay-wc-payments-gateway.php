@@ -20,17 +20,22 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 		$this->description  			= empty($description) ? null : $description;
 	}
 
+	public function get_title() {
+		return '<div style="flex-grow: 1;">'. $this->title . '</div>';    
+	}
+
 	public function get_icon() {
-		$icon = '';
+		$icon = '<style>.payment_method_depay_wc_payments label { display: flex !important; align-items: center; }</style><div style="display: inline; flex-grow: 0;">';
 		if ( empty( get_option( 'depay_wc_blockchains' ) ) ) {
 			return $icon;
 		}
 		$blockchains = json_decode( get_option( 'depay_wc_blockchains' ) );
+		$size = 30 * pow(0.95, count($blockchains));
 		foreach ( array_reverse( $blockchains ) as $blockchain ) {
 			$url = esc_url( plugin_dir_url( __FILE__ ) . 'images/blockchains/' . $blockchain . '.svg' );
-			$icon = $icon . "<img style='height: 40px; vertical-align: middle;' src='" . $url . "'/>";
+			$icon = $icon . "<img title='Payments on ". ucfirst($blockchain) ."' style='height: ". $size ."px; margin-right: 2px; vertical-align: middle;' src='" . $url . "'/>";
 		}
-		return $icon;    
+		return $icon . '</div>';    
 	}
 
 	public function init_form_fields() {
@@ -126,18 +131,15 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 			}
 		}
 
+		$price_decimals = get_option( 'woocommerce_price_num_decimals' );
+		$price_format_specifier = '%.' . $price_decimals . 'f';
 		if ( $token_denominated ) {
-			$token_price = wp_remote_get( sprintf( 'https://public.depay.com/tokens/prices/%s/%s', $token->blockchain, $token->address ) );
-			if ( is_wp_error($token_price) || wp_remote_retrieve_response_code( $token_price ) != 200 ) {
+			$usd_amount = wp_remote_get( sprintf( 'https://public.depay.com/conversions/USD/%s/%s?amount=' . $price_format_specifier, $token->blockchain, $token->address, $total ) );
+			if ( is_wp_error($usd_amount) || wp_remote_retrieve_response_code( $usd_amount ) != 200 ) {
 				DePay_WC_Payments::log( 'Price request failed!' );
 				throw new Exception( 'Price request failed!' );
 			}
-			$token_decimals = wp_remote_get( sprintf( 'https://public.depay.com/tokens/decimals/%s/%s', $token->blockchain, $token->address ) );
-			if ( is_wp_error($token_decimals) || wp_remote_retrieve_response_code( $token_decimals ) != 200 ) {
-				DePay_WC_Payments::log( 'Decimals request failed!' );
-				throw new Exception( 'Decimals request failed!' );
-			}
-			$total_in_usd = bcmul( $token_price['body'], $total, $token_decimals['body'] );
+			$total_in_usd = bcmul( $usd_amount['body'], 1, 3 );
 		} else if ( 'USD' == $currency ) {
 			$total_in_usd = $total;
 		} else {
@@ -158,7 +160,7 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 		$accepted_payments = json_decode( get_option( 'depay_wc_accepted_payments' ) );
 
 		foreach ( $accepted_payments as $accepted_payment ) {
-			$requests[] = array( 'url' => sprintf( 'https://public.depay.com/tokens/prices/%s/%s', $accepted_payment->blockchain, $accepted_payment->token ), 'type' => 'GET' );
+			$requests[] = array( 'url' => sprintf( 'https://public.depay.com/conversions/%s/%s/USD?amount='  . $price_format_specifier, $accepted_payment->blockchain, $accepted_payment->token, $total_in_usd ), 'type' => 'GET' );
 			$requests[] = array( 'url' => sprintf( 'https://public.depay.com/tokens/decimals/%s/%s', $accepted_payment->blockchain, $accepted_payment->token ), 'type' => 'GET' );
 		}
 
@@ -173,7 +175,7 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 					if ( $token_denominated && $token && $token->blockchain === $accepted_payment->blockchain && $token->address === $accepted_payment->token ) {
 						$amount = $total;
 					} else {
-						$amount = $this->round_token_amount( bcdiv( $total_in_usd, $responses[$i]->body, $responses[$i+1]->body ) );
+						$amount = $this->round_token_amount( $responses[$i]->body );
 					}
 					array_push($accept, [
 						'blockchain' => $accepted_payment->blockchain,

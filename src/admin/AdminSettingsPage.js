@@ -199,12 +199,16 @@ export default function(props) {
                     <table key={ `${index}-${token.blockchain}-${token.symbol}` } className="wp-list-table widefat fixed striped table-view-list page" style={{ marginBottom: "0.4rem"}}>
                       <tr>
                         <td style={{ padding: "1rem 1rem 0.4rem 1rem", display: "flex" }}>
-                          <ReactTokenImage.TokenImage blockchain={ token.blockchain } address={ token.address } className="DePay_woocommerce_token_image"/>
+                          <div>
+                            <div style={{ position: 'relative', display: 'block' }}>
+                              <ReactTokenImage.TokenImage blockchain={ token.blockchain } address={ token.address } className="DePay_woocommerce_token_image"/>
+                              <img src={ Web3Blockchains[token.blockchain].logo } style={{ position: 'absolute', bottom: '5px', right: '0px', width: "20px", height: "20px", border: "1px solid white", borderRadius: "4px", backgroundColor: Web3Blockchains[token.blockchain].logoBackgroundColor }}/>
+                            </div>
+                          </div>
                           <div style={{ paddingLeft: "1rem", paddingBottom: "0.3rem", flex: 1 }}>
-                            <div style={{ display: 'flex', justifyontent: 'space-between' }}>
+                            <div style={{ display: 'flex', justifyontent: 'space-between', fontSize: '1rem' }}>
                               <div>
                                 <strong>{ token.symbol }</strong> ({ token.name }) on { Web3Blockchains[token.blockchain].label }
-                                <img src={ Web3Blockchains[token.blockchain].logo } style={{ position: 'relative', top: '3px', left: '5px', width: "18px", height: "18px", borderRadius: "99px", background: "white" }}/>
                               </div>
                               <div class="row-actions visible" style={{ marginLeft: "auto" }}>
                                 <span className="delete">

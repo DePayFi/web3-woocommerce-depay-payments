@@ -2,15 +2,16 @@
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@depay/solana-web3.js'), require('@depay/web3-client'), require('@depay/web3-tokens'), require('react'), require('@depay/web3-blockchains')) :
   typeof define === 'function' && define.amd ? define(['exports', '@depay/solana-web3.js', '@depay/web3-client', '@depay/web3-tokens', 'react', '@depay/web3-blockchains'], factory) :
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.ReactTokenImage = {}, global.SolanaWeb3js, global.Web3Client, global.Web3Tokens, global.React, global.Web3Blockchains));
-}(this, (function (exports, solanaWeb3_js, web3Client, web3Tokens, React, Blockchains) { 'use strict';
+}(this, (function (exports, solanaWeb3_js, web3Client, Token, React, Blockchains) { 'use strict';
 
   function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
+  var Token__default = /*#__PURE__*/_interopDefaultLegacy(Token);
   var React__default = /*#__PURE__*/_interopDefaultLegacy(React);
   var Blockchains__default = /*#__PURE__*/_interopDefaultLegacy(Blockchains);
 
-  let supported = ['ethereum', 'bsc', 'polygon', 'solana', 'fantom', 'velas'];
-  supported.evm = ['ethereum', 'bsc', 'polygon', 'fantom', 'velas'];
+  let supported = ['ethereum', 'bsc', 'polygon', 'solana', 'fantom', 'arbitrum', 'avalanche', 'gnosis', 'optimism', 'base'];
+  supported.evm = ['ethereum', 'bsc', 'polygon', 'fantom', 'arbitrum', 'avalanche', 'gnosis', 'optimism', 'base'];
   supported.solana = ['solana'];
 
   const _jsxFileName = "/Users/sebastian/Work/DePay/react-token-image/src/index.js"; function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
@@ -21,34 +22,46 @@
 
   let TokenImage = function(props){
 
-    const [src, _setSrc] = React.useState();
-    const [source, setSource] = React.useState();
+    const [src, setSrc] = React.useState();
+    const [source, _setSource] = React.useState();
 
     const blockchain = props.blockchain.toLowerCase();
-    const NATIVE = Blockchains__default['default'].findByName(blockchain).currency.address;
     const address = props.address;
     const id = props.id;
     const date = new Date();
-    const localStorageKey = ['react-token-image', blockchain, address, [date.getFullYear(), date.getMonth(), date.getDate()].join('-')].join('-');
+    const getLocalStorageKey = (blockchain, address)=>{
+      return [
+        'react-token-image',
+        blockchain,
+        address,
+        [date.getFullYear(), date.getMonth(), date.getDate()].join('-')
+      ].join('-')
+    };
 
-    const setSrc = (_src)=>{
-      localStorage.setItem(localStorageKey, _src);
-      _setSrc(_src);
+    const setSource = (src, source)=>{
+      setSrc(src);
+      _setSource(source);
+      if(source != 'unknown') {
+        localStorage.setItem(getLocalStorageKey(blockchain, address), src);
+      }
     };
 
     React.useEffect(()=>{
-      const storedImage = localStorage.getItem(localStorageKey);
-      if(storedImage && storedImage.length && storedImage != UNKNOWN_IMAGE) { return setSrc(storedImage) }
-      if(NATIVE.toLowerCase() == address.toLowerCase()) {
-        setSrc(Blockchains__default['default'].findByName(blockchain).logo);
+      const storedImage = localStorage.getItem(getLocalStorageKey(blockchain, address));
+      if(storedImage && storedImage.length && storedImage != UNKNOWN_IMAGE) {
+        return setSource(storedImage, 'stored')
+      }
+      const foundMajorToken = Blockchains__default['default'][blockchain].tokens.find((token)=> token.address.toLowerCase() === address.toLowerCase());
+      if(foundMajorToken) {
+        setSource(foundMajorToken.logo, 'web3-blockchains');
       } else {
         if(supported.evm.includes(blockchain)) {
-          setSource('repository');
-          setSrc(logoFromRepository({ blockchain, address }));
+          setSource(logoFromRepository({ blockchain, address }), 'repository');
         } else if(blockchain === 'solana') {
-          setSource('metaplex');
           logoFromMetaplex({ blockchain, address }).then((image)=>{
-            setSrc(image);
+            setSource(image, 'metaplex');
+          }).catch((error)=>{
+            setSource(logoFromRepository({ blockchain, address }), 'repository');
           });
         }
       }
@@ -59,7 +72,7 @@
         try {
 
           let mintPublicKey = new solanaWeb3_js.PublicKey(address);
-          let metaDataPublicKey = new solanaWeb3_js.PublicKey(web3Tokens.Token.solana.METADATA_ACCOUNT);
+          let metaDataPublicKey = new solanaWeb3_js.PublicKey(Token__default['default'].solana.METADATA_ACCOUNT);
 
           let seed = [
             solanaWeb3_js.Buffer.from('metadata'),
@@ -72,9 +85,10 @@
           let metaData = await web3Client.request({
             blockchain, 
             address: tokenMetaDataPublicKey.toString(),
-            api: web3Tokens.Token.solana.METADATA_LAYOUT,
+            api: Token__default['default'].solana.METADATA_LAYOUT,
             cache: 86400000, // 1 day
           });
+
           
           if(_optionalChain([metaData, 'optionalAccess', _ => _.data, 'optionalAccess', _2 => _2.uri])) {
 
@@ -86,29 +100,25 @@
                   if(json && json.image) {
                     resolve(json.image);
                   } else {
-                    resolve('');
+                    reject('image not found on metaplex');
                   }
-                }).catch(()=>resolve(''));
+                }).catch(()=>reject('image not found on metaplex'));
             } else {
-              resolve('');
+              reject('image not found on metaplex');
             }
           } else {
-            resolve('');
+            reject('image not found on metaplex');
           }
 
-        } catch (e) { resolve(''); }
+        } catch (e) { reject('image not found on metaplex'); }
       })
     };
     
     const logoFromRepository = ({ blockchain, address })=> {
-      if(['ethereum', 'bsc', 'polygon', 'fantom', 'solana'].includes(blockchain)) {
-        return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${mapBlockchainName(blockchain)}/assets/${address}/logo.png`
-      } else if(blockchain == 'velas'){
-        return `https://raw.githubusercontent.com/wagyuswapapp/assets/master/blockchains/velas/assets/${address.toLowerCase()}/logo.png`
-      }
+      return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${mapBlockchainNameToTrustWalletAssets(blockchain)}/assets/${address}/logo.png`
     };
 
-    const mapBlockchainName = (blockchain)=>{
+    const mapBlockchainNameToTrustWalletAssets = (blockchain)=>{
       switch (blockchain) {
         case 'ethereum':
           return 'ethereum'
@@ -120,14 +130,23 @@
           return 'solana'
         case 'fantom':
           return 'fantom'
+        case 'arbitrum':
+          return 'arbitrum'
+        case 'avalanche':
+          return 'avalanchec'
+        case 'gnosis':
+          return 'xdai'
+        case 'optimism':
+          return 'optimism'
+        case 'base':
+          return 'base'
         default:
           throw('DePayReactTokenImage: Unknown blockchain')
       }
     };
 
     const setUnknown = ()=>{
-      setSource('unknown');
-      setSrc(UNKNOWN_IMAGE);
+      setSource(UNKNOWN_IMAGE, 'unknown');
     };
 
     const uriToImage = (tokenURI)=>{
@@ -145,8 +164,7 @@
             if(image.match(/^ipfs/)) {
               image = `https://ipfs.io/ipfs/${image.split('://')[1]}`;
             } 
-            setSource('meta');
-            setSrc(image);
+            setSource(image, 'meta');
           } else {
             setUnknown();
           }
@@ -155,12 +173,13 @@
     };
 
     const handleLoadError = (error)=> {
+      delete localStorage[getLocalStorageKey(blockchain, address)];
       if(source == 'metaplex') {
-        setSource('repository');
-        setSrc(logoFromRepository({ blockchain, address }));
+        setSource(logoFromRepository({ blockchain, address }), 'repository');
+      } else if(source == 'web3-blockchains') {
+        setSource(logoFromRepository({ blockchain, address }), 'repository');
       } else if(source == 'repository') {
-        setSource('depay');
-        setSrc(`https://integrate.depay.com/tokens/${blockchain}/${address}/image`);
+        setSource(`https://integrate.depay.com/tokens/${blockchain}/${address}/image`, 'depay');
       } else if (source == 'depay' && supported.evm.includes(blockchain)) {
         if(id) {
           web3Client.request({ blockchain, address, api: uriAPI, method: 'uri', params: [id] }).then((uri)=>{
@@ -175,13 +194,17 @@
       }
     };
 
-    if(src == undefined) { return null }
+    if(src == undefined) {
+      return(
+        React__default['default'].createElement('div', { className:  props.className , __self: this, __source: {fileName: _jsxFileName, lineNumber: 201}} )
+      )
+    }
 
     return(
       React__default['default'].createElement('img', {
         className:  props.className ,
         src:  src ,
-        onError:  handleLoadError , __self: this, __source: {fileName: _jsxFileName, lineNumber: 179}}
+        onError:  handleLoadError , __self: this, __source: {fileName: _jsxFileName, lineNumber: 206}}
       )
     )
   };

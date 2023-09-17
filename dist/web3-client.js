@@ -32,6 +32,7 @@
     return getWindow()._Web3ClientConfiguration
   };
 
+  function _optionalChain$3(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
   const BATCH_INTERVAL$1 = 10;
   const CHUNK_SIZE$1 = 99;
 
@@ -51,37 +52,46 @@
     }
 
     requestChunk(chunk, endpoint) {
-      
-      const request = chunk.map((inflight) => inflight.request);
 
-      return ethers.ethers.utils.fetchJson(endpoint, JSON.stringify(request))
-        .then((result) => {
-          // For each result, feed it to the correct Promise, depending
-          // on whether it was a success or error
-          chunk.forEach((inflightRequest, index) => {
-            const payload = result[index];
-            if (payload.error) {
-              const error = new Error(payload.error.message);
-              error.code = payload.error.code;
-              error.data = payload.error.data;
-              inflightRequest.reject(error);
-            }
-            else {
-              inflightRequest.resolve(payload.result);
-            }
-          });
-        }).catch((error) => {
-          if(error && error.code == 'SERVER_ERROR') {
-            const index = this._endpoints.indexOf(this._endpoint)+1;
-            this._failover();
-            this._endpoint = index >= this._endpoints.length ? this._endpoints[0] : this._endpoints[index];
-            this.requestChunk(chunk, this._endpoint);
-          } else {
-            chunk.forEach((inflightRequest) => {
-              inflightRequest.reject(error);
+      try {
+
+        const request = chunk.map((inflight) => inflight.request);
+        return ethers.ethers.utils.fetchJson(endpoint, JSON.stringify(request))
+          .then((result) => {
+            // For each result, feed it to the correct Promise, depending
+            // on whether it was a success or error
+            chunk.forEach((inflightRequest, index) => {
+              const payload = result[index];
+              if (_optionalChain$3([payload, 'optionalAccess', _ => _.error])) {
+                const error = new Error(payload.error.message);
+                error.code = payload.error.code;
+                error.data = payload.error.data;
+                inflightRequest.reject(error);
+              } else if(_optionalChain$3([payload, 'optionalAccess', _2 => _2.result])) {
+                inflightRequest.resolve(payload.result);
+              } else {
+                inflightRequest.reject();
+              }
             });
-          }
-        })
+          }).catch((error) => {
+            if(error && error.code == 'SERVER_ERROR') {
+              const index = this._endpoints.indexOf(this._endpoint)+1;
+              this._failover();
+              this._endpoint = index >= this._endpoints.length ? this._endpoints[0] : this._endpoints[index];
+              this.requestChunk(chunk, this._endpoint);
+            } else {
+              chunk.forEach((inflightRequest) => {
+                inflightRequest.reject(error);
+              });
+            }
+          })
+
+      } catch (e) {
+
+        chunk.forEach((inflightRequest) => {
+          inflightRequest.reject();
+        });
+      }
     }
       
     send(method, params) {
@@ -240,6 +250,7 @@
     setProvider: setProvider$2,
   };
 
+  function _optionalChain$2(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
   const BATCH_INTERVAL = 10;
   const CHUNK_SIZE = 99;
 
@@ -282,13 +293,15 @@
             // on whether it was a success or error
             chunk.forEach((inflightRequest, index) => {
               const payload = result[index];
-              if (payload.error) {
+              if (_optionalChain$2([payload, 'optionalAccess', _ => _.error])) {
                 const error = new Error(payload.error.message);
                 error.code = payload.error.code;
                 error.data = payload.error.data;
                 inflightRequest.reject(error);
-              } else {
+              } else if(payload) {
                 inflightRequest.resolve(payload);
+              } else {
+                inflightRequest.reject();
               }
             });
           }).catch(handleError)
@@ -445,8 +458,8 @@
     setProvider: setProvider$1,
   };
 
-  let supported = ['ethereum', 'bsc', 'polygon', 'solana', 'fantom', 'arbitrum', 'avalanche', 'gnosis', 'optimism'];
-  supported.evm = ['ethereum', 'bsc', 'polygon', 'fantom', 'arbitrum', 'avalanche', 'gnosis', 'optimism'];
+  let supported = ['ethereum', 'bsc', 'polygon', 'solana', 'fantom', 'arbitrum', 'avalanche', 'gnosis', 'optimism', 'base'];
+  supported.evm = ['ethereum', 'bsc', 'polygon', 'fantom', 'arbitrum', 'avalanche', 'gnosis', 'optimism', 'base'];
   supported.solana = ['solana'];
 
   function _optionalChain$1(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
@@ -686,6 +699,18 @@
     }
   };
 
+  const tupleParamsToMethodSignature = (components) =>{
+    return `(${
+    components.map((component)=>{
+      if(component.type === 'tuple') {
+        return tupleParamsToMethodSignature(component.components)
+      } else {
+        return component.type 
+      }
+    }).join(',')
+  })`
+  };
+
   var estimateEVM = ({ provider, from, to, value, method, api, params }) => {
     if(typeof api == "undefined"){
       return provider.estimateGas({ from, to, value })
@@ -694,11 +719,17 @@
       let fragment = contract.interface.fragments.find((fragment) => {
         return fragment.name == method
       });
+      let contractArguments = getContractArguments({ contract, method, params });
       if(contract[method] === undefined) {
-        method = `${method}(${fragment.inputs.map((input)=>input.type).join(',')})`;
+        method = `${method}(${fragment.inputs.map((input)=>{
+        if(input.type === 'tuple') {
+          return tupleParamsToMethodSignature(input.components)
+        } else {
+          return input.type
+        }
+      }).join(',')})`;
       }
       let contractMethod = contract.estimateGas[method];
-      let contractArguments = getContractArguments({ contract, method, params });
       if(contractArguments) {
         return contractMethod(...contractArguments, { from, value })
       } else {

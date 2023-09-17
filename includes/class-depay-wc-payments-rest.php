@@ -223,7 +223,19 @@ class DePay_WC_Payments_Rest {
 				// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
 				'polygon' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
 				// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
-				'solana' => '5hqJfrh7SrokFqj16anNqACyUv1PCg7oEqi7oUya1kMQ'
+				'solana' => '5hqJfrh7SrokFqj16anNqACyUv1PCg7oEqi7oUya1kMQ',
+				// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
+				'fantom' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
+				// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
+				'gnosis' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
+				// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
+				'avalanche' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
+				// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
+				'arbitrum' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
+				// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
+				'optimism' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
+				// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
+				'base' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb'
 		];
 
 		$post = wp_remote_post( 'https://public.depay.com/payments',
@@ -248,7 +260,8 @@ class DePay_WC_Payments_Rest {
 					'forward_to' => $order->get_checkout_order_received_url(),
 					'forward_on_failure' => false,
 					'fee_amount' => $fee_amount,
-					'fee_receiver' => $fee_receivers[$accepted_payment->blockchain]
+					'fee_receiver' => $fee_receivers[$accepted_payment->blockchain],
+					'deadline' => $request->get_param( 'deadline' )
 				]),
 				'method' => 'POST',
 				'data_format' => 'body'
