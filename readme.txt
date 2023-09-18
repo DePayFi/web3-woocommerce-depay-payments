@@ -39,7 +39,7 @@ DePay supports [most crypto wallets](https://depay.com/wallets).
 
 == Supported Tokens ==
 
-All* ERC20 tokens on Ethereum, All* BEP20 tokens on BSC, All* ERC20 tokens on Polygon, All* SPL tokens on Solana.
+All* standard tokens.
 
 * if the token standard is strictly adhered to and the token is convertible on a supported decentralized exchange. Check DePay’s documentation for further details about [what tokens are supported](https://depay.com/docs/payments/supported/tokens/).
 
