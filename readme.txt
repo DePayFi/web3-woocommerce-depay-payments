@@ -26,6 +26,12 @@ Accept thousands of different tokens on multiple blockchains with on-the-fly con
 * BNB Smart Chain
 * Polygon
 * Solana
+* Fantom
+* Gnosis
+* Avalanche
+* Arbitrum
+* Optimism
+* Base
 
 == Supported Wallets ==
 
