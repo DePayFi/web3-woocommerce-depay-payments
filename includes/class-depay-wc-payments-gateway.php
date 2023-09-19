@@ -21,11 +21,11 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 	}
 
 	public function get_title() {
-		return '<div style="flex-grow: 1;">' . $this->title . '</div>';    
+		return '<div style="flex-grow: 1; margin-left: 0.26rem !important; padding-right: 0.6rem;">' . $this->title . '</div>';    
 	}
 
 	public function get_icon() {
-		$icon = '<style>.payment_method_depay_wc_payments { display: flex; } .payment_method_depay_wc_payments label { display: flex !important; flex-grow: 1; align-items: center; }</style><div style="display: inline; flex-grow: 0;">';
+		$icon = '<style>.payment_method_depay_wc_payments { display: flex; flex-direction: column; } .payment_method_depay_wc_payments label { display: flex !important; flex-grow: 1; align-items: center; }</style><div style="display: inline; flex-grow: 0;">';
 		if ( empty( get_option( 'depay_wc_blockchains' ) ) ) {
 			return $icon;
 		}
@@ -33,7 +33,7 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 		$size = 30 * pow(0.95, count($blockchains));
 		foreach ( array_reverse( $blockchains ) as $blockchain ) {
 			$url = esc_url( plugin_dir_url( __FILE__ ) . 'images/blockchains/' . $blockchain . '.svg' );
-			$icon = $icon . "<img title='Payments on " . ucfirst($blockchain) . "' style='height: " . $size . "px; margin-right: 2px; vertical-align: middle;' src='" . $url . "'/>";
+			$icon = $icon . "<img title='Payments on " . ucfirst($blockchain) . "' style='height: " . $size . "px; margin-right: 2px; margin-bottom: 2px; vertical-align: middle;' src='" . $url . "'/>";
 		}
 		return $icon . '</div>';    
 	}
