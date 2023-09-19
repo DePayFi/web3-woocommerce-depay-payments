@@ -1,7 +1,7 @@
 {
   "name": "@depay/web3-woocommerce-depay-payments",
   "moduleName": "WooCommerceDePayPayments",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "WooCommerce DePay plugin to accept Web3 payments directly into your wallet with on-the-fly conversion.",
   "main": "./dist/umd/index.js",
   "module": "./dist/esm/index.js",
@@ -29,8 +29,8 @@
   "homepage": "https://github.com/DePayFi/web3-woocommerce-depay-payments#readme",
   "private": false,
   "dependencies": {
-    "@depay/web3-blockchains": "^6.1.0",
-    "@depay/widgets": "^7.16.5"
+    "@depay/web3-blockchains": "^9.2.5",
+    "@depay/widgets": "^12.1.0"
   },
   "engines": {
     "node": ">=16"
@@ -39,7 +39,6 @@
     "@babel/core": "^7.12.9",
     "@babel/preset-env": "^7.12.7",
     "@babel/preset-react": "^7.12.7",
-    "@depay/web3-constants": "^6.2.1",
     "@rollup/plugin-commonjs": "^18.0.0",
     "@rollup/plugin-node-resolve": "^11.2.1",
     "@rollup/plugin-replace": "^2.4.2",

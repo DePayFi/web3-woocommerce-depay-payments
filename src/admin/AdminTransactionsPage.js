@@ -1,4 +1,4 @@
-import { Blockchain } from "@depay/web3-blockchains"
+import Blockchains from "@depay/web3-blockchains"
 
 const { useState, useEffect, useRef } = window.React
 const { Fragment } = window.wp.element
@@ -155,11 +155,11 @@ export default function(props) {
       { display: <div>{ (['PENDING', 'VALIDATING'].includes(transaction.status)) && <div>ATTEMPT<br/></div> }<div>{transaction.status}</div>{transaction.failed_reason && <div>{transaction.failed_reason}</div>}</div>, value: transaction.status },
       { display: <a target="blank" rel="noopener noreferrer" href={`/wp-admin/edit.php?s=${transaction.order_id}&post_status=all&post_type=shop_order&action=-1&m=0&_customer_user&paged=1&action2=-1`}>{transaction.order_id}</a>, value: transaction.order_id },
       { display: transaction.blockchain, value: transaction.blockchain },
-      { display: <a target="blank" rel="noopener noreferrer" href={Blockchain.findByName(transaction.blockchain).explorerUrlFor({transaction: transaction.transaction_id})}>{transaction.transaction_id}</a>, value: transaction.transaction_id },
-      { display: <a target="blank" rel="noopener noreferrer" href={Blockchain.findByName(transaction.blockchain).explorerUrlFor({address: transaction.sender_id})}>{transaction.sender_id}</a>, value: transaction.sender_id },
-      { display: <a target="blank" rel="noopener noreferrer" href={Blockchain.findByName(transaction.blockchain).explorerUrlFor({address: transaction.receiver_id})}>{transaction.receiver_id}</a>, value: transaction.receiver_id },
+      { display: <a target="blank" rel="noopener noreferrer" href={Blockchains[transaction.blockchain].explorerUrlFor({transaction: transaction.transaction_id})}>{transaction.transaction_id}</a>, value: transaction.transaction_id },
+      { display: <a target="blank" rel="noopener noreferrer" href={Blockchains[transaction.blockchain].explorerUrlFor({address: transaction.sender_id})}>{transaction.sender_id}</a>, value: transaction.sender_id },
+      { display: <a target="blank" rel="noopener noreferrer" href={Blockchains[transaction.blockchain].explorerUrlFor({address: transaction.receiver_id})}>{transaction.receiver_id}</a>, value: transaction.receiver_id },
       { display: transaction.amount, value: transaction.amount },
-      { display: <a target="blank" rel="noopener noreferrer" href={Blockchain.findByName(transaction.blockchain).explorerUrlFor({token: transaction.token_id})}>{transaction.token_id}</a>, value: transaction.token_id },
+      { display: <a target="blank" rel="noopener noreferrer" href={Blockchains[transaction.blockchain].explorerUrlFor({token: transaction.token_id})}>{transaction.token_id}</a>, value: transaction.token_id },
       { display: transaction.confirmed_by, value: transaction.confirmed_by },
       { display: (transaction.confirmed_at !== '1000-01-01 00:00:00' ? (new Date(transaction.confirmed_at)).toLocaleString() : ''), value: (new Date(transaction.confirmed_at)).toLocaleString() },
       { display: <Dropdown
