@@ -73,8 +73,9 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 				'created_at' => current_time( 'mysql' )
 			));
 			if ( false === $result ) {
-				DePay_WC_Payments::log( 'Storing checkout failed!' );
-				throw new Exception( 'Storing checkout failed!!' );
+				$error_message = $wpdb->last_error;
+				DePay_WC_Payments::log( 'Storing checkout failed: ' . $error_message );
+				throw new Exception( 'Storing checkout failed: ' . $error_message );
 			}
 			
 			return( [
