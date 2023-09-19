@@ -147,6 +147,6 @@ class DePay_WC_Payments {
 	
 	public static function log( $text ) {
 		global $wpdb;
-		$wpdb->insert( 'wp_wc_depay_logs', array( 'log' => $text, 'created_at' => current_time( 'mysql' ) ) );
+		$wpdb->insert( "{$wpdb->prefix}wc_depay_logs", array( 'log' => $text, 'created_at' => current_time( 'mysql' ) ) );
 	}
 }
