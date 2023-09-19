@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-9-19 - version 2.0.3
+* fixes checkout styling
+
 2023-9-19 - version 2.0.2
 * fix admin transaction screen for new blockchains
 
