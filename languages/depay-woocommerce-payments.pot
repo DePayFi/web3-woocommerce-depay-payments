@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the package.
 msgid ""
 msgstr ""
-"Project-Id-Version: DePay WooCommerce Payments 2.1.2\n"
+"Project-Id-Version: DePay WooCommerce Payments 2.1.4\n"
 "Report-Msgid-Bugs-To: "
 "support@depay.com\n"
 "MIME-Version: 1.0\n"
