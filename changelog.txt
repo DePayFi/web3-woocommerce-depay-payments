@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-9-24 - version 2.1.5
+* fix checkout option alignment
+
 2023-9-23 - version 2.1.4
 * fix metamask mobile connection
 
