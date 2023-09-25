@@ -35,12 +35,16 @@ const feeReceivers = {
 const displayCheckout = async()=>{
   if ( window.location.hash.startsWith( '#wc-depay-checkout-' ) ) {
     const checkoutId = window.location.hash.match(/wc-depay-checkout-(.*?)@/)[1]
-    const accept = JSON.parse(await wp.apiRequest({ 
+    const response = JSON.parse(await wp.apiRequest({ 
       path: `/depay/wc/checkouts/${checkoutId}`,
       method: 'POST'
     }))
+    if(response.redirect) {
+      window.location = response.redirect
+      return
+    }
     let configuration = { 
-      accept: accept.map((_accept)=>{
+      accept: response.map((_accept)=>{
         return {..._accept,
           fee: { amount: '1.5%', receiver: feeReceivers[_accept.blockchain] }
         }

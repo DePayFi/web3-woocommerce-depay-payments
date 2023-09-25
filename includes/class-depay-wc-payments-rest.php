@@ -100,7 +100,17 @@ class DePay_WC_Payments_Rest {
 			)
 		);
 		$order = wc_get_order( $order_id );
-		$response = rest_ensure_response( $accept );
+
+		if( $order->has_status('completed') ) {
+			$response = rest_ensure_response( 
+				json_encode( [
+					'redirect' => $order->get_checkout_order_received_url()
+				] )
+			);
+		} else {
+			$response = rest_ensure_response( $accept );
+		}
+
 		$response->header( 'X-Checkout', json_encode( [ 
 			'request_id' => $id,
 			'checkout_id' => $checkout_id,
@@ -173,6 +183,11 @@ class DePay_WC_Payments_Rest {
 		$transaction_id = $request->get_param( 'transaction' );
 
 		if ( empty($transaction_id) ) { // PAYMENT TRACE
+
+			if ( $order->has_status('completed') ) {
+		    DePay_WC_Payments::log( 'Order has been completed already!' );
+				throw new Exception( 'Order has been completed already!' );
+			}
 
 			$result = $wpdb->insert( "{$wpdb->prefix}wc_depay_transactions", array(
 				'order_id' => $order_id,

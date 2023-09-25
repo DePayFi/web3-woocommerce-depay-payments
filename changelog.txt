@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-9-25 - version 2.1.6
+* prevents performing a payment for an already completed order
+
 2023-9-24 - version 2.1.5
 * fix checkout option alignment
 
