@@ -101,7 +101,7 @@ class DePay_WC_Payments_Rest {
 		);
 		$order = wc_get_order( $order_id );
 
-		if( $order->has_status('completed') || $order->has_status('processing') ) {
+		if ( $order->has_status('completed') || $order->has_status('processing') ) {
 			$response = rest_ensure_response( 
 				json_encode( [
 					'redirect' => $order->get_checkout_order_received_url()
@@ -185,7 +185,7 @@ class DePay_WC_Payments_Rest {
 		if ( empty($transaction_id) ) { // PAYMENT TRACE
 
 			if ( $order->has_status('completed') || $order->has_status('processing') ) {
-		    DePay_WC_Payments::log( 'Order has been completed already!' );
+				DePay_WC_Payments::log( 'Order has been completed already!' );
 				throw new Exception( 'Order has been completed already!' );
 			}
 
