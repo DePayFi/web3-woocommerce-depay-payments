@@ -37,7 +37,10 @@ const displayCheckout = async()=>{
     const checkoutId = window.location.hash.match(/wc-depay-checkout-(.*?)@/)[1]
     const response = JSON.parse(await wp.apiRequest({ 
       path: `/depay/wc/checkouts/${checkoutId}`,
-      method: 'POST'
+      method: 'POST',
+      headers: {
+        'X-WP-Nonce': wpApiSettings?.nonce
+      }
     }))
     if(response.redirect) {
       window.location = response.redirect
@@ -77,7 +80,10 @@ const displayCheckout = async()=>{
               wp.apiRequest({
                 path: `/depay/wc/checkouts/${checkoutId}/track`,
                 method: 'POST',
-                data: payment
+                data: payment,
+                headers: {
+                  'X-WP-Nonce': wpApiSettings?.nonce
+                }
               })
               .done(()=>resolve({ status: 200 }))
               .fail((request, status)=>reject(status))
@@ -89,7 +95,10 @@ const displayCheckout = async()=>{
             let response = fetch('/index.php?rest_route=/depay/wc/release', {
               method: 'POST',
               body: JSON.stringify({ checkout_id: checkoutId }),
-              headers: { "Content-Type": "application/json" }
+              headers: { 
+                "Content-Type": "application/json",
+                'X-WP-Nonce': wpApiSettings?.nonce
+              }
             })
 
             if(response.status == 200) {
