@@ -173,7 +173,7 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 		$accepted_payments = json_decode( get_option( 'depay_wc_accepted_payments' ) );
 
 		if ( null != $this->blockchain ) {
-			$accepted_payments = array_values(array_filter($accepted_payments, function ($payment) {
+			$accepted_payments = array_values( array_filter( $accepted_payments, function ( $payment ) {
 				return $payment->blockchain === $this->blockchain;
 			}));
 		}
