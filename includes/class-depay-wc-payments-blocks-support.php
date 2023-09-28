@@ -12,7 +12,6 @@ final class DePay_WC_Payments_Blocks_Support extends AbstractPaymentMethodType {
 	protected $name = DePay_WC_Payments_Gateway::GATEWAY_ID;
 
 	public function initialize() {
-		error_log('BLOCKS initialize');
 		$this->gateway = new DePay_WC_Payments_Gateway();
 		$this->settings = get_option( 'woocommerce_dummy_settings', [] );
 	}
@@ -37,7 +36,7 @@ final class DePay_WC_Payments_Blocks_Support extends AbstractPaymentMethodType {
 	public function get_payment_method_data() {
 		return [
 			'title'       => 'DePay',
-			'description' => 'Pay WEB3',
+			'description' => 'Pay with crypto',
 			'supports'    => array_filter( $this->gateway->supports, [ $this->gateway, 'supports' ] )
 		];
 	}

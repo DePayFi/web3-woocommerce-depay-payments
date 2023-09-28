@@ -64,6 +64,16 @@ class DePay_WC_Payments_Settings {
 
 		register_setting(
 			'depay_wc',
+			'depay_wc_gateway_type',
+			[
+				'type' => 'string',
+				'show_in_rest' => true,
+				'default' => 'multichain'
+			]
+		);
+
+		register_setting(
+			'depay_wc',
 			'depay_wc_checkout_description',
 			[
 				'type' => 'string',

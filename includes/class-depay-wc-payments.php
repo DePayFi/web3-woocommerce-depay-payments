@@ -16,6 +16,16 @@ class DePay_WC_Payments {
 		}
 
 		include_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-gateway.php';
+		include_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-gateway-arbitrum.php';
+		include_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-gateway-avalanche.php';
+		include_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-gateway-base.php';
+		include_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-gateway-bsc.php';
+		include_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-gateway-ethereum.php';
+		include_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-gateway-fantom.php';
+		include_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-gateway-gnosis.php';
+		include_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-gateway-optimism.php';
+		include_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-gateway-polygon.php';
+		include_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-gateway-solana.php';
 		include_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-settings.php';
 		include_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-admin.php';
 		include_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-rest.php';
@@ -68,7 +78,20 @@ class DePay_WC_Payments {
 
 	public static function add_gateway( $gateways ) {
 
-		$gateways[] = 'DePay_WC_Payments_Gateway';
+		if( get_option( 'depay_wc_gateway_type' ) == 'multigateway' ) {
+
+			$blockchains = json_decode( get_option( 'depay_wc_blockchains' ) );
+
+			foreach ($blockchains as $blockchain) {
+				$gateways[] = 'DePay_WC_Payments_' . ucfirst($blockchain) . '_Gateway';
+			}
+
+		} else {
+
+			$gateways[] = 'DePay_WC_Payments_Gateway';
+
+		}
+
 		return $gateways;
 	}
 	

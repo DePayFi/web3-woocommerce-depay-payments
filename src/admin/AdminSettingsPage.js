@@ -9,6 +9,7 @@ export default function(props) {
   const [ isSaving, setIsSaving ] = useState()
   const [ isDisabled, setIsDisabled ] = useState()
   const [ checkoutTitle, setCheckoutTitle ] = useState('DePay')
+  const [ gatewayType, setGatewayType ] = useState('multichain')
   const [ checkoutDescription, setCheckoutDescription ] = useState('')
   const [ displayedCurrency, setDisplayedCurrency ] = useState('')
   const [ tokens, setTokens ] = useState()
@@ -83,13 +84,14 @@ export default function(props) {
         })
       })),
       depay_wc_checkout_title: checkoutTitle,
+      depay_wc_gateway_type: gatewayType,
       depay_wc_checkout_description: checkoutDescription,
       depay_wc_displayed_currency: displayedCurrency,
     })
 
     settings.save().then((response) => {
-      setIsSaving(false)
-      window.location.search = '?page=wc-admin&path=%2Fdepay%2Ftransactions'
+      window.location.hash = 'depay-settings-saved'
+      window.location.reload(true)
     })
   }
 
@@ -111,6 +113,7 @@ export default function(props) {
         setTokenForDenomination(response.depay_wc_token_for_denomination?.length ? JSON.parse(response.depay_wc_token_for_denomination) : null)
         setSettingsAreLoaded(true)
         setCheckoutTitle(response.depay_wc_checkout_title || 'DePay')
+        setGatewayType(response.depay_wc_gateway_type || 'multichain')
         setCheckoutDescription(response.depay_wc_checkout_description || '')
         setDisplayedCurrency(response.depay_wc_displayed_currency || '')
       })
@@ -164,6 +167,24 @@ export default function(props) {
                   <a href="https://www.google.com/search?q=how+to+install+bcmath+php+wordpress" target="_blank">
                     Learn How
                   </a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      { window.location.hash.match('depay-settings-saved') &&
+        <div className="woocommerce-settings__wrapper">
+          <div className="woocommerce-setting">
+            <div className="woocommerce-setting__label">
+              <label for="depay-woocommerce-payment-receiver-address">
+              </label>
+            </div>
+            <div className="woocommerce-setting__input">
+              <div className="notice inline notice-success notice-alt">
+                <p>
+                  Settings have been saved successfully.
                 </p>
               </div>
             </div>
@@ -226,7 +247,7 @@ export default function(props) {
                                     id="depay-woocommerce-payment-receiver-address" 
                                     type="text" 
                                     value={ token.receiver }
-                                    onChange={ (event)=>setReceivingWalletAddress(event.target.value, index, token.blockchain) }
+                                    onChange={ (event)=> setReceivingWalletAddress(event.target.value, index, token.blockchain) }
                                   />
                                 </div>
                                 { token.error &&
@@ -292,32 +313,48 @@ export default function(props) {
               </p>
               <div>
                 <label>
-                  <span className="woocommerce-settings-historical-data__progress-label">Payment Method Name</span>
+                  <span className="woocommerce-settings-historical-data__progress-label">Checkout option (Gateway)</span>
                   <div>
-                    <select className="components-select-control__input" value={ checkoutTitle } onChange={ (e)=> setCheckoutTitle(e.target.value) }>
-                      <option value="DePay">DePay</option>
-                      <option value="Crypto">Crypto</option>
-                      <option value="Web3">Web3</option>
+                    <select className="components-select-control__input" value={ gatewayType } onChange={ (e)=> { setGatewayType(e.target.value) } }>
+                      <option value="multichain">Single checkout / multiple blockchains (recommended)</option>
+                      <option value="multigateway">Multiple checkouts / 1 per blockchain</option>
                     </select>
                   </div>
                 </label>
               </div>
+              {
+                gatewayType === 'multichain' &&
+                <div>
+                  <label>
+                    <span className="woocommerce-settings-historical-data__progress-label">Payment method name</span>
+                    <div>
+                      <select className="components-select-control__input" value={ checkoutTitle } onChange={ (e)=> { setCheckoutTitle(e.target.value) } }>
+                        <option value="DePay">DePay</option>
+                        <option value="Crypto">Crypto</option>
+                        <option value="Web3">Web3</option>
+                      </select>
+                    </div>
+                  </label>
+                </div>
+              }
             </div>
-            <div>
+            { gatewayType === 'multichain' &&
               <div>
-                <label>
-                  <span className="woocommerce-settings-historical-data__progress-label">Additional Description</span>
-                  <textarea value={ checkoutDescription } onChange={(e)=>setCheckoutDescription(e.target.value)} style={{ width: '100%' }}>
-                  </textarea>
-                </label>
+                <div>
+                  <label>
+                    <span className="woocommerce-settings-historical-data__progress-label">Additional description</span>
+                    <textarea value={ checkoutDescription } onChange={(e)=>{ setCheckoutDescription(e.target.value) } } style={{ width: '100%' }}>
+                    </textarea>
+                  </label>
+                </div>
               </div>
-            </div>
+            }
             <div>
               <div>
                 <label>
                   <span className="woocommerce-settings-historical-data__progress-label">Displayed currency (within payment widget)</span>
                   <div>
-                    <select className="components-select-control__input" value={ displayedCurrency } onChange={ (e)=> setDisplayedCurrency(e.target.value) }>
+                    <select className="components-select-control__input" value={ displayedCurrency } onChange={ (e)=> { setDisplayedCurrency(e.target.value) } }>
                       <option value="">Customer's local currency</option>
                       <option value="store">Store's default currency</option>
                     </select>
@@ -402,7 +439,6 @@ export default function(props) {
               isPrimary
               isLarge
               onClick={ () => saveSettings() }
-              disabled={ isSaving || isDisabled }
             >Save Settings</Button>
           </div>
         </div>

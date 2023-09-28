@@ -18,6 +18,7 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 		$this->title  						= empty($title) ? 'DePay' : $title;
 		$description 							= get_option( 'depay_wc_checkout_description' );
 		$this->description  			= empty($description) ? null : $description;
+		$this->blockchain				  = null;
 	}
 
 	public function get_title() {
@@ -25,22 +26,32 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 	}
 
 	public function get_icon() {
-		$icon = '<style>.payment_box.payment_method_depay_wc_payments { width: 100%; } .wc_payment_method.payment_method_depay_wc_payments { display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; } .payment_method_depay_wc_payments label { display: flex !important; flex-grow: 1; align-items: center; }</style><div style="display: inline; flex-grow: 1;">';
+		$icon = '<style>.payment_box.payment_method_depay_wc_payments { width: 100%; } .wc_payment_method.payment_method_depay_wc_payments { display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; } .payment_method_depay_wc_payments label { display: flex !important; flex-grow: 1; align-items: center; }</style><div style="display: inline; flex-grow: 1; padding-left: 6px;">';
 		if ( empty( get_option( 'depay_wc_blockchains' ) ) ) {
-			return $icon;
+		} else if ( $this->blockchain != null ) {
+			$size = 30;
+			$url = esc_url( plugin_dir_url( __FILE__ ) . 'images/blockchains/' . $this->blockchain . '.svg' );
+			$icon = $icon . "<img title='Payments on " . ucfirst($this->blockchain) . "' style='height: " . $size . "px; margin-right: 2px; margin-bottom: 2px; vertical-align: middle;' src='" . $url . "'/>";
+		} else {
+			$blockchains = json_decode( get_option( 'depay_wc_blockchains' ) );
+			$size = 30 * pow(0.95, count($blockchains));
+			foreach ( array_reverse( $blockchains ) as $blockchain ) {
+				$url = esc_url( plugin_dir_url( __FILE__ ) . 'images/blockchains/' . $blockchain . '.svg' );
+				$icon = $icon . "<img title='Payments on " . ucfirst($blockchain) . "' style='height: " . $size . "px; margin-right: 2px; margin-bottom: 2px; vertical-align: middle;' src='" . $url . "'/>";
+			}
 		}
-		$blockchains = json_decode( get_option( 'depay_wc_blockchains' ) );
-		$size = 30 * pow(0.95, count($blockchains));
-		foreach ( array_reverse( $blockchains ) as $blockchain ) {
-			$url = esc_url( plugin_dir_url( __FILE__ ) . 'images/blockchains/' . $blockchain . '.svg' );
-			$icon = $icon . "<img title='Payments on " . ucfirst($blockchain) . "' style='height: " . $size . "px; margin-right: 2px; margin-bottom: 2px; vertical-align: middle;' src='" . $url . "'/>";
-		}
-		return $icon . '</div>';    
+		return $icon . '</div>';
 	}
 
 	public function init_form_fields() {
 
 		$this->form_fields = array(
+			'enabled' => array(
+        'title'   => 'Enable/Disable',
+        'type'    => 'checkbox',
+        'label'   => 'Enable gateway',
+        'default' => 'yes'
+      ),
 			'title' => array(
 				'title'       => 'Title',
 				'type'        => 'text',
@@ -159,6 +170,12 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 		}
 
 		$accepted_payments = json_decode( get_option( 'depay_wc_accepted_payments' ) );
+
+		if($this->blockchain != null) {
+			$accepted_payments = array_values(array_filter($accepted_payments, function ($payment) {
+				return $payment->blockchain === $this->blockchain;
+			}));
+		}
 
 		foreach ( $accepted_payments as $accepted_payment ) {
 			$requests[] = array( 'url' => sprintf( 'https://public.depay.com/conversions/%s/%s/USD?amount=' . $price_format_specifier, $accepted_payment->blockchain, $accepted_payment->token, $total_in_usd ), 'type' => 'GET' );
