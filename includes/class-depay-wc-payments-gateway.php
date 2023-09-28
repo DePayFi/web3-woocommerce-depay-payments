@@ -28,7 +28,8 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 	public function get_icon() {
 		$icon = '<style>.payment_box.payment_method_depay_wc_payments { width: 100%; } .wc_payment_method.payment_method_depay_wc_payments { display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; } .payment_method_depay_wc_payments label { display: flex !important; flex-grow: 1; align-items: center; }</style><div style="display: inline; flex-grow: 1; padding-left: 6px;">';
 		if ( empty( get_option( 'depay_wc_blockchains' ) ) ) {
-		} else if ( $this->blockchain != null ) {
+			$icon = '';
+		} else if ( null != $this->blockchain ) {
 			$size = 30;
 			$url = esc_url( plugin_dir_url( __FILE__ ) . 'images/blockchains/' . $this->blockchain . '.svg' );
 			$icon = $icon . "<img title='Payments on " . ucfirst($this->blockchain) . "' style='height: " . $size . "px; margin-right: 2px; margin-bottom: 2px; vertical-align: middle;' src='" . $url . "'/>";
@@ -47,11 +48,11 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 
 		$this->form_fields = array(
 			'enabled' => array(
-        'title'   => 'Enable/Disable',
-        'type'    => 'checkbox',
-        'label'   => 'Enable gateway',
-        'default' => 'yes'
-      ),
+				'title'   => 'Enable/Disable',
+				'type'    => 'checkbox',
+				'label'   => 'Enable gateway',
+				'default' => 'yes'
+			),
 			'title' => array(
 				'title'       => 'Title',
 				'type'        => 'text',
@@ -171,7 +172,7 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 
 		$accepted_payments = json_decode( get_option( 'depay_wc_accepted_payments' ) );
 
-		if($this->blockchain != null) {
+		if ( null != $this->blockchain ) {
 			$accepted_payments = array_values(array_filter($accepted_payments, function ($payment) {
 				return $payment->blockchain === $this->blockchain;
 			}));

@@ -78,7 +78,7 @@ class DePay_WC_Payments {
 
 	public static function add_gateway( $gateways ) {
 
-		if( get_option( 'depay_wc_gateway_type' ) == 'multigateway' ) {
+		if ( get_option( 'depay_wc_gateway_type' ) == 'multigateway' ) {
 
 			$blockchains = json_decode( get_option( 'depay_wc_blockchains' ) );
 
