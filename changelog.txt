@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-9-28 - version 2.1.9
+* fix: removes gateway name html code from order confirmation screen
+
 2023-9-27 - version 2.1.8
 * removes explicit X-Wp-Nonce header
 

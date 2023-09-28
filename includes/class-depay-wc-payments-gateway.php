@@ -21,11 +21,11 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 	}
 
 	public function get_title() {
-		return '<div style="flex-grow: 1; margin-left: 0.26rem !important; padding-right: 0.6rem;">' . $this->title . '</div>';    
+		return $this->title;
 	}
 
 	public function get_icon() {
-		$icon = '<style>.payment_box.payment_method_depay_wc_payments { width: 100%; } .wc_payment_method.payment_method_depay_wc_payments { display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; } .payment_method_depay_wc_payments label { display: flex !important; flex-grow: 1; align-items: center; }</style><div style="display: inline; flex-grow: 0;">';
+		$icon = '<style>.payment_box.payment_method_depay_wc_payments { width: 100%; } .wc_payment_method.payment_method_depay_wc_payments { display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; } .payment_method_depay_wc_payments label { display: flex !important; flex-grow: 1; align-items: center; }</style><div style="display: inline; flex-grow: 1;">';
 		if ( empty( get_option( 'depay_wc_blockchains' ) ) ) {
 			return $icon;
 		}
