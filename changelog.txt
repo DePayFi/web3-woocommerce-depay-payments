@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-10-2 - version 2.2.1
+* migrate plugin tables to correct prefix name if instance has db prefix other than "wp_")
+
 2023-9-28 - version 2.2.0
 * adds multi-gateway option (1 per blockchain)
 

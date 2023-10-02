@@ -11,7 +11,7 @@
  * WC tested up to: 8.0.2
  * Requires at least: 5.8
  * Requires PHP: 7.0
- * Version: 2.2.0
+ * Version: 2.2.1
  *
  * @package DePay\Payments
  */
@@ -21,14 +21,14 @@ defined( 'ABSPATH' ) || exit;
 define( 'DEPAY_WC_PLUGIN_FILE', __FILE__ );
 define( 'DEPAY_WC_ABSPATH', __DIR__ . '/' );
 define( 'DEPAY_MIN_WC_ADMIN_VERSION', '0.23.2' );
-define( 'DEPAY_CURRENT_VERSION', '2.2.0' );
+define( 'DEPAY_CURRENT_VERSION', '2.2.1' );
 
 require_once DEPAY_WC_ABSPATH . '/vendor/autoload.php';
 
 function depay_run_migration() {
 	global $wpdb;
 
-	$latestDbVersion = 3;
+	$latestDbVersion = 4;
 	$currentDbVersion = get_option('depay_wc_db_version');
 
 	if ( !empty($currentDbVersion) && $currentDbVersion >= $latestDbVersion ) {
@@ -74,9 +74,30 @@ function depay_run_migration() {
 
 	$exists = $wpdb->get_col("SHOW COLUMNS FROM wp_wc_depay_transactions LIKE 'confirmations_required'");
 	if (! empty( $exists ) ) {
-			$wpdb->query( 'ALTER TABLE wp_wc_depay_transactions DROP COLUMN confirmations_required' );
+		$wpdb->query( 'ALTER TABLE wp_wc_depay_transactions DROP COLUMN confirmations_required' );
 	}
 	update_option( 'depay_wc_db_version', $latestDbVersion );
+
+	// Rename wc_depay_logs to prefix_wc_depay_logs if it exists
+	$table_name_logs = 'wp_wc_depay_logs';
+	$new_table_name_logs = $wpdb->prefix . 'wc_depay_logs';
+	if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table_name_logs}'" ) == $table_name_logs ) {
+  	$wpdb->query( "RENAME TABLE {$table_name_logs} TO {$new_table_name_logs}" );
+	}
+
+	// Rename wc_depay_checkouts to prefix_wc_depay_checkouts if it exists
+	$table_name_checkouts = 'wc_depay_checkouts';
+	$new_table_name_checkouts = $wpdb->prefix . 'wc_depay_checkouts';
+	if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table_name_checkouts}'" ) == $table_name_checkouts ) {
+		$wpdb->query( "RENAME TABLE {$table_name_checkouts} TO {$new_table_name_checkouts}" );
+	}
+
+	// Rename wc_depay_transactions to prefix_wc_depay_transactions if it exists
+	$table_name_transactions = 'wc_depay_transactions';
+	$new_table_name_transactions = $wpdb->prefix . 'wc_depay_transactions';
+	if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table_name_transactions}'" ) == $table_name_transactions ) {
+		$wpdb->query( "RENAME TABLE {$table_name_transactions} TO {$new_table_name_transactions}" );
+	}
 }
 
 add_action('admin_init', 'depay_run_migration');
