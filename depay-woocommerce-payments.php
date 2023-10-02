@@ -77,36 +77,24 @@ function depay_run_migration() {
 		$wpdb->query( 'ALTER TABLE wp_wc_depay_transactions DROP COLUMN confirmations_required' );
 	}
 
-	// Rename wp_wc_depay_logs to prefix_wc_depay_logs if it exists
-	$table_name_logs = 'wp_wc_depay_logs';
-	$new_table_name_logs = $wpdb->prefix . 'wc_depay_logs';
-
-	if ( $table_name_logs != $new_table_name_logs ) {
-		if ($wpdb->get_var( $$wpdb->prepare('SHOW TABLES LIKE %s', $table_name_logs) ) == $table_name_logs) {
-				$sql_rename_logs = $wpdb->prepare('RENAME TABLE %s TO %s', $table_name_logs, $new_table_name_logs);
+	if ( $wpdb->prefix != 'wp_' ) {
+		
+		// Rename wp_wc_depay_logs to prefix_wc_depay_logs if it exists
+		if ($wpdb->get_var( $wpdb->prepare('SHOW TABLES LIKE %s', 'wp_wc_depay_logs') ) == 'wp_wc_depay_logs') {
+				$sql_rename_logs = $wpdb->prepare('RENAME TABLE %s TO %s', 'wp_wc_depay_logs', $wpdb->prefix . 'wc_depay_logs');
 				$wpdb->query($sql_rename_logs);
 		}
-	}
 
-	// Rename wp_wc_depay_checkouts to prefix_wc_depay_checkouts if it exists
-	$table_name_checkouts = 'wp_wc_depay_checkouts';
-	$new_table_name_checkouts = $wpdb->prefix . 'wc_depay_checkouts';
-
-	if ( $table_name_checkouts != $new_table_name_checkouts ) {
-		if ($wpdb->get_var( $wpdb->prepare('SHOW TABLES LIKE %s', $table_name_checkouts) ) == $table_name_checkouts) {
-				$sql_rename_checkouts = $wpdb->prepare('RENAME TABLE %s TO %s', $table_name_checkouts, $new_table_name_checkouts);
-				$wpdb->query($sql_rename_checkouts);
+		// Rename wp_wc_depay_checkouts to prefix_wc_depay_checkouts if it exists
+		if ($wpdb->get_var( $wpdb->prepare('SHOW TABLES LIKE %s', 'wp_wc_depay_checkouts') ) == 'wp_wc_depay_checkouts') {
+				$sql_rename_logs = $wpdb->prepare('RENAME TABLE %s TO %s', 'wp_wc_depay_checkouts', $wpdb->prefix . 'wc_depay_checkouts');
+				$wpdb->query($sql_rename_logs);
 		}
-	}
 
-	// Rename wp_wc_depay_transactions to prefix_wc_depay_transactions if it exists
-	$table_name_transactions = 'wp_wc_depay_transactions';
-	$new_table_name_transactions = $wpdb->prefix . 'wc_depay_transactions';
-
-	if ( $table_name_transactions != $new_table_name_transactions ) {
-		if ($wpdb->get_var( $wpdb->prepare('SHOW TABLES LIKE %s', $table_name_transactions) ) == $table_name_transactions) {
-				$sql_rename_transactions = $wpdb->prepare('RENAME TABLE %s TO %s', $table_name_transactions, $new_table_name_transactions);
-				$wpdb->query($sql_rename_transactions);
+		// Rename wp_wc_depay_transactions to prefix_wc_depay_transactions if it exists
+		if ($wpdb->get_var( $wpdb->prepare('SHOW TABLES LIKE %s', 'wp_wc_depay_transactions') ) == 'wp_wc_depay_transactions') {
+				$sql_rename_logs = $wpdb->prepare('RENAME TABLE %s TO %s', 'wp_wc_depay_transactions', $wpdb->prefix . 'wc_depay_transactions');
+				$wpdb->query($sql_rename_logs);
 		}
 	}
 
