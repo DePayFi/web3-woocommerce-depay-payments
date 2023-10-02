@@ -83,9 +83,8 @@ function depay_run_migration() {
 	$new_table_name_logs = $wpdb->prefix . 'wc_depay_logs';
 
 	if ( $table_name_logs != $new_table_name_logs ) {
-		$sql_check_logs = $wpdb->prepare("SHOW TABLES LIKE %s", $table_name_logs);
-		if ($wpdb->get_var($sql_check_logs) == $table_name_logs) {
-		    $sql_rename_logs = $wpdb->prepare("RENAME TABLE %s TO %s", $table_name_logs, $new_table_name_logs);
+		if ($wpdb->get_var( $$wpdb->prepare('SHOW TABLES LIKE %s', $table_name_logs) ) == $table_name_logs) {
+		    $sql_rename_logs = $wpdb->prepare('RENAME TABLE %s TO %s', $table_name_logs, $new_table_name_logs);
 		    $wpdb->query($sql_rename_logs);
 		}
 	}
@@ -95,9 +94,8 @@ function depay_run_migration() {
 	$new_table_name_checkouts = $wpdb->prefix . 'wc_depay_checkouts';
 
 	if ( $table_name_checkouts != $new_table_name_checkouts ) {
-		$sql_check_checkouts = $wpdb->prepare("SHOW TABLES LIKE %s", $table_name_checkouts);
-		if ($wpdb->get_var($sql_check_checkouts) == $table_name_checkouts) {
-		    $sql_rename_checkouts = $wpdb->prepare("RENAME TABLE %s TO %s", $table_name_checkouts, $new_table_name_checkouts);
+		if ($wpdb->get_var( $wpdb->prepare('SHOW TABLES LIKE %s', $table_name_checkouts) ) == $table_name_checkouts) {
+		    $sql_rename_checkouts = $wpdb->prepare('RENAME TABLE %s TO %s', $table_name_checkouts, $new_table_name_checkouts);
 		    $wpdb->query($sql_rename_checkouts);
 		}
 	}
@@ -107,9 +105,8 @@ function depay_run_migration() {
 	$new_table_name_transactions = $wpdb->prefix . 'wc_depay_transactions';
 
 	if ( $table_name_transactions != $new_table_name_transactions ) {
-		$sql_check_transactions = $wpdb->prepare("SHOW TABLES LIKE %s", $table_name_transactions);
-		if ($wpdb->get_var($sql_check_transactions) == $table_name_transactions) {
-		    $sql_rename_transactions = $wpdb->prepare("RENAME TABLE %s TO %s", $table_name_transactions, $new_table_name_transactions);
+		if ($wpdb->get_var( $wpdb->prepare('SHOW TABLES LIKE %s', $table_name_transactions) ) == $table_name_transactions) {
+		    $sql_rename_transactions = $wpdb->prepare('RENAME TABLE %s TO %s', $table_name_transactions, $new_table_name_transactions);
 		    $wpdb->query($sql_rename_transactions);
 		}
 	}
