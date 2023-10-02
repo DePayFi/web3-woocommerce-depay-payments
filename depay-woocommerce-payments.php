@@ -77,24 +77,21 @@ function depay_run_migration() {
 		$wpdb->query( 'ALTER TABLE wp_wc_depay_transactions DROP COLUMN confirmations_required' );
 	}
 
-	if ( $wpdb->prefix != 'wp_' ) {
+	if ( 'wp_' != $wpdb->prefix ) {
 		
 		// Rename wp_wc_depay_logs to prefix_wc_depay_logs if it exists
 		if ($wpdb->get_var( $wpdb->prepare('SHOW TABLES LIKE %s', 'wp_wc_depay_logs') ) == 'wp_wc_depay_logs') {
-				$sql_rename_logs = $wpdb->prepare('RENAME TABLE %s TO %s', 'wp_wc_depay_logs', $wpdb->prefix . 'wc_depay_logs');
-				$wpdb->query($sql_rename_logs);
+				$wpdb->query( $wpdb->prepare('RENAME TABLE %s TO %s', 'wp_wc_depay_logs', $wpdb->prefix . 'wc_depay_logs') );
 		}
 
 		// Rename wp_wc_depay_checkouts to prefix_wc_depay_checkouts if it exists
 		if ($wpdb->get_var( $wpdb->prepare('SHOW TABLES LIKE %s', 'wp_wc_depay_checkouts') ) == 'wp_wc_depay_checkouts') {
-				$sql_rename_logs = $wpdb->prepare('RENAME TABLE %s TO %s', 'wp_wc_depay_checkouts', $wpdb->prefix . 'wc_depay_checkouts');
-				$wpdb->query($sql_rename_logs);
+				$wpdb->query( $wpdb->prepare('RENAME TABLE %s TO %s', 'wp_wc_depay_checkouts', $wpdb->prefix . 'wc_depay_checkouts') );
 		}
 
 		// Rename wp_wc_depay_transactions to prefix_wc_depay_transactions if it exists
 		if ($wpdb->get_var( $wpdb->prepare('SHOW TABLES LIKE %s', 'wp_wc_depay_transactions') ) == 'wp_wc_depay_transactions') {
-				$sql_rename_logs = $wpdb->prepare('RENAME TABLE %s TO %s', 'wp_wc_depay_transactions', $wpdb->prefix . 'wc_depay_transactions');
-				$wpdb->query($sql_rename_logs);
+				$wpdb->query( $wpdb->prepare('RENAME TABLE %s TO %s', 'wp_wc_depay_transactions', $wpdb->prefix . 'wc_depay_transactions') );
 		}
 	}
 
