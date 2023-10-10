@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-10-10 - version 2.3.0
+* upgrade widgets and fixes various wallet connection issues
+
 2023-10-2 - version 2.2.1
 * migrate plugin tables to correct prefix name if instance has db prefix other than "wp_")
 
