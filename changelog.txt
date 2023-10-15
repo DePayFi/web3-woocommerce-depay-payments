@@ -1,5 +1,12 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-10-15 - version 2.5.0
+* improves payment status polling
+* allows to test payments in local development (via polling)
+* allows to track payments if page is behind a firewall (via polling)
+* adds option to delete transactions in admin/depay/transactions
+* adds link to export transaction CSV from app.depay.com
+
 2023-10-13 - version 2.4.1
 * fix wordpress.org graphics
 

@@ -3,7 +3,7 @@ import Blockchains from "@depay/web3-blockchains"
 const { useState, useEffect, useRef } = window.React
 const { Fragment } = window.wp.element
 const { Dropdown } = window.wp.components
-const { Button, TableCard, FilterPicker } = window.wc.components
+const { TableCard, FilterPicker } = window.wc.components
 const { onQueryChange } = window.wc.navigation
 const getCurrentPage = ()=>{
   return window.location.search.match(/paged=(\d+)/) ? window.location.search.match(/paged=(\d+)/)[1] : 1
@@ -133,7 +133,14 @@ export default function(props) {
         payments: getCurrentPaymentsFilter(),
       }
     })
-    currentRequest.then((response)=>{ setIsLoading(false); return response })
+    currentRequest.then((response)=>{
+      setAnyTransactions(response.total > 0)
+      setSummary([{ value: response.total, label: getCurrentPaymentsFilter() === 'attempts' ? "Attempts" : "Transactions" }])
+      setRows(transactionsToRows(response))
+      setTotalRows(response.total)
+      setIsLoading(false)
+      return response
+    })
     return currentRequest
   }
 
@@ -164,7 +171,6 @@ export default function(props) {
       { display: (transaction.confirmed_at !== '1000-01-01 00:00:00' ? (new Date(transaction.confirmed_at)).toLocaleString() : ''), value: (new Date(transaction.confirmed_at)).toLocaleString() },
       { display: <Dropdown
           renderToggle={({isOpen, onToggle})=>{
-            if(transaction.status == 'SUCCESS') { return null }
             return(
               <button onClick={ onToggle } type="button" title="Choose which charts to display" aria-expanded="false" className="components-button woocommerce-ellipsis-menu__toggle">
                 <svg className="gridicon gridicons-ellipsis" height="24" width="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g><path d="M7 12a2 2 0 11-4.001-.001A2 2 0 017 12zm12-2a2 2 0 10.001 4.001A2 2 0 0019 10zm-7 0a2 2 0 10.001 4.001A2 2 0 0012 10z"></path></g></svg>
@@ -173,20 +179,37 @@ export default function(props) {
           }}
           renderContent={ () => (
             <div role="menu" aria-orientation="vertical" className="woocommerce-ellipsis-menu__content">
+              { transaction.status !== 'SUCCESS' &&
+                <button 
+                  onClick={()=>{
+                    if(confirm("Are you sure you want to mark this transaction as succeeded and the order as paid?")) {
+                      wp.apiRequest({
+                        path: "/depay/wc/confirm",
+                        method: 'POST',
+                        data: { id: transaction.id }
+                      }).always(()=>window.location.reload(true))
+                    }
+                  }}
+                  type="button" role="menuitem" tabindex="0" className="woocommerce-ellipsis-menu__item" style={{ minWidth: "200px" }}
+                >
+                  <svg style={{ height: "16px", width: "16px", position: "relative", top: "2px" }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M470.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L192 338.7 425.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                  <span style={{ display: "inline-block", padding: "6px" }}>Confirm Manually</span>
+                </button>
+              }
               <button 
                 onClick={()=>{
-                  if(confirm("This transaction will be marked as succeeded and the order will be marked as paid!")) {
+                  if(confirm("Are you sure you want to delete this transaction?")) {
                     wp.apiRequest({
-                      path: "/depay/wc/confirm",
-                      method: 'POST',
+                      path: "/depay/wc/transaction",
+                      method: 'DELETE',
                       data: { id: transaction.id }
                     }).always(()=>window.location.reload(true))
                   }
                 }}
                 type="button" role="menuitem" tabindex="0" className="woocommerce-ellipsis-menu__item" style={{ minWidth: "200px" }}
               >
-                <svg style={{ height: "16px", width: "16px", position: "relative", top: "2px" }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M470.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L192 338.7 425.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
-                <span style={{ display: "inline-block", padding: "6px" }}>Confirm Manually</span>
+                <svg style={{ height: "16px", width: "16px", position: "relative", top: "2px" }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><path d="M24 18h2v16h-2z"/><path d="M28 18h2v16h-2z"/><path d="M12 12h26v2H12z"/><path d="M30 12h-2v-1c0-.6-.4-1-1-1h-4c-.6 0-1 .4-1 1v1h-2v-1c0-1.7 1.3-3 3-3h4c1.7 0 3 1.3 3 3v1z"/><path d="M31 40H19c-1.6 0-3-1.3-3.2-2.9l-1.8-24 2-.2 1.8 24c0 .6.6 1.1 1.2 1.1h12c.6 0 1.1-.5 1.2-1.1l1.8-24 2 .2-1.8 24C34 38.7 32.6 40 31 40z"/></svg>
+                <span style={{ display: "inline-block", padding: "6px" }}>Delete Transaction</span>
               </button>
             </div>
           ) }
@@ -210,8 +233,8 @@ export default function(props) {
         }
         setAnyTransactions(transactionsData.total > 0)
         setSummary([{ value: transactionsData.total, label: "Transactions" }])
-        setTotalRows(transactionsData.total)
         setRows(transactionsToRows(transactionsData))
+        setTotalRows(transactionsData.total)
         setIsLoading(false)
       })
     })
@@ -229,7 +252,7 @@ export default function(props) {
 
   return(
     <Fragment>
-      <div style={{ marginLeft: '-12px', paddingBottom: '12px' }}>
+      <div style={{ marginLeft: '-12px', paddingBottom: '12px', display: 'flex' }}>
         <h2 class="screen-reader-text">Filters</h2>
         <FilterPicker
           query={query}
@@ -245,6 +268,15 @@ export default function(props) {
             ]
           }}
         />
+        <a
+          style={{ marginTop: '38px' }}
+          className="components-button is-secondary"
+          href="https://app.depay.com"
+          target="_blank"
+        >
+          Export CSV
+          <svg style={{ marginLeft: "6px" }} className="gridicon" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 30 30" width="16px" height="16px"><path d="M 25.980469 2.9902344 A 1.0001 1.0001 0 0 0 25.869141 3 L 20 3 A 1.0001 1.0001 0 1 0 20 5 L 23.585938 5 L 13.292969 15.292969 A 1.0001 1.0001 0 1 0 14.707031 16.707031 L 25 6.4140625 L 25 10 A 1.0001 1.0001 0 1 0 27 10 L 27 4.1269531 A 1.0001 1.0001 0 0 0 25.980469 2.9902344 z M 6 7 C 4.9069372 7 4 7.9069372 4 9 L 4 24 C 4 25.093063 4.9069372 26 6 26 L 21 26 C 22.093063 26 23 25.093063 23 24 L 23 14 L 23 11.421875 L 21 13.421875 L 21 16 L 21 24 L 6 24 L 6 9 L 14 9 L 16 9 L 16.578125 9 L 18.578125 7 L 16 7 L 14 7 L 6 7 z"/></svg>
+        </a>
       </div>
       <div
         className="woocommerce-report-table__scroll-point"

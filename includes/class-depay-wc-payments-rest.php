@@ -59,6 +59,15 @@ class DePay_WC_Payments_Rest {
 		);
 		register_rest_route(
 			'depay/wc',
+			'/transaction',
+			[
+				'methods' => 'DELETE',
+				'callback' => [ $this, 'delete_transaction' ],
+				'permission_callback' => array( $this, 'must_be_wc_admin' ) 
+			]
+		);
+		register_rest_route(
+			'depay/wc',
 			'/confirm',
 			[
 				'methods' => 'POST',
@@ -306,7 +315,117 @@ class DePay_WC_Payments_Rest {
 		$checkout_id = $request->get_param( 'checkout_id' );
 		$existing_transaction_status = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT status FROM {$wpdb->prefix}wc_depay_transactions WHERE checkout_id = %s ORDER BY id DESC LIMIT 1",
+				"SELECT status FROM {$wpdb->prefix}wc_depay_transactions WHERE checkout_id = %s ORDER BY created_at DESC LIMIT 1",
+				$checkout_id
+			)
+		);
+
+		if ( $existing_transaction_status === 'VALIDATING' ) {
+			$tracking_uuid = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT tracking_uuid FROM {$wpdb->prefix}wc_depay_transactions WHERE checkout_id = %s ORDER BY created_at DESC LIMIT 1",
+					$checkout_id
+				)
+			);
+			
+			$response = wp_remote_get( 'https://public.depay.com/payments/' . $tracking_uuid );
+			$response_code = $response['response']['code'];
+			error_log( print_r($response, true) );
+			$response_successful = ! is_wp_error( $response_code ) && $response_code >= 200 && $response_code < 300;
+
+			if( $response_successful ) {
+				$signature = $response['headers']['x-signature'];
+				$signature = str_replace( '_', '/', $signature );
+				$signature = str_replace( '-', '+', $signature );
+				$key = PublicKeyLoader::load( self::$key )->withHash( 'sha256' )->withPadding( RSA::SIGNATURE_PSS )->withMGFHash( 'sha256' )->withSaltLength( 64 );
+				if ( $key->verify( $response['body'], base64_decode( $signature ) ) ) {
+
+					$order_id = $wpdb->get_var(
+						$wpdb->prepare(
+							"SELECT order_id FROM {$wpdb->prefix}wc_depay_transactions WHERE tracking_uuid = %s ORDER BY id DESC LIMIT 1",
+							$tracking_uuid
+						)
+					);
+					$expected_receiver_id = $wpdb->get_var(
+						$wpdb->prepare(
+							"SELECT receiver_id FROM {$wpdb->prefix}wc_depay_transactions WHERE tracking_uuid = %s ORDER BY id DESC LIMIT 1",
+							$tracking_uuid
+						)
+					);
+					$expected_amount = $wpdb->get_var(
+						$wpdb->prepare(
+							"SELECT amount FROM {$wpdb->prefix}wc_depay_transactions WHERE tracking_uuid = %s ORDER BY id DESC LIMIT 1",
+							$tracking_uuid
+						)
+					);
+					$expected_blockchain = $wpdb->get_var(
+						$wpdb->prepare(
+							"SELECT blockchain FROM {$wpdb->prefix}wc_depay_transactions WHERE tracking_uuid = %s ORDER BY id DESC LIMIT 1",
+							$tracking_uuid
+						)
+					);
+					$expected_transaction = $wpdb->get_var(
+						$wpdb->prepare(
+							"SELECT transaction_id FROM {$wpdb->prefix}wc_depay_transactions WHERE tracking_uuid = %s ORDER BY id DESC LIMIT 1",
+							$tracking_uuid
+						)
+					);
+					$order = wc_get_order( $order_id );
+					$responseBody = json_decode( $response['body'] );
+					$status = $responseBody->status;
+					$decimals = $responseBody->decimals;
+					$amount = $responseBody->amount;
+					$transaction = $responseBody->transaction;
+
+					if ( $expected_transaction != $transaction ) {
+						$wpdb->query(
+							$wpdb->prepare(
+								"UPDATE {$wpdb->prefix}wc_depay_transactions SET transaction_id = %s WHERE tracking_uuid = %s",
+								$transaction,
+								$tracking_uuid
+							)
+						);
+					}
+
+					if (
+						'success' === $status &&
+						$responseBody->blockchain === $expected_blockchain &&
+						strtolower( $responseBody->receiver ) === strtolower( $expected_receiver_id ) &&
+						( bccomp( $expected_amount, $amount, $decimals ) === 0 || bccomp( $expected_amount, $amount, $decimals ) === -0 )
+					) {
+						$wpdb->query(
+							$wpdb->prepare(
+								"UPDATE {$wpdb->prefix}wc_depay_transactions SET status = %s, confirmed_at = %s, confirmed_by = %s, failed_reason = NULL WHERE tracking_uuid = %s",
+								'SUCCESS',
+								current_time( 'mysql' ),
+								'API',
+								$tracking_uuid
+							)
+						);
+						$order->payment_complete();
+					} else if( 'failed' === $status ) {
+						$failed_reason = $request->get_param( 'failed_reason' );
+						if ( empty( $failed_reason ) ) {
+							$failed_reason = 'MISMATCH';
+						}
+						DePay_WC_Payments::log( 'Validation failed: ' . $failed_reason );
+						$wpdb->query(
+							$wpdb->prepare(
+								"UPDATE {$wpdb->prefix}wc_depay_transactions SET failed_reason = %s, status = %s, confirmed_by = %s WHERE tracking_uuid = %s",
+								$failed_reason,
+								'FAILED',
+								'API',
+								$tracking_uuid
+							)
+						);
+					}
+				}
+			}
+		}
+
+		$existing_transaction_status = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT status FROM {$wpdb->prefix}wc_depay_transactions WHERE checkout_id = %s ORDER BY created_at DESC LIMIT 1",
 				$checkout_id
 			)
 		);
@@ -464,6 +583,22 @@ class DePay_WC_Payments_Rest {
 		}
 
 		return true;
+	}
+
+	public function delete_transaction( $request ) {
+
+		global $wpdb;
+
+		$wpdb->query(
+			$wpdb->prepare(
+				"DELETE FROM {$wpdb->prefix}wc_depay_transactions WHERE id = %s",
+				$request->get_param( 'id' )
+			)
+		);
+
+		$response = new WP_REST_Response();
+		$response->set_status( 200 );
+		return $response;
 	}
 
 	public function fetch_transactions( $request ) {

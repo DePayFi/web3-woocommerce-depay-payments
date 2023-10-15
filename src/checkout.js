@@ -53,23 +53,6 @@ const displayCheckout = async()=>{
         window.location.hash = ''
         window.jQuery('form.woocommerce-checkout').removeClass( 'processing' ).unblock()
       },
-      before: ()=> {
-        let confirmed = true
-        let host = window.location.host
-        if(
-          host.match(/^localhost/) ||
-          host.match(/\.local$/) ||
-          host.match(/\.local\:/) ||
-          host.match(/127\.0\.0\.1/) ||
-          host.match(/0\.0\.0\.0/) ||
-          host.match(/0:0:0:0:0:0:0:1/) ||
-          host.match(/::1/)
-        ) {
-          window.alert("Payments can not be tested in local development! Make sure to test in a deployed environment where payment validation callbacks can reach your server!");
-          return(false);
-        }
-        return(confirmed)
-      },
       track: {
         method: (payment)=>{
           return new Promise((resolve, reject)=>{
@@ -85,19 +68,17 @@ const displayCheckout = async()=>{
           })
         },
         poll: {
-          method: async ()=>{
-            let response = fetch('/index.php?rest_route=/depay/wc/release', {
-              method: 'POST',
-              body: JSON.stringify({ checkout_id: checkoutId }),
-              headers: { 
-                "Content-Type": "application/json",
-              }
+          method: ()=>{
+            return new Promise((resolve, reject)=>{
+              wp.apiRequest({
+                path: '/depay/wc/release',
+                method: 'POST',
+                data: { checkout_id: checkoutId }
+              })
+              .done((responseData)=>{
+                resolve(responseData)
+              }).fail(resolve)
             })
-
-            if(response.status == 200) {
-              let json = await response.json()
-              return json
-            }
           }
         }
       }
@@ -105,7 +86,6 @@ const displayCheckout = async()=>{
     if(window.DEPAY_WC_CURRENCY && window.DEPAY_WC_CURRENCY.displayCurrency == 'store' && window.DEPAY_WC_CURRENCY.storeCurrency?.length) {
       configuration.currency = window.DEPAY_WC_CURRENCY.storeCurrency
     }
-    console.log(configuration)
     DePayWidgets.Payment(configuration)
   }
 }
