@@ -320,7 +320,7 @@ class DePay_WC_Payments_Rest {
 			)
 		);
 
-		if ( $existing_transaction_status === 'VALIDATING' ) {
+		if ( 'VALIDATING' === $existing_transaction_status ) {
 			$tracking_uuid = $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT tracking_uuid FROM {$wpdb->prefix}wc_depay_transactions WHERE checkout_id = %s ORDER BY created_at DESC LIMIT 1",
@@ -333,7 +333,7 @@ class DePay_WC_Payments_Rest {
 			error_log( print_r($response, true) );
 			$response_successful = ! is_wp_error( $response_code ) && $response_code >= 200 && $response_code < 300;
 
-			if( $response_successful ) {
+			if ( $response_successful ) {
 				$signature = $response['headers']['x-signature'];
 				$signature = str_replace( '_', '/', $signature );
 				$signature = str_replace( '-', '+', $signature );
@@ -403,7 +403,7 @@ class DePay_WC_Payments_Rest {
 							)
 						);
 						$order->payment_complete();
-					} else if( 'failed' === $status ) {
+					} else if ( 'failed' === $status ) {
 						$failed_reason = $request->get_param( 'failed_reason' );
 						if ( empty( $failed_reason ) ) {
 							$failed_reason = 'MISMATCH';
