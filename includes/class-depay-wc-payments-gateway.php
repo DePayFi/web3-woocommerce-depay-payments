@@ -35,19 +35,19 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 		} else {
 			$blockchains = json_decode( get_option( 'depay_wc_blockchains' ) );
 			$index = 0;
-			$more = "";
+			$more = '';
 			foreach ( $blockchains as $blockchain ) {
-				if($index < 5) {
+				if ($index < 5) {
 					$url = esc_url( plugin_dir_url( __FILE__ ) . 'images/blockchains/' . $blockchain . '.svg' );
 					$icon = $icon . "<img title='Payments on " . ucfirst($blockchain) . "' class='wc_payment_method_depay_image' src='" . $url . "'/>";
 				} else {
-					$more = $more . ", " . ucfirst($blockchain);
+					$more = $more . ', ' . ucfirst($blockchain);
 				}
-				$index += 1;
+				++$index;
 			}
-			if($index > 5) {
+			if ($index > 5) {
 				$more = substr($more, 2);
-				$icon = $icon . "<span title='".$more."' style='width: 18px; padding-left: 6px;'><img style='position: relative; top: 6px; width: 100%; opacity: 0.5;' class='wc_payment_method_depay_image' src='data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pg0KPCEtLSBVcGxvYWRlZCB0bzogU1ZHIFJlcG8sIHd3dy5zdmdyZXBvLmNvbSwgR2VuZXJhdG9yOiBTVkcgUmVwbyBNaXhlciBUb29scyAtLT4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIGZpbGw9IiMwMDAwMDAiIHZlcnNpb249IjEuMSIgaWQ9IkNhcGFfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgDQoJIHdpZHRoPSI4MDBweCIgaGVpZ2h0PSI4MDBweCIgdmlld0JveD0iMCAwIDQxLjkxNSA0MS45MTYiDQoJIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPGc+DQoJPGc+DQoJCTxwYXRoIGQ9Ik0xMS4yMTQsMjAuOTU2YzAsMy4wOTEtMi41MDksNS41ODktNS42MDcsNS41ODlDMi41MSwyNi41NDQsMCwyNC4wNDYsMCwyMC45NTZjMC0zLjA4MiwyLjUxMS01LjU4NSw1LjYwNy01LjU4NQ0KCQkJQzguNzA1LDE1LjM3MSwxMS4yMTQsMTcuODc0LDExLjIxNCwyMC45NTZ6Ii8+DQoJCTxwYXRoIGQ9Ik0yNi41NjQsMjAuOTU2YzAsMy4wOTEtMi41MDksNS41ODktNS42MDYsNS41ODljLTMuMDk3LDAtNS42MDctMi40OTgtNS42MDctNS41ODljMC0zLjA4MiwyLjUxMS01LjU4NSw1LjYwNy01LjU4NQ0KCQkJQzI0LjA1NiwxNS4zNzEsMjYuNTY0LDE3Ljg3NCwyNi41NjQsMjAuOTU2eiIvPg0KCQk8cGF0aCBkPSJNNDEuOTE1LDIwLjk1NmMwLDMuMDkxLTIuNTA5LDUuNTg5LTUuNjA3LDUuNTg5Yy0zLjA5NywwLTUuNjA2LTIuNDk4LTUuNjA2LTUuNTg5YzAtMy4wODIsMi41MTEtNS41ODUsNS42MDYtNS41ODUNCgkJCUMzOS40MDYsMTUuMzcxLDQxLjkxNSwxNy44NzQsNDEuOTE1LDIwLjk1NnoiLz4NCgk8L2c+DQo8L2c+DQo8L3N2Zz4='/></span>";
+				$icon = $icon . "<span title='" . $more . "' style='width: 18px; padding-left: 6px;'><img style='position: relative; top: 6px; width: 100%; opacity: 0.5;' class='wc_payment_method_depay_image' src='data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pg0KPCEtLSBVcGxvYWRlZCB0bzogU1ZHIFJlcG8sIHd3dy5zdmdyZXBvLmNvbSwgR2VuZXJhdG9yOiBTVkcgUmVwbyBNaXhlciBUb29scyAtLT4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIGZpbGw9IiMwMDAwMDAiIHZlcnNpb249IjEuMSIgaWQ9IkNhcGFfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgDQoJIHdpZHRoPSI4MDBweCIgaGVpZ2h0PSI4MDBweCIgdmlld0JveD0iMCAwIDQxLjkxNSA0MS45MTYiDQoJIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPGc+DQoJPGc+DQoJCTxwYXRoIGQ9Ik0xMS4yMTQsMjAuOTU2YzAsMy4wOTEtMi41MDksNS41ODktNS42MDcsNS41ODlDMi41MSwyNi41NDQsMCwyNC4wNDYsMCwyMC45NTZjMC0zLjA4MiwyLjUxMS01LjU4NSw1LjYwNy01LjU4NQ0KCQkJQzguNzA1LDE1LjM3MSwxMS4yMTQsMTcuODc0LDExLjIxNCwyMC45NTZ6Ii8+DQoJCTxwYXRoIGQ9Ik0yNi41NjQsMjAuOTU2YzAsMy4wOTEtMi41MDksNS41ODktNS42MDYsNS41ODljLTMuMDk3LDAtNS42MDctMi40OTgtNS42MDctNS41ODljMC0zLjA4MiwyLjUxMS01LjU4NSw1LjYwNy01LjU4NQ0KCQkJQzI0LjA1NiwxNS4zNzEsMjYuNTY0LDE3Ljg3NCwyNi41NjQsMjAuOTU2eiIvPg0KCQk8cGF0aCBkPSJNNDEuOTE1LDIwLjk1NmMwLDMuMDkxLTIuNTA5LDUuNTg5LTUuNjA3LDUuNTg5Yy0zLjA5NywwLTUuNjA2LTIuNDk4LTUuNjA2LTUuNTg5YzAtMy4wODIsMi41MTEtNS41ODUsNS42MDYtNS41ODUNCgkJCUMzOS40MDYsMTUuMzcxLDQxLjkxNSwxNy44NzQsNDEuOTE1LDIwLjk1NnoiLz4NCgk8L2c+DQo8L2c+DQo8L3N2Zz4='/></span>";
 			}
 		}
 		return $icon . '</div>';
