@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-10-16 - version 2.5.1
+* fixes checkout blockchain icon display
+
 2023-10-15 - version 2.5.0
 * improves payment status polling
 * allows to test payments in local development (via polling)
