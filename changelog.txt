@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-10-24 - version 2.5.4
+* fixes styling issues (for some themes) with blockchain icons on checkout page
+
 2023-10-23 - version 2.5.3
 * fixes wrongfully "failed" payments (rare RPC error, only UI)
 
