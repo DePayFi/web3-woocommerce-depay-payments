@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-11-11 - version 2.5.6
+* replaces broken polygon rpc
+
 2023-11-11 - version 2.5.5
 * replaces broken polygon rpc
 
