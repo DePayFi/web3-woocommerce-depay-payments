@@ -51,7 +51,7 @@ const displayCheckout = async()=>{
       }),
       closed: ()=>{
         window.location.hash = ''
-        window.jQuery('form.woocommerce-checkout').removeClass( 'processing' ).unblock()
+        window.location.reload(true)
       },
       track: {
         method: (payment)=>{

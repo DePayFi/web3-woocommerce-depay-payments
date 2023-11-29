@@ -330,7 +330,6 @@ class DePay_WC_Payments_Rest {
 			
 			$response = wp_remote_get( 'https://public.depay.com/payments/' . $tracking_uuid );
 			$response_code = $response['response']['code'];
-			error_log( print_r($response, true) );
 			$response_successful = ! is_wp_error( $response_code ) && $response_code >= 200 && $response_code < 300;
 
 			if ( $response_successful ) {

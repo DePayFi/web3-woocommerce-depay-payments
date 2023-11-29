@@ -1,5 +1,9 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2023-11-29 - version 2.6.0
+* Adds checkout block support for DePay payment option
+* fixes: "There are no payment methods available"
+
 2023-11-16 - version 2.5.7
 * fixes Trust wallet mobile connection
 

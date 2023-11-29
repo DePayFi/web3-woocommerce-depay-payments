@@ -11,7 +11,7 @@
  * WC tested up to: 8.0.2
  * Requires at least: 5.8
  * Requires PHP: 7.0
- * Version: 2.5.7
+ * Version: 2.6.0
  *
  * @package DePay\Payments
  */
@@ -21,7 +21,7 @@ defined( 'ABSPATH' ) || exit;
 define( 'DEPAY_WC_PLUGIN_FILE', __FILE__ );
 define( 'DEPAY_WC_ABSPATH', __DIR__ . '/' );
 define( 'DEPAY_MIN_WC_ADMIN_VERSION', '0.23.2' );
-define( 'DEPAY_CURRENT_VERSION', '2.5.7' );
+define( 'DEPAY_CURRENT_VERSION', '2.6.0' );
 
 require_once DEPAY_WC_ABSPATH . '/vendor/autoload.php';
 
@@ -151,16 +151,30 @@ add_action( 'before_woocommerce_init', function() {
 	}
 });
 
-// TODO: ACTIVATE ONCE FULLY SUPPORTED
-// function depay_blocks_support() {
-// 	if ( class_exists( 'Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType' ) ) {
-// 		require_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-blocks-support.php';
-// 		add_action(
-// 			'woocommerce_blocks_payment_method_type_registration',
-// 			function( Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $payment_method_registry ) {
-// 				$payment_method_registry->register( new DePay_WC_Payments_Blocks_Support );
-// 			}
-// 		);
-// 	}
-// }
-// add_action( 'woocommerce_blocks_loaded', 'depay_blocks_support' );
+function depay_blocks_support() {
+	if ( class_exists( 'Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodType' ) ) {
+		add_action(
+			'woocommerce_blocks_payment_method_type_registration',
+			function( Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $payment_method_registry ) {
+				
+				if ( get_option( 'depay_wc_gateway_type' ) == 'multigateway' ) {
+
+					$blockchains = json_decode( get_option( 'depay_wc_blockchains' ) );
+
+					foreach ($blockchains as $blockchain) {
+						require_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-block-' . $blockchain . '.php';
+						$className = 'DePay_WC_Payments_Block_' . ucfirst($blockchain);
+						$payment_method_registry->register( new $className() );
+					}
+
+				} else {
+
+					require_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-block.php';
+					$payment_method_registry->register( new DePay_WC_Payments_Block );
+
+				}
+			}
+		);
+	}
+}
+add_action( 'woocommerce_blocks_loaded', 'depay_blocks_support' );
