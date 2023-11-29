@@ -170,7 +170,7 @@ function depay_blocks_support() {
 				} else {
 
 					require_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-block.php';
-					$payment_method_registry->register( new DePay_WC_Payments_Block );
+					$payment_method_registry->register( new DePay_WC_Payments_Block() );
 
 				}
 			}
