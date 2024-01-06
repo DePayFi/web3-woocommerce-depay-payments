@@ -1,5 +1,9 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2024-1-6 - version 2.7.0
+* load checkout javascript & widgets defer (to improve page speed)
+* upgrade widgets
+
 2023-12-27 - version 2.6.1
 * fix wrap<>unwrap payments
 * fix passed gas
