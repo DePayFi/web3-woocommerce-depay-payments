@@ -205,12 +205,14 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 					} else {
 						$amount = $this->round_token_amount( $responses[$i]->body );
 					}
-					array_push($accept, [
-						'blockchain' => $accepted_payment->blockchain,
-						'token' => $accepted_payment->token,
-						'amount' => $amount,
-						'receiver' => $accepted_payment->receiver
-					]);
+					if ( !empty( $amount ) && strval( $amount ) !== "0.00" ) {
+						array_push($accept, [
+							'blockchain' => $accepted_payment->blockchain,
+							'token' => $accepted_payment->token,
+							'amount' => $amount,
+							'receiver' => $accepted_payment->receiver
+						]);
+					}
 				}
 			}
 		}
