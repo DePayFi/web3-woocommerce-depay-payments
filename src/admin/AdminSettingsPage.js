@@ -88,7 +88,7 @@ export default function(props) {
       depay_wc_gateway_type: gatewayType,
       depay_wc_checkout_description: checkoutDescription,
       depay_wc_displayed_currency: displayedCurrency,
-      depay_wc_api_key: apiKey && apiKey.length && apiKey.length > 20 ? apiKey : undefined
+      depay_wc_api_key: apiKey,
     })
 
     settings.save().then((response) => {

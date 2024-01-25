@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2024-1-25 - version 2.8.1
+* fix reseting Api Key value in admin UI
+
 2024-1-25 - version 2.8.0
 * allows to store DePay PRO API key to raise default request limits
 
