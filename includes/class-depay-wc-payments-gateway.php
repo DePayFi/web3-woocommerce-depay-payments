@@ -179,7 +179,7 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 					)
 				);
 			}
-			if ( wp_remote_retrieve_response_code( $usd_amount ) === 429 ) {
+			if ( 429 === wp_remote_retrieve_response_code( $usd_amount ) ) {
 				DePay_WC_Payments::log( 'To many requests! Please upgrade to DePay PRO.' );
 				throw new Exception( 'To many requests! Please upgrade to DePay PRO.' );
 			} else if ( is_wp_error($usd_amount) || wp_remote_retrieve_response_code( $usd_amount ) != 200 ) {
@@ -202,7 +202,7 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 			} else {
 				$get = wp_remote_get( sprintf( 'https://public.depay.com/currencies/%s', $currency ) );
 			}
-			if ( wp_remote_retrieve_response_code( $get ) === 429 ) {
+			if ( 429 === wp_remote_retrieve_response_code( $get ) ) {
 				DePay_WC_Payments::log( 'To many requests! Please upgrade to DePay PRO.' );
 				throw new Exception( 'To many requests! Please upgrade to DePay PRO.' );
 			} else if ( is_wp_error($get) || wp_remote_retrieve_response_code( $get ) != 200 ) {
@@ -262,7 +262,7 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 
 		for ($i = 0; $i < count($responses); $i++) {
 			if ( 0 === $i % 2 ) { // even 0, 2, 4 ...
-				if ( $responses[$i]->status_code === 429 ) {
+				if ( 429 === $responses[$i]->status_code ) {
 					DePay_WC_Payments::log( 'To many requests! Please upgrade to DePay PRO.' );
 					throw new Exception( 'To many requests! Please upgrade to DePay PRO.' );
 				} else if ( $responses[$i]->success && $responses[$i+1]->success && !empty( $responses[$i]->body ) && !empty( $responses[$i+1]->body ) ) {

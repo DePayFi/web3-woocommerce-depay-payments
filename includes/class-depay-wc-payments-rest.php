@@ -161,7 +161,7 @@ class DePay_WC_Payments_Rest {
 			}
 		}
 
-		if( $api_key ) {
+		if ( $api_key ) {
 			$get = wp_remote_get(
 				sprintf( 'https://api.depay.com/v2/tokens/decimals/%s/%s', $accepted_payment->blockchain, $accepted_payment->token ),
 				array(
@@ -192,7 +192,7 @@ class DePay_WC_Payments_Rest {
 			if ( !empty($token) && $token->symbol ===  $currency ) {
 				$total_in_usd = 0;
 			} else {
-				if( $api_key ) {
+				if ( $api_key ) {
 					$get = wp_remote_get(
 						sprintf( 'https://api.depay.com/v2/currencies/%s', $currency ),
 						array(
@@ -288,7 +288,7 @@ class DePay_WC_Payments_Rest {
 				'base' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb'
 		];
 
-		if( $api_key ) {
+		if ( $api_key ) {
 			$endpoint = 'https://api.depay.com/v2/payments';
 			$headers = array( 
 				'x-api-key' => $api_key,
