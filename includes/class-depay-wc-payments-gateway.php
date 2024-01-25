@@ -7,6 +7,8 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 
 	const GATEWAY_ID = 'depay_wc_payments';
 
+	public $blockchain;
+
 	public function __construct() {
 		$this->id									= static::GATEWAY_ID;
 		$this->method_title				= 'DePay';
@@ -139,10 +141,13 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 	public function get_accept( $order ) {
 		$total = $order->get_total();
 		$currency = $order->get_currency();
-
 		$requests = [];
 		$token_denominated = false;
 		$token = null;
+		$api_key = get_option( 'depay_wc_api_key' );
+		if ( empty( $api_key ) ) {
+			$api_key = false;
+		}
 
 		if ( !empty( get_option( 'depay_wc_token_for_denomination' ) ) ) {
 
@@ -156,8 +161,28 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 		$price_decimals = get_option( 'woocommerce_price_num_decimals' );
 		$price_format_specifier = '%.' . $price_decimals . 'f';
 		if ( $token_denominated ) {
-			$usd_amount = wp_remote_get( sprintf( 'https://public.depay.com/conversions/USD/%s/%s?amount=' . $price_format_specifier, $token->blockchain, $token->address, $total ) );
-			if ( is_wp_error($usd_amount) || wp_remote_retrieve_response_code( $usd_amount ) != 200 ) {
+			if ( $api_key ) {
+				$usd_amount = wp_remote_get(
+					sprintf( 'https://api.depay.com/v2/conversions/USD/%s/%s?amount=' . $price_format_specifier, $token->blockchain, $token->address, $total ),
+					array(
+						'headers' => array(
+							'x-api-key' => $api_key
+						),
+						'timeout' => 10
+					)
+				);
+			} else {
+				$usd_amount = wp_remote_get(
+					sprintf( 'https://public.depay.com/conversions/USD/%s/%s?amount=' . $price_format_specifier, $token->blockchain, $token->address, $total ),
+					array(
+						'timeout' => 10
+					)
+				);
+			}
+			if ( wp_remote_retrieve_response_code( $usd_amount ) === 429 ) {
+				DePay_WC_Payments::log( 'To many requests! Please upgrade to DePay PRO.' );
+				throw new Exception( 'To many requests! Please upgrade to DePay PRO.' );
+			} else if ( is_wp_error($usd_amount) || wp_remote_retrieve_response_code( $usd_amount ) != 200 ) {
 				DePay_WC_Payments::log( 'Price request failed!' );
 				throw new Exception( 'Price request failed!' );
 			}
@@ -165,8 +190,22 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 		} else if ( 'USD' == $currency ) {
 			$total_in_usd = $total;
 		} else {
-			$get = wp_remote_get( sprintf( 'https://public.depay.com/currencies/%s', $currency ) );
-			if ( is_wp_error($get) || wp_remote_retrieve_response_code( $get ) != 200 ) {
+			if ( $api_key ) {
+				$get = wp_remote_get(
+					sprintf( 'https://api.depay.com/v2/currencies/%s', $currency ),
+					array(
+						'headers' => array(
+							'x-api-key' => $api_key
+						)
+					)
+				);
+			} else {
+				$get = wp_remote_get( sprintf( 'https://public.depay.com/currencies/%s', $currency ) );
+			}
+			if ( wp_remote_retrieve_response_code( $get ) === 429 ) {
+				DePay_WC_Payments::log( 'To many requests! Please upgrade to DePay PRO.' );
+				throw new Exception( 'To many requests! Please upgrade to DePay PRO.' );
+			} else if ( is_wp_error($get) || wp_remote_retrieve_response_code( $get ) != 200 ) {
 				DePay_WC_Payments::log( 'Price request failed!' );
 				throw new Exception( 'Price request failed!' );
 			}
@@ -188,8 +227,33 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 		}
 
 		foreach ( $accepted_payments as $accepted_payment ) {
-			$requests[] = array( 'url' => sprintf( 'https://public.depay.com/conversions/%s/%s/USD?amount=' . $price_format_specifier, $accepted_payment->blockchain, $accepted_payment->token, $total_in_usd ), 'type' => 'GET' );
-			$requests[] = array( 'url' => sprintf( 'https://public.depay.com/tokens/decimals/%s/%s', $accepted_payment->blockchain, $accepted_payment->token ), 'type' => 'GET' );
+			if ( $api_key ) {
+				$requests[] = array(
+					'url' => sprintf( 'https://api.depay.com/v2/conversions/%s/%s/USD?amount=' . $price_format_specifier, $accepted_payment->blockchain, $accepted_payment->token, $total_in_usd ),
+					'type' => 'GET',
+					'timeout' => 10,
+					'headers' => array(
+						'x-api-key' => $api_key
+					)
+				);
+				$requests[] = array(
+					'url' => sprintf( 'https://api.depay.com/v2/tokens/decimals/%s/%s', $accepted_payment->blockchain, $accepted_payment->token ),
+					'type' => 'GET',
+					'headers' => array(
+						'x-api-key' => $api_key
+					)
+				);
+			} else {
+				$requests[] = array(
+					'url' => sprintf( 'https://public.depay.com/conversions/%s/%s/USD?amount=' . $price_format_specifier, $accepted_payment->blockchain, $accepted_payment->token, $total_in_usd ),
+					'type' => 'GET',
+					'timeout' => 10
+				);
+				$requests[] = array(
+					'url' => sprintf( 'https://public.depay.com/tokens/decimals/%s/%s', $accepted_payment->blockchain, $accepted_payment->token ),
+					'type' => 'GET'
+				);
+			}
 		}
 
 		$responses = Requests::request_multiple( $requests );
@@ -198,7 +262,10 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 
 		for ($i = 0; $i < count($responses); $i++) {
 			if ( 0 === $i % 2 ) { // even 0, 2, 4 ...
-				if ( $responses[$i]->success && $responses[$i+1]->success && !empty( $responses[$i]->body ) && !empty( $responses[$i+1]->body ) ) {
+				if ( $responses[$i]->status_code === 429 ) {
+					DePay_WC_Payments::log( 'To many requests! Please upgrade to DePay PRO.' );
+					throw new Exception( 'To many requests! Please upgrade to DePay PRO.' );
+				} else if ( $responses[$i]->success && $responses[$i+1]->success && !empty( $responses[$i]->body ) && !empty( $responses[$i+1]->body ) ) {
 					$accepted_payment = $accepted_payments[ $i / 2 ];
 					if ( $token_denominated && $token && $token->blockchain === $accepted_payment->blockchain && $token->address === $accepted_payment->token ) {
 						$amount = $total;

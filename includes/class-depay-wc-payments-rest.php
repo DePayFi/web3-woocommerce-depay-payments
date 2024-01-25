@@ -133,6 +133,10 @@ class DePay_WC_Payments_Rest {
 	public function track_payment( $request ) {
 
 		global $wpdb;
+		$api_key = get_option( 'depay_wc_api_key' );
+		if ( empty( $api_key ) ) {
+			$api_key = false;
+		}
 		$id = $request->get_param( 'id' );
 		$accept = $wpdb->get_var(
 			$wpdb->prepare(
@@ -157,7 +161,18 @@ class DePay_WC_Payments_Rest {
 			}
 		}
 
-		$get = wp_remote_get( sprintf( 'https://public.depay.com/tokens/decimals/%s/%s', $accepted_payment->blockchain, $accepted_payment->token ) );
+		if( $api_key ) {
+			$get = wp_remote_get(
+				sprintf( 'https://api.depay.com/v2/tokens/decimals/%s/%s', $accepted_payment->blockchain, $accepted_payment->token ),
+				array(
+					'headers' => array(
+						'x-api-key' => $api_key
+					)
+				)
+			);
+		} else {
+			$get = wp_remote_get( sprintf( 'https://public.depay.com/tokens/decimals/%s/%s', $accepted_payment->blockchain, $accepted_payment->token ) );
+		}
 		$decimals = intval($get['body']);
 
 		$fee_amount = bcmul( $accepted_payment->amount, '0.015', $decimals );
@@ -177,7 +192,18 @@ class DePay_WC_Payments_Rest {
 			if ( !empty($token) && $token->symbol ===  $currency ) {
 				$total_in_usd = 0;
 			} else {
-				$get = wp_remote_get( sprintf( 'https://public.depay.com/currencies/%s', $currency ) );
+				if( $api_key ) {
+					$get = wp_remote_get(
+						sprintf( 'https://api.depay.com/v2/currencies/%s', $currency ),
+						array(
+							'headers' => array(
+								'x-api-key' => $api_key
+							)
+						)
+					);
+				} else {
+					$get = wp_remote_get( sprintf( 'https://public.depay.com/currencies/%s', $currency ) );
+				}
 				$rate = $get['body'];
 				$total_in_usd = bcdiv( $total, $rate, 3 );
 			}
@@ -262,9 +288,22 @@ class DePay_WC_Payments_Rest {
 				'base' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb'
 		];
 
-		$post = wp_remote_post( 'https://public.depay.com/payments',
+		if( $api_key ) {
+			$endpoint = 'https://api.depay.com/v2/payments';
+			$headers = array( 
+				'x-api-key' => $api_key,
+				'Content-Type' => 'application/json; charset=utf-8',
+			);
+		} else {
+			$endpoint = 'https://public.depay.com/payments';
+			$headers = array(
+				'Content-Type' => 'application/json; charset=utf-8'
+			);
+		}
+
+		$post = wp_remote_post( $endpoint,
 			array(
-				'headers' => array( 'Content-Type' => 'application/json; charset=utf-8' ),
+				'headers' => $headers,
 				'body' => json_encode([
 					'blockchain' => $accepted_payment->blockchain,
 					'receiver' => $accepted_payment->receiver,
@@ -311,6 +350,10 @@ class DePay_WC_Payments_Rest {
 	public function check_release( $request ) {
 
 		global $wpdb;
+		$api_key = get_option( 'depay_wc_api_key' );
+		if ( empty( $api_key ) ) {
+			$api_key = false;
+		}
 
 		$checkout_id = $request->get_param( 'checkout_id' );
 		$existing_transaction_status = $wpdb->get_var(
@@ -328,7 +371,18 @@ class DePay_WC_Payments_Rest {
 				)
 			);
 			
-			$response = wp_remote_get( 'https://public.depay.com/payments/' . $tracking_uuid );
+			if ( $api_key ) {
+				$response = wp_remote_get(
+					'https://api.depay.com/v2/payments/' . $tracking_uuid,
+					array(
+						'headers' => array(
+							'x-api-key' => $api_key
+						)
+					)
+				);
+			} else {
+				$response = wp_remote_get( 'https://public.depay.com/payments/' . $tracking_uuid );
+			}
 			$response_code = $response['response']['code'];
 			$response_successful = ! is_wp_error( $response_code ) && $response_code >= 200 && $response_code < 300;
 

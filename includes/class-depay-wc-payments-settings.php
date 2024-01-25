@@ -101,5 +101,15 @@ class DePay_WC_Payments_Settings {
 				'default' => false
 			]
 		);
+
+		register_setting(
+			'depay_wc',
+			'depay_wc_api_key',
+			[
+				'type' => 'string',
+				'show_in_rest' => true,
+				'default' => null
+			]
+		);
 	}
 }

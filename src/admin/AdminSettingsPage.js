@@ -12,6 +12,7 @@ export default function(props) {
   const [ gatewayType, setGatewayType ] = useState('multichain')
   const [ checkoutDescription, setCheckoutDescription ] = useState('')
   const [ displayedCurrency, setDisplayedCurrency ] = useState('')
+  const [ apiKey, setApiKey ] = useState()
   const [ tokens, setTokens ] = useState()
   const [ tooManyTokensPerChain, setTooManyTokensPerChain ] = useState(false)
   const [ denomination, setDenomination ] = useState()
@@ -87,6 +88,7 @@ export default function(props) {
       depay_wc_gateway_type: gatewayType,
       depay_wc_checkout_description: checkoutDescription,
       depay_wc_displayed_currency: displayedCurrency,
+      depay_wc_api_key: apiKey && apiKey.length && apiKey.length > 20 ? apiKey : undefined
     })
 
     settings.save().then((response) => {
@@ -116,6 +118,7 @@ export default function(props) {
         setGatewayType(response.depay_wc_gateway_type || 'multichain')
         setCheckoutDescription(response.depay_wc_checkout_description || '')
         setDisplayedCurrency(response.depay_wc_displayed_currency || '')
+        setApiKey(response.depay_wc_api_key || null)
       })
     }).catch(()=>{})
   }, [])
@@ -430,8 +433,48 @@ export default function(props) {
           </div>
         </div>
       </div>
+
+      <div className="woocommerce-settings__wrapper">
+        <div className="woocommerce-setting">
+          <div className="woocommerce-setting__label">
+            <label>
+              API Key
+            </label>
+          </div>
+          <div className="woocommerce-setting__input">
+            <div className="woocommerce-setting__options-group">
+              <p className="description">
+                To increase your request limit towards DePay APIs, please enter your API key here:
+              </p>
+              <div>
+                <label>
+                  <span className="woocommerce-settings-historical-data__progress-label">API Key</span>
+                  <input type="text" value={ apiKey || '' } onChange={(e)=>{ setApiKey(e.target.value) } } style={{ width: '100%' }}/>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="woocommerce-settings__wrapper">
+        <div className="woocommerce-setting">
+          <div className="woocommerce-setting__label">
+            <label>
+              Save
+            </label>
+          </div>
+          <div className="woocommerce-setting__input">
+            <div className="woocommerce-setting__options-group">
+              <p className="description">
+                Make sure to save your settings:
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
       
-      <div className="woocommerce-settings__wrapper" style={{ paddingTop: '20px' }}>
+      <div className="woocommerce-settings__wrapper">
         <div className="woocommerce-setting">
           <div className="woocommerce-setting__label"></div>
           <div className="woocommerce-setting__input">
