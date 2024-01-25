@@ -22,7 +22,7 @@
     const DePayPaymentBlockContent = ({})=>{
       return(
         <>
-          { settings.description &&
+          { settings.description && settings.description.length > 0 &&
             <div>
               { settings.description }
             </div>
