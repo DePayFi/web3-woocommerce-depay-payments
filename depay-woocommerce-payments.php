@@ -11,7 +11,7 @@
  * WC tested up to: 8.0.2
  * Requires at least: 5.8
  * Requires PHP: 7.0
- * Version: 2.8.3
+ * Version: 2.9.0
  *
  * @package DePay\Payments
  */
@@ -21,7 +21,7 @@ defined( 'ABSPATH' ) || exit;
 define( 'DEPAY_WC_PLUGIN_FILE', __FILE__ );
 define( 'DEPAY_WC_ABSPATH', __DIR__ . '/' );
 define( 'DEPAY_MIN_WC_ADMIN_VERSION', '0.23.2' );
-define( 'DEPAY_CURRENT_VERSION', '2.8.3' );
+define( 'DEPAY_CURRENT_VERSION', '2.9.0' );
 
 require_once DEPAY_WC_ABSPATH . '/vendor/autoload.php';
 

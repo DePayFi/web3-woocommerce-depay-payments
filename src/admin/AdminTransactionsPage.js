@@ -20,7 +20,37 @@ const getCurrentOrder = ()=>{
 const getCurrentPaymentsFilter = ()=>{
   return window.location.search.match(/payments=(\w+)/) ? window.location.search.match(/payments=(\w+)/)[1] : 'completed'
 }
+const getCurrentSearch = ()=>{
+  return window.location.search.match(/search=(\w+)/) ? window.location.search.match(/search=(\w+)/)[1] : ''
+}
+
 let currentRequest
+
+const TableSearch = (props)=>{
+
+  const [search, setSearch] =  useState(getCurrentSearch())
+
+  return(
+    <div className="woocommerce-select-control woocommerce-search is-searchable">
+      <label className="components-base-control woocommerce-select-control__control empty">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" className="woocommerce-select-control__control-icon" aria-hidden="true" focusable="false"><path d="M13.5 6C10.5 6 8 8.5 8 11.5c0 1.1.3 2.1.9 3l-3.4 3 1 1.1 3.4-2.9c1 .9 2.2 1.4 3.6 1.4 3 0 5.5-2.5 5.5-5.5C19 8.5 16.5 6 13.5 6zm0 9.5c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4-1.8 4-4 4z"></path></svg>
+        <div className="components-base-control__field">
+          <input
+            autocomplete="off"
+            className="woocommerce-select-control__control-input" id="woocommerce-select-control-0__control-input"
+            type="text"
+            placeholder="Search by order, transaction or sender"
+            value={search}
+            onChange={(event)=>{
+              props.onQueryChange( 'search' )( event.target.value, '' )
+              setSearch(event.target.value)
+            }}
+          />
+        </div>
+      </label>
+    </div>
+  )
+}
 
 export default function(props) {
 
@@ -34,6 +64,7 @@ export default function(props) {
     orderby: getCurrentOrderBy(),
     order: getCurrentOrder(),
     payments: getCurrentPaymentsFilter(),
+    search: getCurrentSearch()
   })
   const [ summary, setSummary ] = useState()
   const scrollPointRef = useRef()
@@ -121,6 +152,7 @@ export default function(props) {
       orderby: getCurrentOrderBy(),
       order: getCurrentOrder(),
       payments: getCurrentPaymentsFilter(),
+      search: getCurrentSearch(),
     })
     currentRequest = wp.apiRequest({
       path: `/depay/wc/transactions`,
@@ -131,6 +163,7 @@ export default function(props) {
         orderby: getCurrentOrderBy(),
         order: getCurrentOrder(),
         payments: getCurrentPaymentsFilter(),
+        search: getCurrentSearch(),
       }
     })
     currentRequest.then((response)=>{
@@ -285,9 +318,13 @@ export default function(props) {
       />
       <TableCard
         className={ 'woocommerce-report-table' }
-        title={"Transactions"}
-        query={query}
-        actions={[]}
+        title={ "Transactions" }
+        query={ query }
+        actions={ [
+          <TableSearch
+            onQueryChange={ onQueryChange }
+          />
+        ] }
         headers={ filteredHeaders }
         isLoading={ isLoading }
         showMenu={ false }
@@ -296,6 +333,7 @@ export default function(props) {
         rowsPerPage={ getCurrentPerPage() }
         summary={ summary }
         totalRows={ totalRows }
+        hasSearch={true}
       />
     </Fragment>
   )

@@ -692,22 +692,44 @@ class DePay_WC_Payments_Rest {
 
 		$orderby_sql = sanitize_sql_orderby( "{$orderby} {$order}" );
 
+		$search = $request->get_param( 'search' );
+
 		if ( $request->get_param( 'payments' ) === 'attempts' ) {
 			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$transactions = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}wc_depay_transactions WHERE status = 'PENDING' OR status = 'VALIDATING' ORDER BY {$orderby_sql} LIMIT %d OFFSET %d", $limit, $offset ) );
-			$total = $wpdb->get_var(
-				$wpdb->prepare(
-					"SELECT COUNT(*) FROM {$wpdb->prefix}wc_depay_transactions WHERE status = 'PENDING' OR status = 'VALIDATING'"
-				)
-			);
+			if( empty( $search ) ) {
+				$transactions = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}wc_depay_transactions WHERE status = 'PENDING' OR status = 'VALIDATING' ORDER BY {$orderby_sql} LIMIT %d OFFSET %d", $limit, $offset ) );
+				$total = $wpdb->get_var(
+					$wpdb->prepare(
+						"SELECT COUNT(*) FROM {$wpdb->prefix}wc_depay_transactions WHERE status = 'PENDING' OR status = 'VALIDATING'"
+					)
+				);
+			} else {
+				$transactions = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}wc_depay_transactions WHERE ( order_id LIKE %s OR transaction_id LIKE %s OR sender_id LIKE %s ) AND status = 'PENDING' OR status = 'VALIDATING' ORDER BY {$orderby_sql} LIMIT %d OFFSET %d", $search, $search, $search, $limit, $offset ) );
+				$total = $wpdb->get_var(
+					$wpdb->prepare(
+						"SELECT COUNT(*) FROM {$wpdb->prefix}wc_depay_transactions WHERE ( order_id LIKE %s OR transaction_id LIKE %s OR sender_id LIKE %s ) AND status = 'PENDING' OR status = 'VALIDATING'",
+						$search, $search, $search 
+					)
+				);
+			}
 		} else {
 			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$transactions = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}wc_depay_transactions WHERE status != 'PENDING' AND status != 'VALIDATING' ORDER BY {$orderby_sql} LIMIT %d OFFSET %d", $limit, $offset ) );
-			$total = $wpdb->get_var(
-				$wpdb->prepare(
-					"SELECT COUNT(*) FROM {$wpdb->prefix}wc_depay_transactions WHERE status != 'PENDING' AND status != 'VALIDATING'"
-				)
-			);
+			if( empty( $search ) ) {
+				$transactions = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}wc_depay_transactions WHERE status != 'PENDING' AND status != 'VALIDATING' ORDER BY {$orderby_sql} LIMIT %d OFFSET %d", $limit, $offset ) );
+				$total = $wpdb->get_var(
+					$wpdb->prepare(
+						"SELECT COUNT(*) FROM {$wpdb->prefix}wc_depay_transactions WHERE status != 'PENDING' AND status != 'VALIDATING'"
+					)
+				);
+			} else {
+				$transactions = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}wc_depay_transactions WHERE ( order_id LIKE %s OR transaction_id LIKE %s OR sender_id LIKE %s ) AND status != 'PENDING' AND status != 'VALIDATING' ORDER BY {$orderby_sql} LIMIT %d OFFSET %d", $search, $search, $search, $limit, $offset ) );
+				$total = $wpdb->get_var(
+					$wpdb->prepare(
+						"SELECT COUNT(*) FROM {$wpdb->prefix}wc_depay_transactions WHERE ( order_id LIKE %s OR transaction_id LIKE %s OR sender_id LIKE %s ) AND status != 'PENDING' AND status != 'VALIDATING'",
+						$search, $search, $search
+					)
+				);
+			}
 		}
 
 		return rest_ensure_response( [
