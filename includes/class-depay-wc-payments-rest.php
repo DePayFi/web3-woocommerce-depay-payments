@@ -695,7 +695,7 @@ class DePay_WC_Payments_Rest {
 		$search = $request->get_param( 'search' );
 
 		if ( $request->get_param( 'payments' ) === 'attempts' ) {
-			if( empty ( $search ) ) {
+			if ( empty( $search ) ) {
 				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$transactions = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}wc_depay_transactions WHERE status = 'PENDING' OR status = 'VALIDATING' ORDER BY {$orderby_sql} LIMIT %d OFFSET %d", $limit, $offset ) );
 				$total = $wpdb->get_var(
@@ -714,7 +714,7 @@ class DePay_WC_Payments_Rest {
 				);
 			}
 		} else {
-			if( empty ( $search ) ) {
+			if ( empty( $search ) ) {
 				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$transactions = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}wc_depay_transactions WHERE status != 'PENDING' AND status != 'VALIDATING' ORDER BY {$orderby_sql} LIMIT %d OFFSET %d", $limit, $offset ) );
 				$total = $wpdb->get_var(
