@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2024-2-15 - version 2.9.1
+* upgrade dependencies (fix polygon rpc)
+
 2024-2-2 - version 2.9.0
 * adds transaction search to admin > DePay > transactions
 
