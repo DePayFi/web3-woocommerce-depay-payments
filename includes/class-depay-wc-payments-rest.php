@@ -324,7 +324,8 @@ class DePay_WC_Payments_Rest {
 					'forward_on_failure' => false,
 					'fee_amount' => $fee_amount,
 					'fee_receiver' => $fee_receivers[$accepted_payment->blockchain],
-					'deadline' => $request->get_param( 'deadline' )
+					'deadline' => $request->get_param( 'deadline' ),
+					'selected_wallet' => $request->get_param( 'selected_wallet' )
 				]),
 				'method' => 'POST',
 				'data_format' => 'body'
