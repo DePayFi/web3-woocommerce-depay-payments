@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2024-2-26 - version 2.10.2
+* fix onbeforeunload redirect issues
+
 2024-2-26 - version 2.10.1
 * fix saving settings
 
