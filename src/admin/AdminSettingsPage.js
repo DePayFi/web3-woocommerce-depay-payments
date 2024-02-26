@@ -118,7 +118,7 @@ export default function(props) {
         setGatewayType(response.depay_wc_gateway_type || 'multichain')
         setCheckoutDescription(response.depay_wc_checkout_description || '')
         setDisplayedCurrency(response.depay_wc_displayed_currency || '')
-        setApiKey(response.depay_wc_api_key || null)
+        setApiKey(response.depay_wc_api_key || '')
       })
     }).catch(()=>{})
   }, [])

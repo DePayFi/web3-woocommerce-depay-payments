@@ -108,7 +108,7 @@ class DePay_WC_Payments_Settings {
 			[
 				'type' => 'string',
 				'show_in_rest' => true,
-				'default' => null
+				'default' => ''
 			]
 		);
 	}

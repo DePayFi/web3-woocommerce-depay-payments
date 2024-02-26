@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2024-2-26 - version 2.10.1
+* fix saving settings
+
 2024-2-26 - version 2.10.0
 * adds wallet support for Magic Eden wallet and Brave (multi platform)
 
