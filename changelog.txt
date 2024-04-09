@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2024-4-9 - version 2.10.4
+* fix some more wallet connect issues
+
 2024-4-5 - version 2.10.3
 * fix metamask QR scan connection
 
