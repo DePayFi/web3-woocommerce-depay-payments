@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2024-4-9 - version 2.10.6
+* fix "tested up to"
+
 2024-4-9 - version 2.10.5
 * fix plugin meta
 
