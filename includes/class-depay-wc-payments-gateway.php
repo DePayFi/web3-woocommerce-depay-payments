@@ -28,7 +28,7 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 	}
 
 	public function get_icon() {
-		$icon = '<style>.wc_payment_method_depay_image { margin: 0 3px 0 0 !important; padding: 0 !important; flex: 1 1 auto !important; width: auto; max-width: 24px !important; } .payment_box.payment_method_depay_wc_payments { width: 100%; } .wc_payment_method.payment_method_depay_wc_payments { display: flex; flex-direction: row; flex-wrap: no-wrap; align-items: center; } .payment_method_depay_wc_payments label { display: flex !important; flex-grow: 1; align-items: center; white-space: nowrap; }</style><div style="display: inline-flex; flex-direction: row; flex-grow: 1; padding-left: 12px; justify-content: end; width: 100%; overflow: hidden;">';
+		$icon = '<div style="display: inline-flex; flex-direction: row; flex-grow: 1; padding-left: 12px; justify-content: end; width: 100%; overflow: hidden;">';
 		if ( empty( get_option( 'depay_wc_blockchains' ) ) ) {
 			$icon = '';
 		} else if ( null != $this->blockchain ) {
