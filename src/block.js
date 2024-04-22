@@ -6,16 +6,16 @@
 
     const DePayPaymentBlockLabel = ({})=>{
       return(
-        <>
-          <div>{ settings.title }</div>
-          <div style={{ flexGrow: "1", display: 'flex', justifyContent: 'end', paddingRight: '14px', paddingLeft: '14px' }}>
+        <span>
+          { settings.title }
+          <span className="wc-depay-icons-container">
             { settings.blockchains.map((blockchain, index)=>{
               return(
-                <img key={index} title={`Payments on #{blockchain}`} style={{ marginBottom: '2px', width: '28px', height: '28px' }} src={`${settings.pluginUrl}images/blockchains/${blockchain}.svg`} />
+                <img className="wc-depay-blockchain-icon" key={index} title={`Payments on #{blockchain}`} src={`${settings.pluginUrl}images/blockchains/${blockchain}.svg`} />
               )
             }) }
-          </div>
-        </>
+          </span>
+        </span>
       )
     }
 
@@ -64,12 +64,12 @@
 
       const DePayPaymentPerBlockchainBlockLabel = ({})=>{
         return(
-          <>
-            <div>{ settings.title }</div>
-            <div style={{ flexGrow: "1", display: 'flex', justifyContent: 'end', paddingRight: '14px', paddingLeft: '14px' }}>
-              <img title={`Payments on #{blockchain}`} style={{ marginBottom: '2px', width: '28px', height: '28px' }} src={`${settings.pluginUrl}images/blockchains/${blockchain}.svg`} />
-            </div>
-          </>
+          <span>
+            { settings.title }
+            <span className="wc-depay-icons-container">
+              <img className="wc-depay-blockchain-icon" title={`Payments on #{blockchain}`} src={`${settings.pluginUrl}images/blockchains/${blockchain}.svg`} />
+            </span>
+          </span>
         )
       }
 

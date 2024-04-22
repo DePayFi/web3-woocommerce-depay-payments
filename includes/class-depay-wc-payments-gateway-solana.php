@@ -10,7 +10,7 @@ class DePay_WC_Payments_Solana_Gateway extends DePay_WC_Payments_Gateway {
 	public function __construct() {
 		$this->id                 = static::GATEWAY_ID;
 		$this->method_title       = 'Solana';
-		$this->method_description = 'Settle payments on the Solana blockchain.';
+		$this->method_description = 'Payments on the Solana blockchain.';
 		$this->supports           = [ 'products' ];
 		$this->init_form_fields();
 		$this->init_settings();

@@ -10,7 +10,7 @@ class DePay_WC_Payments_Bsc_Gateway extends DePay_WC_Payments_Gateway {
 	public function __construct() {
 		$this->id                 = static::GATEWAY_ID;
 		$this->method_title       = 'BNB Smart Chain';
-		$this->method_description = 'Settle payments on the BNB Smart Chain.';
+		$this->method_description = 'Payments on the BNB Smart Chain.';
 		$this->supports           = [ 'products' ];
 		$this->init_form_fields();
 		$this->init_settings();

@@ -1,22 +1,35 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 27.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 100 100" style="enable-background:new 0 0 100 100;" xml:space="preserve">
-<style type="text/css">
-	.st0{fill:#5683EC;}
-	.st1{fill:#FFFFFF;fill-opacity:0.602;}
-	.st2{fill:#FFFFFF;}
-	.st3{fill:#FFFFFF;fill-opacity:0.2;}
-</style>
-<g>
-	<path class="st0" d="M98.4,90.6c0,3.8-3.2,7-7,7h-83c-3.8,0-7-3.2-7-7V8.5c0-3.8,3.2-7,7-7h83c3.8,0,7,3.2,7,7V90.6z"/>
-</g>
-<g>
-	<path class="st1" d="M50,9.7v29.8l25.2,11.3L50,9.7z"/>
-	<path class="st2" d="M50,9.7L24.8,50.8L50,39.5V9.7L50,9.7z"/>
-	<path class="st1" d="M50,70.1v20.3l25.2-34.9L50,70.1L50,70.1z"/>
-	<path class="st2" d="M50,90.3V70.1L24.8,55.4L50,90.3L50,90.3z"/>
-	<path class="st3" d="M50,65.4l25.2-14.6L50,39.5V65.4L50,65.4z"/>
-	<path class="st1" d="M24.8,50.8L50,65.4V39.5L24.8,50.8z"/>
-</g>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 100 100">
+  <defs>
+    <style>
+      .cls-1 {
+        fill-opacity: .2;
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-4 {
+        stroke-width: 0px;
+      }
+
+      .cls-1, .cls-2, .cls-4 {
+        fill: #fff;
+      }
+
+      .cls-2 {
+        fill-opacity: .6;
+      }
+
+      .cls-3 {
+        fill: #5683ec;
+      }
+    </style>
+  </defs>
+  <rect class="cls-3" x="1.5" y="2" width="97" height="96.1" rx="10.5" ry="10.5"/>
+  <g>
+    <path class="cls-2" d="M50,11.4v27.8l23.5,10.6L50,11.4Z"/>
+    <path class="cls-4" d="M50,11.4l-23.5,38.4,23.5-10.6V11.4h0Z"/>
+    <path class="cls-2" d="M50,67.8v19l23.5-32.6-23.5,13.6h0Z"/>
+    <path class="cls-4" d="M50,86.6v-18.9l-23.5-13.7,23.5,32.6h0Z"/>
+    <path class="cls-1" d="M50,63.4l23.5-13.6-23.5-10.6v24.2h0Z"/>
+    <path class="cls-2" d="M26.5,49.8l23.5,13.6v-24.2s-23.5,10.6-23.5,10.6Z"/>
+  </g>
 </svg>

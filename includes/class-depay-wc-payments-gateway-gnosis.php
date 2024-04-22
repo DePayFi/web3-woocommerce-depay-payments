@@ -10,7 +10,7 @@ class DePay_WC_Payments_Gnosis_Gateway extends DePay_WC_Payments_Gateway {
 	public function __construct() {
 		$this->id                 = static::GATEWAY_ID;
 		$this->method_title       = 'Gnosis';
-		$this->method_description = 'Settle payments on the Gnosis blockchain.';
+		$this->method_description = 'Payments on the Gnosis blockchain.';
 		$this->supports           = [ 'products' ];
 		$this->init_form_fields();
 		$this->init_settings();

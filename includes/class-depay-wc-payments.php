@@ -123,6 +123,8 @@ class DePay_WC_Payments {
 	
 	public static function setup_checkout_scripts() {
 
+		wp_register_style( 'DEPAY_WC_STYLE', plugins_url( 'assets/css/depay.css', DEPAY_WC_PLUGIN_FILE ), array(), DEPAY_CURRENT_VERSION );
+		wp_enqueue_style( 'DEPAY_WC_STYLE' );
 		wp_register_script( 'DEPAY_WC_WIDGETS', plugins_url( 'dist/widgets.bundle.js', DEPAY_WC_PLUGIN_FILE ), array(), DEPAY_CURRENT_VERSION, array( 'in_footer' => true, 'strategy' => 'defer' ) );
 		wp_enqueue_script( 'DEPAY_WC_WIDGETS' );
 		wp_register_script( 'DEPAY_WC_CHECKOUT', plugins_url( 'dist/checkout.js', DEPAY_WC_PLUGIN_FILE ), array( 'wp-api-request', 'jquery' ), DEPAY_CURRENT_VERSION, array( 'in_footer' => true, 'strategy' => 'defer' ) );

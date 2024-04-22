@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2024-4-22 - version 2.10.7
+* fix use standard way of displaying checkout payment icons
+
 2024-4-9 - version 2.10.6
 * fix "tested up to"
 

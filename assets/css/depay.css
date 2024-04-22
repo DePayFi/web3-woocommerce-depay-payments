@@ -1,0 +1,11 @@
+.wc-depay-icons-container {
+  float: right;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  box-sizing: border-box;
+}
+
+.wc-depay-blockchain-icon {
+  margin-left: .25em;
+}
