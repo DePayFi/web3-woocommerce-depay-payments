@@ -8,6 +8,7 @@
 
 .wc-depay-blockchain-icon {
   margin-left: .25em;
+  max-height: 36px;
 }
 
 .wc-block-checkout__payment-method .wc-block-components-radio-control__label>span {

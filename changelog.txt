@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2024-4-22 - version 2.10.9
+* fix max height blockchain icons (checkout)
+
 2024-4-22 - version 2.10.8
 * fix checkout option width (for icons)
 
