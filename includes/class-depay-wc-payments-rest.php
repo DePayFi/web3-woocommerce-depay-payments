@@ -808,6 +808,7 @@ class DePay_WC_Payments_Rest {
 			'depay' => DEPAY_CURRENT_VERSION,
 			'bcmath' => $bcmath_exists,
 			'curl' => ( function_exists( 'fsockopen' ) || function_exists( 'curl_init' ) ),
+			'api' => !empty( get_option( 'depay_wc_api_key' ) ),
 			'GET' => $get_response_successful,
 			'POST' => $post_response_successful,
 			'currency' => get_option( 'woocommerce_currency' ),
