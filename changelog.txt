@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2024-5-11 - version 2.10.11
+* fixes mobile wallet connectivity issues (WalletConnect)
+
 2024-4-26 - version 2.10.10
 * more css fixes for old templates
 

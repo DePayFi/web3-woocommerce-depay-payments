@@ -51,7 +51,7 @@
       if(storedImage && storedImage.length && storedImage != UNKNOWN_IMAGE) {
         return setSource(storedImage, 'stored')
       }
-      const foundMajorToken = Blockchains__default['default'][blockchain].tokens.find((token)=> token.address.toLowerCase() === address.toLowerCase());
+      const foundMajorToken = Blockchains__default['default'][blockchain].tokens.find((token)=> token.address.toLowerCase() === _optionalChain([address, 'optionalAccess', _ => _.toLowerCase, 'call', _2 => _2()]));
       if(foundMajorToken) {
         setSource(foundMajorToken.logo, 'web3-blockchains');
       } else {
@@ -90,7 +90,7 @@
           });
 
           
-          if(_optionalChain([metaData, 'optionalAccess', _ => _.data, 'optionalAccess', _2 => _2.uri])) {
+          if(_optionalChain([metaData, 'optionalAccess', _3 => _3.data, 'optionalAccess', _4 => _4.uri])) {
 
             const uri = metaData.data.uri.replace(new RegExp('\u0000', 'g'), '');
             if(uri && uri.length) {
