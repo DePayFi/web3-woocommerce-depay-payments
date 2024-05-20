@@ -269,7 +269,11 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 							'amount' => $amount,
 							'receiver' => $accepted_payment->receiver
 						]);
+					} else {
+						DePay_WC_Payments::log( 'Amount is empty: ' . $requests[$i]['url'] );
 					}
+				} else {
+					DePay_WC_Payments::log( 'Accept request failed: ' . $responses[$i]->status_code . ' ' . $requests[$i]['url'] );
 				}
 			}
 		}
