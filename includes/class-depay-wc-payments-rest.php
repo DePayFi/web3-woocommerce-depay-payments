@@ -806,6 +806,7 @@ class DePay_WC_Payments_Rest {
 			'wc' => wc()->version,
 			'wp' => $GLOBALS[ 'wp_version' ],
 			'depay' => DEPAY_CURRENT_VERSION,
+			'is_ssl' => is_ssl(),
 			'bcmath' => $bcmath_exists,
 			'curl' => ( function_exists( 'fsockopen' ) || function_exists( 'curl_init' ) ),
 			'api' => !empty( get_option( 'depay_wc_api_key' ) ),

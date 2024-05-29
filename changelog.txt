@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2024-5-29 - version 2.11.0
+* adds debug information about ssl status
+
 2024-5-20 - version 2.10.12
 * logs more information if checkout errors happen
 
