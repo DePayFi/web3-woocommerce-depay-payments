@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2024-6-17 - version 2.11.3
+* fixes more mobile & wallet connect edgecases
+
 2024-6-14 - version 2.11.2
 * fix missing dependency (Web3Blockchains)
 
