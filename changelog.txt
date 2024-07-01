@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2024-7-1 - version 2.11.4
+* fixes Solana RPC failover
+
 2024-6-17 - version 2.11.3
 * fixes more mobile & wallet connect edgecases
 
