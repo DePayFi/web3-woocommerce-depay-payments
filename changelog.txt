@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2024-7-6 - version 2.11.5
+* fix widget fiat payment value display for low-liquidity edge-cases
+
 2024-7-1 - version 2.11.4
 * fixes Solana RPC failover
 
