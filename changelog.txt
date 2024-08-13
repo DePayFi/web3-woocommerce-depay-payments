@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2024-8-13 - version 2.11.6
+* fixes edge-case routing issues with low-liquidity tokens on Uniswap v3
+
 2024-7-6 - version 2.11.5
 * fix widget fiat payment value display for low-liquidity edge-cases
 
