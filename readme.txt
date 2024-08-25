@@ -4,15 +4,15 @@ Tags: web3, payments, woocommerce, depay, cryptocurrency
 Requires at least: 6.0
 Tested up to: 6.5
 Requires PHP: 7.2
-Stable tag: 2.11.6
+Stable tag: 2.11.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Accept Web3 payments, including thousands of cryptocurrency tokens, with the DePay Payments extension for WooCommerce.
+Accept Web3 payments, supporting various cryptocurrency tokens, blockchains and wallets, with the DePay Payments extension for WooCommerce. MetaMask, Phantom, USDC, USDT, ETH, SOL, BSC, POL, xDAI…
 
 == Simple Web3 Cryptocurrency Payments with DePay ==
 
-Accept thousands of different tokens on multiple blockchains with on-the-fly conversion. Process cryptocurrency payments directly on your WooCommerce store and receive them directly into your crypto wallet.
+Accept Web3 payments, supporting various cryptocurrency tokens, blockchains and wallets, with the DePay Payments extension for WooCommerce. MetaMask, Phantom, USDC, USDT, ETH, SOL, BSC, POL, xDAI…
 
 [youtube https://www.youtube.com/watch?v=j8Vx0Rrx07E]
 
@@ -54,7 +54,6 @@ All* standard tokens.
 * Mobile support: Supports cryptocurrency payments on mobile devices and via WalletConnect QR codes.
 * Peer-to-peer: Payments are made directly into your cryptocurrency wallet. No intermediary holds your funds at any time.
 * No hassle: Payments settle immediately; no fraud and no chargebacks.
-
 
 == Select DePay as the payment choice during checkout ==
 

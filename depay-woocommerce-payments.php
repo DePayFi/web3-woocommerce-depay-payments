@@ -2,7 +2,7 @@
 /**
  * Plugin Name: DePay Payments for WooCommerce
  * Plugin URI: https://depay.com/plugins/woocommerce
- * Description: Web3 Payments directly into your own wallet. Accept thousands of different tokens with on-the-fly conversion on multiple blockchains.
+ * Description: Accept Web3 payments, supporting various cryptocurrency tokens, blockchains and wallets, with the DePay Payments extension for WooCommerce. MetaMask, Phantom, USDC, USDT, ETH, SOL, BSC, POL, xDAI…
  * Author: DePay
  * Author URI: https://depay.com
  * Text Domain: depay-payments
@@ -11,7 +11,7 @@
  * WC tested up to: 8.7.0
  * Requires at least: 5.8
  * Requires PHP: 7.0
- * Version: 2.11.6
+ * Version: 2.11.7
  *
  * @package DePay\Payments
  */
@@ -21,7 +21,7 @@ defined( 'ABSPATH' ) || exit;
 define( 'DEPAY_WC_PLUGIN_FILE', __FILE__ );
 define( 'DEPAY_WC_ABSPATH', __DIR__ . '/' );
 define( 'DEPAY_MIN_WC_ADMIN_VERSION', '0.23.2' );
-define( 'DEPAY_CURRENT_VERSION', '2.11.6' );
+define( 'DEPAY_CURRENT_VERSION', '2.11.7' );
 
 require_once DEPAY_WC_ABSPATH . '/vendor/autoload.php';
 

@@ -2,7 +2,7 @@
 
 ![Web3 Payments for WooCommerce](/.wordpress-org/screenshot-2.gif)
 
-Web3 Payments directly into your own wallet. Accept thousands of different tokens with on-the-fly conversion on multiple blockchains.
+Accept Web3 payments, supporting various cryptocurrency tokens, blockchains and wallets, with the DePay Payments extension for WooCommerce. MetaMask, Phantom, USDC, USDT, ETH, SOL, BSC, POL, xDAI…
 
 ### Demo
 

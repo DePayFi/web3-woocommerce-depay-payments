@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2024-8-25 - version 2.11.7
+* fixes some minor wallet connectivity issues
+
 2024-8-13 - version 2.11.6
 * fixes edge-case routing issues with low-liquidity tokens on Uniswap v3
 
