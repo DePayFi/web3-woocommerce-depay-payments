@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2024-9-5 - version 2.11.9
+* fix prevents deadlock: widget loading payment options forever
+
 2024-8-25 - version 2.11.8
 * fixes plugin description text
 
