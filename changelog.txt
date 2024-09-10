@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2024-9-10 - version 2.11.10
+* fix loading payment options (rpc settings & rotation)
+
 2024-9-5 - version 2.11.9
 * fix prevents deadlock: widget loading payment options forever
 
