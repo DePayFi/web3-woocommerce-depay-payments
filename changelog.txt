@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2024-10-16 - version 2.12.1
+* fixes plugin short description
+
 2024-10-16 - version 2.12.0
 * upgrades widgets including multiple bux fixes
 * adds World Chain support
