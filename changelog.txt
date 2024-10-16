@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2024-10-16 - version 2.12.2
+* fixes some timeouts with polygon rpcs
+
 2024-10-16 - version 2.12.1
 * fixes plugin short description
 
