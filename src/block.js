@@ -11,7 +11,7 @@
           <span className="wc-depay-icons-container">
             { settings.blockchains.map((blockchain, index)=>{
               return(
-                <img className="wc-depay-blockchain-icon" key={index} title={`Payments on #{blockchain}`} src={`${settings.pluginUrl}images/blockchains/${blockchain}.svg`} />
+                <img className="wc-depay-blockchain-icon" key={index} title={`Payments on ${blockchain}`} src={`${settings.pluginUrl}images/blockchains/${blockchain}.svg`} />
               )
             }) }
           </span>
@@ -55,6 +55,7 @@
     'gnosis',
     'optimism',
     'polygon',
+    'worldchain',
     'solana',
   ].forEach((blockchain)=>{
 
@@ -67,7 +68,7 @@
           <span>
             { settings.title }
             <span className="wc-depay-icons-container">
-              <img className="wc-depay-blockchain-icon" title={`Payments on #{blockchain}`} src={`${settings.pluginUrl}images/blockchains/${blockchain}.svg`} />
+              <img className="wc-depay-blockchain-icon" title={`Payments on ${blockchain}`} src={`${settings.pluginUrl}images/blockchains/${blockchain}.svg`} />
             </span>
           </span>
         )

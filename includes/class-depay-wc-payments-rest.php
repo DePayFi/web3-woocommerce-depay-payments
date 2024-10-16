@@ -285,7 +285,9 @@ class DePay_WC_Payments_Rest {
 				// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
 				'optimism' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
 				// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
-				'base' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb'
+				'base' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
+				// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
+				'worldchain' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb'
 		];
 
 		if ( $api_key ) {

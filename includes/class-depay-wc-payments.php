@@ -26,6 +26,7 @@ class DePay_WC_Payments {
 		include_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-gateway-optimism.php';
 		include_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-gateway-polygon.php';
 		include_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-gateway-solana.php';
+		include_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-gateway-worldchain.php';
 		include_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-settings.php';
 		include_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-admin.php';
 		include_once DEPAY_WC_ABSPATH . 'includes/class-depay-wc-payments-rest.php';

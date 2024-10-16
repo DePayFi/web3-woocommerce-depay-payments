@@ -30,6 +30,7 @@ const feeReceivers = {
   'arbitrum': '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
   'optimism': '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
   'base': '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
+  'worldchain': '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
 }
 
 const displayCheckout = async()=>{
