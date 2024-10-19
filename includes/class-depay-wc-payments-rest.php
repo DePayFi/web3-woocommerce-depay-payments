@@ -295,11 +295,13 @@ class DePay_WC_Payments_Rest {
 			$headers = array( 
 				'x-api-key' => $api_key,
 				'Content-Type' => 'application/json; charset=utf-8',
+				'Origin' => get_site_url(),
 			);
 		} else {
 			$endpoint = 'https://public.depay.com/payments';
 			$headers = array(
-				'Content-Type' => 'application/json; charset=utf-8'
+				'Content-Type' => 'application/json; charset=utf-8',
+				'Origin' => get_site_url(),
 			);
 		}
 
