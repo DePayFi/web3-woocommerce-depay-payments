@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2024-10-26 - version 2.12.4
+* fix solana timouts
+
 2024-10-19 - version 2.12.3
 * fixes some payment data issues
 
