@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2024-11-9 - version 2.12.7
+* fix solflare handover + fix some solana rpcs
+
 2024-11-6 - version 2.12.6
 * fixes Solana Pay
 
