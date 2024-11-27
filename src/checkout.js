@@ -38,7 +38,14 @@ const displayCheckout = async()=>{
     const checkoutId = window.location.hash.match(/wc-depay-checkout-(.*?)@/)[1]
     const response = JSON.parse(await wp.apiRequest({ 
       path: `/depay/wc/checkouts/${checkoutId}`,
-      method: 'POST'
+      method: 'POST',
+      headers: {
+        'X-WP-Nonce': wpApiSettings?.nonce, // Use WordPress's REST API nonce
+      },
+    }).catch((error)=>{
+      if(error?.responseJSON?.code === 'rest_cookie_invalid_nonce') {
+        window.location.reload(true)
+      }
     }))
     if(response.redirect) {
       window.location = response.redirect
