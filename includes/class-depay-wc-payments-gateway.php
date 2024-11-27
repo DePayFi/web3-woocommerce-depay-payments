@@ -90,10 +90,10 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 				DePay_WC_Payments::log( 'Storing checkout failed: ' . $error_message );
 				throw new Exception( 'Storing checkout failed: ' . $error_message );
 			}
-			
+
 			return( [
 				'result'         => 'success',
-				'redirect'       => '#wc-depay-checkout-' . $checkout_id . '@' . time()
+				'redirect'       => get_option('woocommerce_enable_signup_and_login_from_checkout') === 'yes' ? $order->get_checkout_payment_url() . '#wc-depay-checkout-' . $checkout_id . '@' . time() : '#wc-depay-checkout-' . $checkout_id . '@' . time()
 			] );
 		} else {
 			$order->payment_complete();
