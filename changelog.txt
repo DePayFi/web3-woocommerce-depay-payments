@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2024-11-27 - version 2.12.10
+* shortening plugin name: DePay for WooCommerce
+
 2024-11-27 - version 2.12.9
 * fix redirect to payment page if signup during checkout is enabled
 

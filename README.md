@@ -1,4 +1,4 @@
-## DePay Payments for WooCommerce
+## DePay for WooCommerce
 
 ![Web3 Payments for WooCommerce](/.wordpress-org/screenshot-2.gif)
 
