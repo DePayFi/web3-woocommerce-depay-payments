@@ -1,6 +1,6 @@
 === Web3 Crypto Payments by DePay for WooCommerce ===
 Contributors: depayfi
-Tags: web3, payments, woocommerce, depay, cryptocurrency
+Tags: web3, payments, woocommerce, depay, crypto
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.2
@@ -45,13 +45,13 @@ All* standard tokens.
 == What are the benefits for me? ==
 
 * No gateway, no redirect: Receive Web3 payments directly on your WooCommerce store (on-site).
-* Immediate cash flow: Receive payments directly into your cryptocurrency wallet—settled immediately.
+* Immediate cash flow: Receive payments directly into your crypto wallet—settled immediately.
 * You decide: Receive the tokens you want, like Stablecoins, ETH, BNB, MATIC, SOL, etc.
 * Automatic conversion: Accept thousands of different tokens from your customers.
 * Multichain support: Accept payments on multiple blockchains in parallel, like Ethereum, Binance Smart Chain, Polygon, Solana, etc.
-* Multi-wallet support: Accept payments made with over 100+ cryptocurrency wallets like MetaMask, Coinbase, Phantom, Trust, crypto.com DeFi, 1inch, etc.
-* Mobile support: Supports cryptocurrency payments on mobile devices and via WalletConnect QR codes.
-* Peer-to-peer: Payments are made directly into your cryptocurrency wallet. No intermediary holds your funds at any time.
+* Multi-wallet support: Accept payments made with over 100+ crypto wallets like MetaMask, Coinbase, Phantom, Trust, crypto.com DeFi, 1inch, etc.
+* Mobile support: Supports crypto payments on mobile devices and via WalletConnect QR codes.
+* Peer-to-peer: Payments are made directly into your crypto wallet. No intermediary holds your funds at any time.
 * No hassle: Payments settle immediately; no fraud and no chargebacks.
 
 == Select DePay as the payment choice during checkout ==
