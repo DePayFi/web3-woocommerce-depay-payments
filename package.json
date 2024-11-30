@@ -1,7 +1,7 @@
 {
   "name": "@depay/web3-woocommerce-depay-payments",
   "moduleName": "WooCommerceDePayPayments",
-  "version": "2.12.14",
+  "version": "2.12.15",
   "description": "Accept Web3 Crypto Payments. Supports various tokens, blockchains and wallets. MetaMask, Phantom, USDC, USDT, ETH, SOL, BSC, POL, xDAI…",
   "main": "./dist/umd/index.js",
   "module": "./dist/esm/index.js",
