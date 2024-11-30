@@ -1,8 +1,8 @@
 {
   "name": "@depay/web3-woocommerce-depay-payments",
   "moduleName": "WooCommerceDePayPayments",
-  "version": "2.12.13",
-  "description": "WooCommerce DePay plugin to accept Web3 payments directly into your wallet with on-the-fly conversion.",
+  "version": "2.12.14",
+  "description": "Accept Web3 Crypto Payments. Supports various tokens, blockchains and wallets. MetaMask, Phantom, USDC, USDT, ETH, SOL, BSC, POL, xDAI…",
   "main": "./dist/umd/index.js",
   "module": "./dist/esm/index.js",
   "files": [
