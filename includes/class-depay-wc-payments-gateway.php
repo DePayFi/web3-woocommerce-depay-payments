@@ -93,7 +93,8 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 
 			return( [
 				'result'         => 'success',
-				'redirect'       => get_option('woocommerce_enable_signup_and_login_from_checkout') === 'yes' ? $order->get_checkout_payment_url() . '#wc-depay-checkout-' . $checkout_id . '@' . time() : '#wc-depay-checkout-' . $checkout_id . '@' . time()
+				'redirect'       => '#wc-depay-checkout-' . $checkout_id . '@' . time()
+				// 'redirect'       => get_option('woocommerce_enable_signup_and_login_from_checkout') === 'yes' ? $order->get_checkout_payment_url() . '#wc-depay-checkout-' . $checkout_id . '@' . time() : '#wc-depay-checkout-' . $checkout_id . '@' . time()
 			] );
 		} else {
 			$order->payment_complete();
