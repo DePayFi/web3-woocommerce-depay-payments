@@ -124,9 +124,9 @@ class DePay_WC_Payments {
 	
 	public static function setup_checkout_scripts() {
 
-    if ( ! function_exists( 'is_checkout' ) || ! is_checkout() ) {
-      return;
-    }
+		if ( ! function_exists( 'is_checkout' ) || ! is_checkout() ) {
+			return;
+		}
 
 		wp_register_style( 'DEPAY_WC_STYLE', plugins_url( 'assets/css/depay.css', DEPAY_WC_PLUGIN_FILE ), array(), DEPAY_CURRENT_VERSION );
 		wp_enqueue_style( 'DEPAY_WC_STYLE' );
