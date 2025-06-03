@@ -2,13 +2,13 @@
 /**
  * Plugin Name: DePay for WooCommerce
  * Plugin URI: https://depay.com/plugins/woocommerce
- * Description: Web3 Payments. Various tokens, blockchains and wallets: MetaMask, Phantom, USDC, USDT, ETH, SOL, BSC, POL, xDAI…
+ * Description: Web3 Crypto Payments. Various tokens, blockchains and wallets: MetaMask, Phantom, USDC, USDT, ETH, SOL, BSC, POL, xDAI…
  * Author: DePay
  * Author URI: https://depay.com
  * Text Domain: depay-payments
  * Domain Path: /languages
  * WC requires at least: 6.2
- * WC tested up to: 8.7.0
+ * WC tested up to: 9.8.5
  * Requires at least: 5.8
  * Requires PHP: 7.0
  * Version: 3.0.0
