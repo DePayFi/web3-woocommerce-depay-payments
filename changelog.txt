@@ -1,5 +1,10 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2025-6-3 - version 3.0.0
+* Upgraded to DePay V3, including the latest payment workflows and API enhancements.
+* Faster initialization: reduced time-to-first-interaction when starting a payment.
+* Improving overall page speed: Deferred JavaScript assets to load only on the checkout page.
+
 2025-1-22 - version 2.12.20
 * fixes changelog.txt file
 * fixes some solana loading issues

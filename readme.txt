@@ -4,7 +4,7 @@ Tags: web3, payments, woocommerce, depay, crypto
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.2
-Stable tag: 2.12.20
+Stable tag: 3.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,7 +24,6 @@ Accept Web3 Crypto Payments. Supports various tokens, blockchains and wallets. M
 * BNB Smart Chain
 * Polygon
 * Solana
-* Fantom
 * Gnosis
 * Avalanche
 * Arbitrum
@@ -81,6 +80,11 @@ Denominate your items in crypto-currencies.
 
 
 == Changelog ==
+
+= 2025-6-3 - v3.0.0 =
+* Upgraded to DePay V3, including the latest payment workflows and API enhancements.
+* Faster initialization: reduced time-to-first-interaction when starting a payment.
+* Improving overall page speed: Deferred JavaScript assets to load only on the checkout page.
 
 = 2025-1-22 - v2.12.20 =
 * fixes changelog.txt file

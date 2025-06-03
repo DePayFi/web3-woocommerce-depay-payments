@@ -265,31 +265,6 @@ class DePay_WC_Payments_Rest {
 
 		}
 
-		$fee_receivers = [
-				// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
-				'ethereum' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
-				// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
-				'bsc' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
-				// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
-				'polygon' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
-				// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
-				'solana' => '5hqJfrh7SrokFqj16anNqACyUv1PCg7oEqi7oUya1kMQ',
-				// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
-				'fantom' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
-				// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
-				'gnosis' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
-				// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
-				'avalanche' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
-				// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
-				'arbitrum' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
-				// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
-				'optimism' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
-				// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
-				'base' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb',
-				// phpcs:ignore PHPCompatibility.Miscellaneous.ValidIntegers.HexNumericStringFound
-				'worldchain' => '0x9Db58B260EfAa2d6a94bEb7E219d073dF51cc7Bb'
-		];
-
 		if ( $api_key ) {
 			$endpoint = 'https://api.depay.com/v2/payments';
 			$headers = array( 
@@ -316,7 +291,6 @@ class DePay_WC_Payments_Rest {
 					'commitment' => $required_commitment,
 					'transaction' => $transaction_id,
 					'sender' => $request->get_param( 'sender' ),
-					'nonce' => $request->get_param( 'nonce' ),
 					'after_block' => $request->get_param( 'after_block' ),
 					'uuid' => $tracking_uuid,
 					'callback' => get_site_url( null, 'index.php?rest_route=/depay/wc/validate' ),
@@ -326,8 +300,7 @@ class DePay_WC_Payments_Rest {
 					],
 					'forward_to' => $order->get_checkout_order_received_url(),
 					'forward_on_failure' => false,
-					'fee_amount' => $fee_amount,
-					'fee_receiver' => $fee_receivers[$accepted_payment->blockchain],
+					'protocol_fee_amount' => $fee_amount,
 					'deadline' => $request->get_param( 'deadline' ),
 					'selected_wallet' => $request->get_param( 'selected_wallet' )
 				]),
@@ -464,7 +437,7 @@ class DePay_WC_Payments_Rest {
 					} else if ( 'failed' === $status ) {
 						$failed_reason = $request->get_param( 'failed_reason' );
 						if ( empty( $failed_reason ) ) {
-							$failed_reason = 'MISMATCH';
+							$failed_reason = 'FAILED';
 						}
 						DePay_WC_Payments::log( 'Validation failed: ' . $failed_reason );
 						$wpdb->query(
@@ -504,7 +477,8 @@ class DePay_WC_Payments_Rest {
 
 		if ( 'SUCCESS' === $existing_transaction_status ) {
 			$response = rest_ensure_response( [
-				'forward_to' => $order->get_checkout_order_received_url()
+				'forward_to' => $order->get_checkout_order_received_url(),
+				'status' => 'success'
 			] );
 			$response->set_status( 200 );
 			return $response;
@@ -516,9 +490,10 @@ class DePay_WC_Payments_Rest {
 				)
 			);
 			$response = rest_ensure_response( [
-				'failed_reason' => $failed_reason
+				'failed_reason' => $failed_reason,
+				'status' => 'failed'
 			] );
-			$response->set_status( 409 );
+			$response->set_status( 200 );
 			return $response;
 		}
 	}
