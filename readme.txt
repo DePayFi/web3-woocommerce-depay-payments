@@ -4,7 +4,7 @@ Tags: web3, payments, woocommerce, depay, crypto
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.2
-Stable tag: 3.0.0
+Stable tag: 3.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,6 +80,9 @@ Denominate your items in crypto-currencies.
 
 
 == Changelog ==
+
+= 2025-6-6 - v3.0.1 =
+* fixes phantom wallet mobile wallet deep link
 
 = 2025-6-3 - v3.0.0 =
 * Upgraded to DePay V3, including the latest payment workflows and API enhancements.

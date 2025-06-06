@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2025-6-6 - version 3.0.1
+* fixes phantom wallet mobile wallet deep link
+
 2025-6-3 - version 3.0.0
 * Upgraded to DePay V3, including the latest payment workflows and API enhancements.
 * Faster initialization: reduced time-to-first-interaction when starting a payment.
