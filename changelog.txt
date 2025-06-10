@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2025-6-10 - version 3.0.2
+* adds debugging to failed payment tracking requests
+
 2025-6-6 - version 3.0.1
 * fixes phantom wallet mobile wallet deep link
 

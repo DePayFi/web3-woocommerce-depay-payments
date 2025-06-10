@@ -317,7 +317,7 @@ class DePay_WC_Payments_Rest {
 			if ( is_wp_error( $post ) ) {
 				DePay_WC_Payments::log( $post->get_error_message() );
 			} else {
-				error_log( wp_remote_retrieve_body( $post ) );
+				DePay_WC_Payments::log( wp_remote_retrieve_body( $post ) );
 			}
 			$response->set_status( 500 );
 		}
