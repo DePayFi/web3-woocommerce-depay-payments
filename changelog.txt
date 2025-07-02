@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2025-7-2 - version 3.0.3
+* fixes: ensures to load all payment options in some cases
+
 2025-6-10 - version 3.0.2
 * adds debugging to failed payment tracking requests
 
