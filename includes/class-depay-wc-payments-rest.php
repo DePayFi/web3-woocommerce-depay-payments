@@ -778,7 +778,7 @@ class DePay_WC_Payments_Rest {
 	public function debug( $request ) {
 		global $wpdb;
 
-		$post_response = wp_remote_post( 'https://public.depay.com', array(
+		$post_response = wp_remote_post( 'https://jsonplaceholder.typicode.com/posts', array(
 			'headers' => array( 'Content-Type' => 'application/json; charset=utf-8' ),
 			'body' => json_encode( [] ),
 			'method' => 'POST',
@@ -786,7 +786,7 @@ class DePay_WC_Payments_Rest {
 		) );
 		$post_response_code = $post_response['response']['code'];
 		$post_response_successful = ! is_wp_error( $post_response_code ) && $post_response_code >= 200 && $post_response_code < 300;
-		$get_response = wp_remote_get( 'https://public.depay.com' );
+		$get_response = wp_remote_get( 'https://example.com' );
 		$get_response_code = $get_response['response']['code'];
 		$get_response_successful = ! is_wp_error( $get_response_code ) && $get_response_code >= 200 && $get_response_code < 300;
 		$last_logs = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}wc_depay_logs ORDER BY created_at DESC LIMIT 10" );

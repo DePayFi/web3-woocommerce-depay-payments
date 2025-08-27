@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2025-8-27 - version 3.0.4
+* fix: uses different urls for testing outgoing connection
+
 2025-7-2 - version 3.0.3
 * fixes: ensures to load all payment options in some cases
 
