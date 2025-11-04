@@ -1,5 +1,8 @@
 *** DePay Web3 Payments for WooCommerce Changelog ***
 
+2025-11-4 - version 3.0.5
+* fixes Solana issues
+
 2025-8-27 - version 3.0.4
 * fix: uses different urls for testing outgoing connection
 
