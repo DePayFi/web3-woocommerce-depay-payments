@@ -135,6 +135,7 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 		$requests = [];
 		$token_denominated = false;
 		$token = null;
+		$total_in_usd = null;
 		$api_key = get_option( 'depay_wc_api_key' );
 		if ( empty( $api_key ) ) {
 			$api_key = false;
@@ -175,9 +176,10 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 				throw new Exception( 'To many requests! Please upgrade to DePay PRO.' );
 			} else if ( is_wp_error($usd_amount) || wp_remote_retrieve_response_code( $usd_amount ) != 200 ) {
 				DePay_WC_Payments::log( 'Price request failed!' );
-				throw new Exception( 'Price request failed!' );
+				// throw new Exception( 'Price request failed!' );
+			} else {
+				$total_in_usd = bcmul( $usd_amount['body'], 1, 3 );
 			}
-			$total_in_usd = bcmul( $usd_amount['body'], 1, 3 );
 		} else if ( 'USD' == $currency ) {
 			$total_in_usd = $total;
 		} else {
@@ -204,7 +206,7 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 			$total_in_usd = bcdiv( $total, $rate, 3 );
 		}
 
-		if ( empty($total_in_usd) ) {
+		if ( empty($total_in_usd) && !$token_denominated ) {
 			DePay_WC_Payments::log( 'total_in_usd empty!' );
 			throw new Exception( 'total_in_usd empty!' );
 		}
@@ -217,68 +219,95 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 			}));
 		}
 
-		foreach ( $accepted_payments as $accepted_payment ) {
-			if ( $api_key ) {
-				$requests[] = array(
-					'url' => sprintf( 'https://api.depay.com/v2/conversions/%s/%s/USD?amount=' . $price_format_specifier, $accepted_payment->blockchain, $accepted_payment->token, $total_in_usd ),
-					'type' => 'GET',
-					'timeout' => 10,
-					'headers' => array(
-						'x-api-key' => $api_key
-					)
-				);
-				$requests[] = array(
-					'url' => sprintf( 'https://api.depay.com/v2/tokens/decimals/%s/%s', $accepted_payment->blockchain, $accepted_payment->token ),
-					'type' => 'GET',
-					'headers' => array(
-						'x-api-key' => $api_key
-					)
-				);
-			} else {
-				$requests[] = array(
-					'url' => sprintf( 'https://public.depay.com/conversions/%s/%s/USD?amount=' . $price_format_specifier, $accepted_payment->blockchain, $accepted_payment->token, $total_in_usd ),
-					'type' => 'GET',
-					'timeout' => 10
-				);
-				$requests[] = array(
-					'url' => sprintf( 'https://public.depay.com/tokens/decimals/%s/%s', $accepted_payment->blockchain, $accepted_payment->token ),
-					'type' => 'GET'
-				);
-			}
-		}
-
-		$responses = Requests::request_multiple( $requests );
-
 		$accept = [];
+		$requests = [];
 
-		for ($i = 0; $i < count($responses); $i++) {
-			if ( 0 === $i % 2 ) { // even 0, 2, 4 ...
-				if ( 429 === $responses[$i]->status_code ) {
-					DePay_WC_Payments::log( 'To many requests! Please upgrade to DePay PRO.' );
-					throw new Exception( 'To many requests! Please upgrade to DePay PRO.' );
-				} else if ( $responses[$i]->success && $responses[$i+1]->success && !empty( $responses[$i]->body ) && !empty( $responses[$i+1]->body ) ) {
-					$accepted_payment = $accepted_payments[ $i / 2 ];
-					if ( $token_denominated && $token && $token->blockchain === $accepted_payment->blockchain && $token->address === $accepted_payment->token ) {
-						$amount = $total;
-					} else {
-						$amount = $this->round_token_amount( $responses[$i]->body );
-					}
-					if ( !empty( $amount ) && strval( $amount ) !== '0.00' ) {
-						array_push($accept, [
-							'blockchain' => $accepted_payment->blockchain,
-							'token' => $accepted_payment->token,
-							'amount' => $amount,
-							'receiver' => $accepted_payment->receiver
-						]);
-					} else {
-						DePay_WC_Payments::log( 'Amount is empty: ' . $requests[$i]['url'] );
-					}
+		if ( empty($total_in_usd) && $token_denominated ) {
+
+			$match = null;
+
+			foreach ( $accepted_payments as $accepted_payment ) {
+				if (
+					$accepted_payment->blockchain === $token->blockchain &&
+					$accepted_payment->token === $token->address
+				) {
+					$match = $accepted_payment;
+					break;
+				}
+			}
+
+			if ( null !== $match ) {
+				array_push($accept, [
+					'blockchain' => $match->blockchain,
+					'token' => $match->token,
+					'amount' => $total,
+					'receiver' => $match->receiver
+				]);
+			}
+
+		} else {
+
+			foreach ( $accepted_payments as $accepted_payment ) {
+				if ( $api_key ) {
+					$requests[] = array(
+						'url' => sprintf( 'https://api.depay.com/v2/conversions/%s/%s/USD?amount=' . $price_format_specifier, $accepted_payment->blockchain, $accepted_payment->token, $total_in_usd ),
+						'type' => 'GET',
+						'timeout' => 10,
+						'headers' => array(
+							'x-api-key' => $api_key
+						)
+					);
+					$requests[] = array(
+						'url' => sprintf( 'https://api.depay.com/v2/tokens/decimals/%s/%s', $accepted_payment->blockchain, $accepted_payment->token ),
+						'type' => 'GET',
+						'headers' => array(
+							'x-api-key' => $api_key
+						)
+					);
 				} else {
-					DePay_WC_Payments::log( 'Accept request failed: ' . $responses[$i]->status_code . ' ' . $requests[$i]['url'] );
+					$requests[] = array(
+						'url' => sprintf( 'https://public.depay.com/conversions/%s/%s/USD?amount=' . $price_format_specifier, $accepted_payment->blockchain, $accepted_payment->token, $total_in_usd ),
+						'type' => 'GET',
+						'timeout' => 10
+					);
+					$requests[] = array(
+						'url' => sprintf( 'https://public.depay.com/tokens/decimals/%s/%s', $accepted_payment->blockchain, $accepted_payment->token ),
+						'type' => 'GET'
+					);
+				}
+			}
+
+			$responses = Requests::request_multiple( $requests );
+
+			for ($i = 0; $i < count($responses); $i++) {
+				if ( 0 === $i % 2 ) { // even 0, 2, 4 ...
+					if ( 429 === $responses[$i]->status_code ) {
+						DePay_WC_Payments::log( 'To many requests! Please upgrade to DePay PRO.' );
+						throw new Exception( 'To many requests! Please upgrade to DePay PRO.' );
+					} else if ( $responses[$i]->success && $responses[$i+1]->success && !empty( $responses[$i]->body ) && !empty( $responses[$i+1]->body ) ) {
+						$accepted_payment = $accepted_payments[ $i / 2 ];
+						if ( $token_denominated && $token && $token->blockchain === $accepted_payment->blockchain && $token->address === $accepted_payment->token ) {
+							$amount = $total;
+						} else {
+							$amount = $this->round_token_amount( $responses[$i]->body );
+						}
+						if ( !empty( $amount ) && strval( $amount ) !== '0.00' ) {
+							array_push($accept, [
+								'blockchain' => $accepted_payment->blockchain,
+								'token' => $accepted_payment->token,
+								'amount' => $amount,
+								'receiver' => $accepted_payment->receiver
+							]);
+						} else {
+							DePay_WC_Payments::log( 'Amount is empty: ' . $requests[$i]['url'] );
+						}
+					} else {
+						DePay_WC_Payments::log( 'Accept request failed: ' . $responses[$i]->status_code . ' ' . $requests[$i]['url'] );
+					}
 				}
 			}
 		}
-		
+
 		if ( empty( $accept ) ) {
 			DePay_WC_Payments::log( 'No valid payment route found!' );
 			throw new Exception( 'No valid payment route found!' );
