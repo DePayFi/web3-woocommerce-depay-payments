@@ -175,7 +175,7 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 				DePay_WC_Payments::log( 'To many requests! Please upgrade to DePay PRO.' );
 				throw new Exception( 'To many requests! Please upgrade to DePay PRO.' );
 			} else if ( is_wp_error($usd_amount) || wp_remote_retrieve_response_code( $usd_amount ) != 200 ) {
-				// DePay_WC_Payments::log( 'Price request failed!' );
+				DePay_WC_Payments::log( 'Price request failed!' );
 				// throw new Exception( 'Price request failed!' );
 			} else {
 				$total_in_usd = bcmul( $usd_amount['body'], 1, 3 );
@@ -227,16 +227,16 @@ class DePay_WC_Payments_Gateway extends WC_Payment_Gateway {
 			$match = null;
 
 			foreach ( $accepted_payments as $accepted_payment ) {
-			  if (
-			    $accepted_payment->blockchain === $token->blockchain &&
-			    $accepted_payment->token === $token->address
-			  ) {
-			    $match = $accepted_payment;
-			    break;
-			  }
+				if (
+					$accepted_payment->blockchain === $token->blockchain &&
+					$accepted_payment->token === $token->address
+				) {
+					$match = $accepted_payment;
+					break;
+				}
 			}
 
-			if( $match !== null ) {
+			if ( null !== $match ) {
 				array_push($accept, [
 					'blockchain' => $match->blockchain,
 					'token' => $match->token,
