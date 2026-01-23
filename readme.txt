@@ -4,7 +4,7 @@ Tags: web3, payments, woocommerce, depay, crypto
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.2
-Stable tag: 3.0.6
+Stable tag: 3.0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,6 +80,9 @@ Denominate your items in crypto-currencies.
 
 
 == Changelog ==
+
+= 2026-1-23 - v3.0.7 =
+* fixes okx + oks wallet connection
 
 = 2026-1-3 - v3.0.6 =
 * fixes token denomination issue (where no price is available)
